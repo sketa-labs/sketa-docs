@@ -2276,7 +2276,7 @@
         ],
         "summary": "Upload media",
         "operationId": "uploadPostMedia",
-        "description": "Uploads one file as `multipart/form-data` and appends it to the post's media. Accepted files: JPEG, PNG, GIF and WebP images (HEIC and HEIF too when the server can convert them, stored as JPEG), MP4 and MOV videos, and PDF documents. Size caps: 10 MB per image (and at most about 67 megapixels, 8192 × 8192 pixels in total), 1 GB per video, 100 MB per PDF. Each network enforces its own, usually smaller, caps when the post is scheduled or published (`GET /content-types`). A type the post's channel does not accept fails with `422`: `This file type is not supported by the post's channel.` Posts that are publishing, published or failed cannot take media: `422` on `post` with `This post has already been processed and cannot be re-published. Duplicate it to try again.` On Pinterest and TikTok the content type is chosen again from the post's media, as on create.",
+        "description": "Uploads one file as `multipart/form-data` and appends it to the post's media. Accepted files: JPEG, PNG, GIF and WebP images (HEIC and HEIF too when the server can convert them, stored as JPEG), MP4 and MOV videos, and PDF documents. Size caps: 10 MB per image (and at most about 67 megapixels, 8192 \u00d7 8192 pixels in total), 1 GB per video, 100 MB per PDF. Each network enforces its own, usually smaller, caps when the post is scheduled or published (`GET /content-types`). A type the post's channel does not accept fails with `422`: `This file type is not supported by the post's channel.` Posts that are publishing, published or failed cannot take media: `422` on `post` with `This post has already been processed and cannot be re-published. Duplicate it to try again.` On Pinterest and TikTok the content type is chosen again from the post's media, as on create.",
         "requestBody": {
           "required": true,
           "content": {
@@ -2573,7 +2573,7 @@
         ],
         "summary": "Attach media from URL",
         "operationId": "attachMediaFromUrl",
-        "description": "Downloads up to 10 public files and appends them to the post's media. Each URL must serve the file itself: redirects are not followed, and web pages, private-network hosts and files over the type's size cap are refused. Each download must finish within 20 seconds. Only the types the post's channel accepts are kept. URLs that could not be attached are listed in `failed_urls`, and `failures` gives the reason of each. Posts that are publishing, published or failed cannot take media: when a file was downloaded, the request fails with `422` on `post` with `This post has already been processed and cannot be re-published. Duplicate it to try again.` Accepted files: JPEG, PNG, GIF and WebP images (HEIC and HEIF too when the server can convert them, stored as JPEG), MP4 and MOV videos, and PDF documents. Size caps: 10 MB per image (and at most about 67 megapixels, 8192 × 8192 pixels in total), 1 GB per video, 100 MB per PDF. Each network enforces its own, usually smaller, caps when the post is scheduled or published (`GET /content-types`). On Pinterest and TikTok the content type is chosen again from the post's media, as on create.",
+        "description": "Downloads up to 10 public files and appends them to the post's media. Each URL must serve the file itself: redirects are not followed, and web pages, private-network hosts and files over the type's size cap are refused. Each download must finish within 20 seconds. Only the types the post's channel accepts are kept. URLs that could not be attached are listed in `failed_urls`, and `failures` gives the reason of each. Posts that are publishing, published or failed cannot take media: when a file was downloaded, the request fails with `422` on `post` with `This post has already been processed and cannot be re-published. Duplicate it to try again.` Accepted files: JPEG, PNG, GIF and WebP images (HEIC and HEIF too when the server can convert them, stored as JPEG), MP4 and MOV videos, and PDF documents. Size caps: 10 MB per image (and at most about 67 megapixels, 8192 \u00d7 8192 pixels in total), 1 GB per video, 100 MB per PDF. Each network enforces its own, usually smaller, caps when the post is scheduled or published (`GET /content-types`). On Pinterest and TikTok the content type is chosen again from the post's media, as on create.",
         "requestBody": {
           "required": true,
           "content": {
@@ -2793,7 +2793,7 @@
         ],
         "summary": "Create upload",
         "operationId": "createUpload",
-        "description": "Uploads one file as `multipart/form-data` without a post and returns an `upload_token`. Pass it as a media item (`media[].upload_token`) to `POST /posts`, `POST /posts/batch` or `PUT /posts/{post}`, or to `POST /posts/{post}/media/from-upload`, before `expires_at`. A token is spent by the first post that takes it; to put the same file on another post, pass that post's `media[].id`. Unused uploads are deleted after 24 hours. Accepted files: JPEG, PNG, GIF and WebP images (HEIC and HEIF too when the server can convert them, stored as JPEG), MP4 and MOV videos, and PDF documents. Size caps: 10 MB per image (and at most about 67 megapixels, 8192 × 8192 pixels in total), 1 GB per video, 100 MB per PDF. Each network enforces its own, usually smaller, caps when the post is scheduled or published (`GET /content-types`).",
+        "description": "Uploads one file as `multipart/form-data` without a post and returns an `upload_token`. Pass it as a media item (`media[].upload_token`) to `POST /posts`, `POST /posts/batch` or `PUT /posts/{post}`, or to `POST /posts/{post}/media/from-upload`, before `expires_at`. A token is spent by the first post that takes it; to put the same file on another post, pass that post's `media[].id`. Unused uploads are deleted after 24 hours. Accepted files: JPEG, PNG, GIF and WebP images (HEIC and HEIF too when the server can convert them, stored as JPEG), MP4 and MOV videos, and PDF documents. Size caps: 10 MB per image (and at most about 67 megapixels, 8192 \u00d7 8192 pixels in total), 1 GB per video, 100 MB per PDF. Each network enforces its own, usually smaller, caps when the post is scheduled or published (`GET /content-types`).",
         "requestBody": {
           "required": true,
           "content": {
@@ -2860,7 +2860,7 @@
         "summary": "Upload to signed URL",
         "operationId": "uploadToSignedUrl",
         "security": [],
-        "description": "Receives a file at a one-time signed URL issued by the MCP `request-media-upload-tool`. No API key: the signature authorizes the request. Send the file as `multipart/form-data` in the `media` field, for example `curl -F media=@launch.jpg \"<upload_url>\"`. The URL works once, until it expires (15 minutes by default); a second upload to it returns `409`. The returned `upload_token` is then used as a media item, like a token from `POST /uploads`. Accepted files: JPEG, PNG, GIF and WebP images (HEIC and HEIF too when the server can convert them, stored as JPEG), MP4 and MOV videos, and PDF documents. Size caps: 10 MB per image (and at most about 67 megapixels, 8192 × 8192 pixels in total), 1 GB per video, 100 MB per PDF. Each network enforces its own, usually smaller, caps when the post is scheduled or published (`GET /content-types`). A file the server cannot read returns `422` with only `message`: `Unable to read uploaded file.`",
+        "description": "Receives a file at a one-time signed URL issued by the MCP `request-media-upload-tool`. No API key: the signature authorizes the request. Send the file as `multipart/form-data` in the `media` field, for example `curl -F media=@launch.jpg \"<upload_url>\"`. The URL works once, until it expires (15 minutes by default); a second upload to it returns `409`. The returned `upload_token` is then used as a media item, like a token from `POST /uploads`. Accepted files: JPEG, PNG, GIF and WebP images (HEIC and HEIF too when the server can convert them, stored as JPEG), MP4 and MOV videos, and PDF documents. Size caps: 10 MB per image (and at most about 67 megapixels, 8192 \u00d7 8192 pixels in total), 1 GB per video, 100 MB per PDF. Each network enforces its own, usually smaller, caps when the post is scheduled or published (`GET /content-types`). A file the server cannot read returns `422` with only `message`: `Unable to read uploaded file.`",
         "parameters": [
           {
             "name": "token",
@@ -4418,7 +4418,7 @@
             "required": false,
             "style": "form",
             "explode": true,
-            "description": "Only ideas in these stages. Values that are not UUIDs are ignored. Must be sent as a list (`stages[]=…`); a single value without `[]` returns `422`.",
+            "description": "Only ideas in these stages. Values that are not UUIDs are ignored. Must be sent as a list (`stages[]=\u2026`); a single value without `[]` returns `422`.",
             "schema": {
               "type": "array",
               "items": {
@@ -4442,7 +4442,7 @@
             "required": false,
             "style": "form",
             "explode": true,
-            "description": "Only ideas with any of these labels. Values that are not UUIDs are ignored. Must be sent as a list (`stages[]=…`); a single value without `[]` returns `422`.",
+            "description": "Only ideas with any of these labels. Values that are not UUIDs are ignored. Must be sent as a list (`stages[]=\u2026`); a single value without `[]` returns `422`.",
             "schema": {
               "type": "array",
               "items": {
@@ -5514,7 +5514,7 @@
         ],
         "summary": "Get workspace analytics",
         "operationId": "getWorkspaceAnalytics",
-        "description": "Returns the analytics report of the workspace for a date range, compared with the previous range of the same length: summary, followers, posts per bucket, top posts, per-channel performance and collection coverage. Days are calendar days in the API key user's time zone (Settings → Preferences) and weekly buckets start on that user's start of week. With `custom` (or `start`/`end` without `range`), the dates are clamped to the days with data in scope (`bounds`; for a channel, that channel's). When there is no data yet, the dates are ignored and the last 30 days are returned. A missing `end` defaults to the last day with data, and a missing `start` to 29 days before `end`. Read `range` (or `filters.start`/`filters.end`) in the response for the days actually used. The report reads analytics TryPost has already collected from the networks, not live data. LinkedIn, LinkedIn pages, Telegram, Discord and Google Business are not included.",
+        "description": "Returns the analytics report of the workspace for a date range, compared with the previous range of the same length: summary, followers, posts per bucket, top posts, per-channel performance and collection coverage. Days are calendar days in the API key user's time zone (Settings \u2192 Preferences) and weekly buckets start on that user's start of week. With `custom` (or `start`/`end` without `range`), the dates are clamped to the days with data in scope (`bounds`; for a channel, that channel's). When there is no data yet, the dates are ignored and the last 30 days are returned. A missing `end` defaults to the last day with data, and a missing `start` to 29 days before `end`. Read `range` (or `filters.start`/`filters.end`) in the response for the days actually used. The report reads analytics TryPost has already collected from the networks, not live data. LinkedIn, LinkedIn pages, Telegram, Discord and Google Business are not included.",
         "parameters": [
           {
             "name": "range",
@@ -9406,7 +9406,7 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Workspace API key from Settings → API Keys."
+        "description": "Workspace API key from Settings \u2192 API Keys."
       }
     },
     "schemas": {
@@ -11749,6 +11749,17 @@
                   "null"
                 ]
               },
+              "media": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/MediaItem"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "The first image or video of the TryPost post, served by TryPost, or `null` for a post made outside TryPost or one without images or videos. Prefer it to `preview_metadata`: the networks' own thumbnail links expire."
+              },
               "reactions": {
                 "type": [
                   "integer",
@@ -12438,6 +12449,17 @@
               "string",
               "null"
             ]
+          },
+          "media": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MediaItem"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The first image or video of the TryPost post, served by TryPost, or `null` for a post made outside TryPost or one without images or videos. `thumbnail_url` already prefers its image."
           },
           "permalink": {
             "type": [

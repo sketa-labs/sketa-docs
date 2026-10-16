@@ -133,6 +133,7 @@ On first boot the entrypoint:
 
 - waits for the database (PostgreSQL only — see above if you run MySQL)
 - runs migrations
+- syncs the **What's New** entries (`changelog:sync`)
 - creates `storage:link` if missing (unused if you later switch to S3 / R2 / Spaces)
 - loads Passport keys from `PASSPORT_PRIVATE_KEY` / `PASSPORT_PUBLIC_KEY` (exits if unset in production)
 - ensures the Passport Personal Access Client (`PassportSeeder`)

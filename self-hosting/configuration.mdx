@@ -718,6 +718,26 @@ LOG_LEVEL=debug
 | `LOG_CHANNEL` / `LOG_STACK` | Where logs go. The default writes to `storage/logs/laravel.log`; in containers, `LOG_CHANNEL=stderr` sends them to the container output |
 | `LOG_LEVEL` | Lowest level written. Use `warning` in production; [upgrade notes](/self-hosting/upgrading) log what data migrations changed at that level |
 
+## Behind a proxy
+
+```env
+TRUSTED_PROXIES=
+```
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `TRUSTED_PROXIES` | Cloudflare's published ranges | The proxies whose `X-Forwarded-*` headers TryPost trusts, which decides the client IP every per-IP rate limit reads. Behind Cloudflare, leave it unset. Behind another proxy or load balancer, list its IPs or ranges, comma-separated. `*` trusts any proxy, which also lets a client fake its IP with `X-Forwarded-For` |
+
+## What's New
+
+```env
+CHANGELOG_ENABLED=true
+```
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CHANGELOG_ENABLED` | `true` | Shows the **What's New** card in the sidebar and the modal in the Help menu, with the entries shipped in the release. `php artisan changelog:sync` loads them after each deploy (the Docker image runs it on boot). `false` hides both |
+
 ## Advanced
 
 ```env
@@ -734,6 +754,9 @@ LEGAL_PRIVACY_URL=https://trypost.it/privacy
 | `TRYPOST_USER_AGENT` | `TryPost.it/1.0 (+https://trypost.it)` | `User-Agent` sent on outgoing HTTP, including webhook deliveries and test pings. |
 | `META_PAGE_WALK_SECONDS` | `20` | Seconds the Facebook and Instagram-via-Facebook connection may spend listing your pages during the login callback. Keep it under your web server's request timeout |
 | `LEGAL_TERMS_URL` / `LEGAL_PRIVACY_URL` | trypost.it pages | Terms and privacy links shown on the sign-in and sign-up screens. Point them at your own policies |
+| `OPENAI_APPS_CHALLENGE` | empty | Domain verification token served at `/.well-known/openai-apps-challenge`, only needed to list your install in the ChatGPT apps directory. Empty answers `404` |
+| `MCP_CHATGPT_IP_RANGES_URL` | `https://openai.com/chatgpt-connectors.json` | The list of IP ranges ChatGPT calls MCP from. From those ranges, ChatGPT may list the tools without signing in and gets its sign-in prompt inside the conversation |
+| `MCP_CLAUDE_IP_RANGES` | `160.79.104.0/21` | The ranges Claude calls MCP from, comma-separated. Together with ChatGPT's, they are exempt from the limit on OAuth client registration |
 
 ## Advanced and internal settings
 
