@@ -50,7 +50,7 @@ Same paths, user configures `APP_URL` in `.env`:
 | **API Reference** | `code` | REST API. Operation pages are generated from **`openapi.json`** at the repo root (hand-written from the app's `routes/api.php`, `app/Http/Requests/Api/**`, `app/Http/Resources/**`). Prose that does not fit one operation lives in `api-reference/introduction.mdx` and `api-reference/guides/*.mdx`. There are no per-endpoint `.mdx` files any more; old `api-reference/endpoint/*` slugs redirect |
 | **Build with AI** | `microchip-ai` | MCP server intro, tools reference, setup guides per client |
 | **Knowledge Base** | `book` | How the app works. Groups mirror the app sidebar, then the settings sidebar: Getting started, Create, Publish, Insights, Repurpose, Channels, Settings (Personal, Workspace, Features, Developers, Account). Page titles use the on-screen labels from `lang/en/*.php` |
-| **Self-Hosting** | `server` | Overview, requirements, installation, configuration, AI providers, Docker, production, upgrading (incl. the 2.0 release command) — isolated from the rest |
+| **Self-Hosting** | `server` | Overview, requirements, installation, configuration, AI providers, Docker, production, upgrading — isolated from the rest |
 
 Every removed or moved slug gets an entry in `docs.json` `redirects`.
 
@@ -113,17 +113,17 @@ The same applies to anything a self-hoster can switch off or raise: platform ava
 
 ### Endpoints, shapes and pagination
 
-`openapi.json` is the source of truth for every operation, request field, response shape and error (hand-written from the app's `routes/api.php`, `app/Http/Requests/Api/**`, `app/Http/Resources/**`, `app/Http/Controllers/Api/**`). Public API = routes whose URI starts with `api/` (83 today: `php artisan route:list --path=api`). Edit the spec, not generated pages. `api-reference/introduction.mdx` covers auth, errors, pagination, rate limits and timestamps; `api-reference/guides/posting.mdx` covers `platforms[].meta` per network, scheduling modes and thread replies; `api-reference/guides/media-uploads.mdx` covers media. Update those, not this file. Facts to keep in mind:
+`openapi.json` is the source of truth for every operation, request field, response shape and error (hand-written from the app's `routes/api.php`, `app/Http/Requests/Api/**`, `app/Http/Resources/**`, `app/Http/Controllers/Api/**`). Public API = routes whose URI starts with `api/` (85 today: `php artisan route:list --path=api`). Edit the spec, not generated pages. `api-reference/introduction.mdx` covers auth, errors, pagination, rate limits and timestamps; `api-reference/guides/posting.mdx` covers `meta` per network, scheduling modes and thread replies; `api-reference/guides/media-uploads.mdx` covers media. Update those, not this file. Facts to keep in mind:
 
 - Resources are unwrapped (`JsonResource::withoutWrapping()`); lists use the Laravel envelope `{ data, links, meta }` with the page size from `config('app.pagination.default')` (25 today). Always tell readers to read `meta.per_page`.
 - `PUT /posts/{post}` with `status: publishing` publishes now; there is no separate publish endpoint.
-- `platforms[].meta` rules live only in the app's `App\Support\PostPlatformMetaRules`; document them from there. Unknown keys are dropped; on update `meta` is merged and `null` clears a nullable key. Boolean meta keys do not accept `null`; send `true` or `false`.
+- Post `meta` rules live only in the app's `App\Support\PostPlatformMetaRules`; document them from there. Unknown keys are dropped; on update `meta` is merged and `null` clears a nullable key. Boolean meta keys do not accept `null`; send `true` or `false`.
 - There is no asset-library endpoint and no account toggle in the REST API.
 - Enum values (statuses, content types, webhook events, platforms) are documented in `openapi.json` schemas; copy them from the app enums under `app/Enums/**`, never from memory.
 
 ## MCP Server
 
-- The tool list is exactly `TryPostServer::$tools` (`app/Mcp/Servers/TryPostServer.php`), 81 tools today; `ai/tools-reference.mdx` documents every one and `check_coverage.py mcp` enforces it. Names are the class basename in kebab-case plus `-tool`, except `get-tiktok-creator-info-tool` (`#[Name]`).
+- The tool list is exactly `TryPostServer::$tools` (`app/Mcp/Servers/TryPostServer.php`), 83 tools today; `ai/tools-reference.mdx` documents every one and `check_coverage.py mcp` enforces it. Names are the class basename in kebab-case plus `-tool`, except `get-tiktok-creator-info-tool` (`#[Name]`).
 - `create-post-tool` / `create-posts-tool` / `update-post-tool` accept inline `media[]` (`url`, `upload_token` or `id`); `update-post-tool` cannot change the channel. `create-api-key-tool` returns `{token, plain_token}` like REST.
 - Gates mirror the web: any member (`createPost`) for posts, notes, ideas, labels, signatures, analytics and channel reads; `publishDirectly` for approve/reject, set recurrence, reorder queue, move to slot and every repurpose tool; admins (`manageAccounts`, `manageWebhooks`, `manageTeam`) for posting-schedule writes, webhooks and API keys.
 - Server route: `Mcp::web('/mcp/trypost', TryPostServer::class)->middleware(['auth:api', 'workspace.token:mcp'])`. `LoadWorkspaceFromToken` requires an active OAuth grant with `mcp:use` (`403 MCP OAuth authorization required.` otherwise), binds the token's workspace (`401 No workspace selected.`, `403 Workspace access denied.`), and returns `402 Active subscription required.` on Cloud without app access.
@@ -151,12 +151,12 @@ The full table (17 entries, including analytics, retention and Google Business r
 
 ## Self-Hosted Requirements
 
-- PHP 8.4.1+ (the Docker image ships 8.4), Node.js 22.12+, PostgreSQL or MySQL (MySQL from TryPost 2.0), Redis
+- PHP 8.4.1+ (the Docker image ships 8.4), Node.js 22.12+, PostgreSQL or MySQL, Redis
 - Horizon (queues), Reverb (WebSockets) and the scheduler running continuously
 - Imagick with HEIC for iPhone photo conversion (in the Docker image)
 - Upload limits: `upload_max_filesize=1G`, `post_max_size=1G` (matches the Docker image)
 - Bluesky and Mastodon work without API credentials; every other network needs developer app credentials (Google Business Profile has its own Google client, separate from YouTube)
-- Upgrading an existing install to 2.0 needs `php artisan release:trypost-2 --force --include-unsubscribed` after `migrate --force` (self-hosted has no Stripe subscription)
+- The docs describe the current `main` only (owner decision October 2026): no upgrade path from 1.x, no `release:trypost-2`, no "before/since 2.0" history. An upgrade is the routine in `self-hosting/upgrading.mdx` plus the GitHub release notes
 
 ## Supported Languages
 

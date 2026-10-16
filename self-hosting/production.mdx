@@ -70,7 +70,6 @@ TryPost uses queues for critical background processing:
 - **Collecting analytics** for [Insights](/knowledge-base/insights/overview) (`analytics` queue)
 - **Importing posts** made outside TryPost and media from Google Drive, Google Photos, Canva or Unsplash (`media-imports` queue)
 - **Polling RSS feeds** (`rss-feeds` queue); [repurpose](/knowledge-base/repurpose) sources are polled on their network's `social-<platform>` queue
-- **Adopting the media library** once during the [2.0 upgrade](/self-hosting/upgrading#upgrading-to-trypost-20) (`media-adoption` queue)
 - **Delivering [webhooks](/knowledge-base/settings/webhooks)** and their retries (`webhooks` queue)
 - **Live updates** to the browser (`broadcasts` queue)
 
@@ -211,6 +210,7 @@ TryPost uses Laravel's task scheduler for several recurring jobs. The scheduler 
 | `social:check-upcoming-connections` | every 15 minutes | Verifies the channels of posts scheduled within the next hour and emails when they need reconnecting |
 | `social:recover-stuck-posts` | every 30 minutes | Detects posts stuck in `publishing` and retries or fails them |
 | `social:reconcile-google-business-posts` | every 5 minutes | Checks Google Business Profile posts that are still in review by Google |
+| `social:resolve-tiktok-video-ids` | every 15 minutes | Asks TikTok for the video id of public posts it has not reported yet, so their link and metrics work |
 | `social:check-connections` | daily | Verifies every connected channel still authenticates |
 | `app:prune-webhook-logs` | daily | Deletes [webhook](/knowledge-base/settings/webhooks) delivery logs older than 7 days |
 | `posts:prune-history` | daily | Deletes published posts older than `POST_HISTORY_RETENTION_DAYS` (default 730) with their media |
@@ -350,5 +350,5 @@ mysql -h "$DB_HOST" -u "$DB_USERNAME" -p"$DB_PASSWORD" "$DB_DATABASE" < "trypost
 On the bundled Compose stack the app container carries both clients and already has those variables, so `docker compose -f compose.prod.yaml exec app` runs either one as written — as does `php artisan db` for an interactive session.
 
 <Note>
-  The image carries `mysql-client` alongside `pdo_mysql` from TryPost 2.0. Older images carry only the PostgreSQL client; on those, run the MySQL commands from the database host instead.
+  The image carries `mysql-client` alongside `pdo_mysql`, so the MySQL commands run inside the container.
 </Note>

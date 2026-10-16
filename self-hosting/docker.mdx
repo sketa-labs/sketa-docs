@@ -36,16 +36,6 @@ services:
 
 Then delete the `pgsql:` service itself and the `pgdata` volume it declared.
 
-<Warning>
-  **Check the image ships the MySQL driver before you switch.** MySQL is supported from TryPost 2.0; older images were built with `pdo_pgsql` only, so `DB_CONNECTION=mysql` fails with *could not find driver* before a single query runs. Confirm with:
-
-  ```bash
-  docker compose -f compose.prod.yaml exec app php -m | grep pdo_mysql
-  ```
-
-  No output means you need a newer image.
-</Warning>
-
 <Note>
   The container's readiness check uses `pg_isready`, so on MySQL it cannot confirm the database is up. It gives up after 60 seconds and continues, and migrations then run normally — so **every boot takes about a minute longer**. Nothing is lost; the container just waits out the check first.
 </Note>
@@ -133,6 +123,7 @@ On first boot the entrypoint:
 
 - waits for the database (PostgreSQL only — see above if you run MySQL)
 - runs migrations
+- syncs the **What's New** entries (`changelog:sync`)
 - creates `storage:link` if missing (unused if you later switch to S3 / R2 / Spaces)
 - loads Passport keys from `PASSPORT_PRIVATE_KEY` / `PASSPORT_PUBLIC_KEY` (exits if unset in production)
 - ensures the Passport Personal Access Client (`PassportSeeder`)
@@ -216,7 +207,6 @@ Every `VITE_*` value is baked in at build time the same way. The Dockerfile also
 docker compose -f compose.prod.yaml logs -f app
 docker compose -f compose.prod.yaml exec app php artisan horizon:status
 docker compose -f compose.prod.yaml exec app php artisan migrate --force
-docker compose -f compose.prod.yaml exec app php artisan release:trypost-2 --force --include-unsubscribed
 docker compose -f compose.prod.yaml down
 ```
 
@@ -233,7 +223,7 @@ docker compose -f compose.prod.yaml up -d
 `compose.prod.yaml` uses `ghcr.io/trypostit/trypost:latest`, which moves with every release. Pin the major tag (`ghcr.io/trypostit/trypost:2`) so an update never crosses a major version unannounced; exact versions (`2.0.0`) and `major.minor` tags are published too.
 
 <Note>
-  Moving an existing instance to a newer version? Back the database up first and check [Upgrading](/self-hosting/upgrading) — some releases rewrite data as well as schema. The container runs `migrate --force` on boot; `release:trypost-2` is a one-off step for the move to TryPost 2.0 only.
+  Moving an existing instance to a newer version? Back the database up first and check [Upgrading](/self-hosting/upgrading) — some releases rewrite data as well as schema. The container runs `migrate --force` on boot.
 </Note>
 
 ---
@@ -335,16 +325,6 @@ On an install with data, change the password inside PostgreSQL to match `DB_PASS
 ```bash
 docker compose -f compose.prod.yaml exec pgsql psql -U trypost -c "ALTER USER trypost PASSWORD 'your-new-password';"
 ```
-
-### `could not find driver` on MySQL
-
-The image predates the MySQL driver. Check and pull a newer one:
-
-```bash
-docker compose -f compose.prod.yaml exec app php -m | grep pdo_mysql
-```
-
-Images older than TryPost 2.0 shipped `pdo_pgsql` only — see [above](#which-database-compose-gives-you).
 
 ### Boot hangs for a minute on MySQL
 

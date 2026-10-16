@@ -125,7 +125,9 @@
               "GET /social-accounts/{account}/boards",
               "POST /social-accounts/{account}/boards",
               "GET /social-accounts/{account}/channels",
-              "GET /social-accounts/{account}/tiktok-creator-info"
+              "GET /social-accounts/{account}/tiktok-creator-info",
+              "GET /social-accounts/{account}/instagram-audio",
+              "GET /social-accounts/{account}/instagram-audio/{audioId}"
             ]
           },
           {
