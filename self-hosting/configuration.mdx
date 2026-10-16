@@ -658,7 +658,7 @@ HORIZON_MEDIA_ADOPTION_PROCESSES=20
 | `HORIZON_PATH` | URL path of the dashboard (default `horizon`) |
 | `HORIZON_DOMAIN` | Serve the dashboard on a separate domain |
 | `HORIZON_PREFIX` | Redis key prefix for Horizon metadata. Defaults to the slug of `APP_NAME` with underscores, followed by `_horizon:` (for example, `trypost_horizon:`). Use a distinct prefix for each installation sharing Redis |
-| `HORIZON_MEDIA_ADOPTION_PROCESSES` | Maximum workers for the `media-adoption` queue, used once by the [2.0 upgrade](/self-hosting/upgrading#upgrading-to-trypost-20) (default 20). Lower it on a small server |
+| `HORIZON_MEDIA_ADOPTION_PROCESSES` | Maximum workers for the `media-adoption` queue (default 20). Lower it on a small server |
 
 If not set, Horizon dashboard will be inaccessible in non-local environments.
 

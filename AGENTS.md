@@ -50,7 +50,7 @@ Same paths, user configures `APP_URL` in `.env`:
 | **API Reference** | `code` | REST API. Operation pages are generated from **`openapi.json`** at the repo root (hand-written from the app's `routes/api.php`, `app/Http/Requests/Api/**`, `app/Http/Resources/**`). Prose that does not fit one operation lives in `api-reference/introduction.mdx` and `api-reference/guides/*.mdx`. There are no per-endpoint `.mdx` files any more; old `api-reference/endpoint/*` slugs redirect |
 | **Build with AI** | `microchip-ai` | MCP server intro, tools reference, setup guides per client |
 | **Knowledge Base** | `book` | How the app works. Groups mirror the app sidebar, then the settings sidebar: Getting started, Create, Publish, Insights, Repurpose, Channels, Settings (Personal, Workspace, Features, Developers, Account). Page titles use the on-screen labels from `lang/en/*.php` |
-| **Self-Hosting** | `server` | Overview, requirements, installation, configuration, AI providers, Docker, production, upgrading (incl. the 2.0 release command) — isolated from the rest |
+| **Self-Hosting** | `server` | Overview, requirements, installation, configuration, AI providers, Docker, production, upgrading — isolated from the rest |
 
 Every removed or moved slug gets an entry in `docs.json` `redirects`.
 
@@ -151,13 +151,12 @@ The full table (17 entries, including analytics, retention and Google Business r
 
 ## Self-Hosted Requirements
 
-- PHP 8.4.1+ (the Docker image ships 8.4), Node.js 22.12+, PostgreSQL or MySQL (MySQL from TryPost 2.0), Redis
+- PHP 8.4.1+ (the Docker image ships 8.4), Node.js 22.12+, PostgreSQL or MySQL, Redis
 - Horizon (queues), Reverb (WebSockets) and the scheduler running continuously
 - Imagick with HEIC for iPhone photo conversion (in the Docker image)
 - Upload limits: `upload_max_filesize=1G`, `post_max_size=1G` (matches the Docker image)
 - Bluesky and Mastodon work without API credentials; every other network needs developer app credentials (Google Business Profile has its own Google client, separate from YouTube)
-- Upgrading an existing install to 2.0 needs `php artisan release:trypost-2 --force --include-unsubscribed` after `migrate --force` (self-hosted has no Stripe subscription)
-- The release after 2.0 (one channel per post) removes `release:trypost-2`; installs on v1.1.0 must upgrade to v2.0.0 and run it before upgrading further, or the first new migration stops
+- The docs describe the current `main` only (owner decision October 2026): no upgrade path from 1.x, no `release:trypost-2`, no "before/since 2.0" history. An upgrade is the routine in `self-hosting/upgrading.mdx` plus the GitHub release notes
 
 ## Supported Languages
 

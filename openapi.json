@@ -4263,7 +4263,7 @@
         ],
         "summary": "Move post to queue slot",
         "operationId": "movePostToQueueSlot",
-        "description": "Moves a scheduled post of this channel (queued or custom time) onto one of the channel's free slots, as a queued post. Take `slot_at` from `GET /channels/{account}/queue/slots`. A slot that is taken, not in the posting schedule, more than 90 days away or held by a pending request returns `422` on `slot_at`; so does a post that is not scheduled on this channel. A post created for several channels at once (before TryPost 2.0) cannot be queued: `422` on `queue`.",
+        "description": "Moves a scheduled post of this channel (queued or custom time) onto one of the channel's free slots, as a queued post. Take `slot_at` from `GET /channels/{account}/queue/slots`. A slot that is taken, not in the posting schedule, more than 90 days away or held by a pending request returns `422` on `slot_at`; so does a post that is not scheduled on this channel.",
         "requestBody": {
           "required": true,
           "content": {
