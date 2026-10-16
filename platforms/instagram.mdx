@@ -97,7 +97,7 @@ A workspace can make 30 music searches a minute that are not already cached; sea
 
 On an account connected with Instagram's own login, **Add music** shows "Connect through Facebook to publish reels with music". **Save & link** saves your post and opens the Facebook connection for that channel: a scheduled post stays scheduled, anything else is saved as a draft. When you come back, reopen the post to add the music. **Maybe later** closes it.
 
-In the API and MCP the track is `meta.audio`: its `id` from [Search Instagram audio](/api-reference/social-accounts/search-instagram-audio) (a string of digits), plus optional `title`, `artist`, `cover_url`, `preview_url`, and `audio_volume` and `video_volume` from 0 to 100.
+In the API and MCP the track is `meta.audio`: its `id` from [Search Instagram audio](/api-reference/social-accounts/search-instagram-audio) (a string of digits), and `audio_volume` and `video_volume` from 0 to 100. Copy the result's `title`, `artist`, `cover_url` and `preview_url` too, so the composer shows the track; when they are missing, it fills them in the first time you open the post.
 
 ### Collaborators
 

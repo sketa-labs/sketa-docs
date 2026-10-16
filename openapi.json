@@ -10597,7 +10597,7 @@
               "object",
               "null"
             ],
-            "description": "`instagram_reel` only, on an `instagram-facebook` account: music for the Reel. Get the `id` from [Search Instagram audio](/api-reference/social-accounts/search-instagram-audio). `title`, `artist`, `cover_url` and `preview_url` are optional copies of that result so the app can show the track. Scheduling or publishing is refused when `id` is missing, or when the account is connected with Instagram's own login (`Music needs an Instagram account connected through Facebook.`); a post stored that way (for example after the channel was reconnected with Instagram's login) fails with the same message when its time comes. Instagram does not let you choose which part of the track plays.",
+            "description": "`instagram_reel` only, on an `instagram-facebook` account: music for the Reel. Get the `id` from [Search Instagram audio](/api-reference/social-accounts/search-instagram-audio). Copy `title`, `artist`, `cover_url` and `preview_url` from that result too, so the app shows the track; when they are missing, the app fills them in the first time the post is opened in the composer. Scheduling or publishing is refused when `id` is missing, or when the account is connected with Instagram's own login (`Music needs an Instagram account connected through Facebook.`); a post stored that way (for example after the channel was reconnected with Instagram's login) fails with the same message when its time comes. Instagram does not let you choose which part of the track plays.",
             "properties": {
               "id": {
                 "type": [
