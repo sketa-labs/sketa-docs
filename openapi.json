@@ -12130,6 +12130,17 @@
                   "null"
                 ]
               },
+              "media": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/MediaItem"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "The first image or video of the TryPost post, served by TryPost, or `null` for a post made outside TryPost or one without images or videos. Prefer it to `preview_metadata`: the networks' own thumbnail links expire."
+              },
               "reactions": {
                 "type": [
                   "integer",
@@ -12819,6 +12830,17 @@
               "string",
               "null"
             ]
+          },
+          "media": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MediaItem"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The first image or video of the TryPost post, served by TryPost, or `null` for a post made outside TryPost or one without images or videos. `thumbnail_url` already prefers its image."
           },
           "permalink": {
             "type": [

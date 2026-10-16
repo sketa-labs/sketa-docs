@@ -8,7 +8,7 @@ description: "What to check before pulling a new version of TryPost"
 Pull the new version, then run the same steps you already run on a deploy:
 
 - Rebuild dependencies and assets, and re-run the [optimization commands](/self-hosting/production#optimizations)
-- Apply migrations with `php artisan migrate --force`
+- Apply migrations with `php artisan migrate --force`, then `php artisan changelog:sync` to load the release's **What's New** entries (the Docker image runs both on boot)
 - When you cross into TryPost 2.0, run `php artisan release:trypost-2` once, right after the migrations — see [below](#upgrading-to-trypost-20). Still on v1.1.0? Stop at v2.0.0 first — see [Upgrading past TryPost 2.0](#upgrading-past-trypost-20)
 - Restart the long-running processes so they pick up the new code — `php artisan horizon:terminate` and `php artisan reverb:restart` let Supervisor bring them back
 

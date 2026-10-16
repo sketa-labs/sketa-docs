@@ -211,6 +211,7 @@ TryPost uses Laravel's task scheduler for several recurring jobs. The scheduler 
 | `social:check-upcoming-connections` | every 15 minutes | Verifies the channels of posts scheduled within the next hour and emails when they need reconnecting |
 | `social:recover-stuck-posts` | every 30 minutes | Detects posts stuck in `publishing` and retries or fails them |
 | `social:reconcile-google-business-posts` | every 5 minutes | Checks Google Business Profile posts that are still in review by Google |
+| `social:resolve-tiktok-video-ids` | every 15 minutes | Asks TikTok for the video id of public posts it has not reported yet, so their link and metrics work |
 | `social:check-connections` | daily | Verifies every connected channel still authenticates |
 | `app:prune-webhook-logs` | daily | Deletes [webhook](/knowledge-base/settings/webhooks) delivery logs older than 7 days |
 | `posts:prune-history` | daily | Deletes published posts older than `POST_HISTORY_RETENTION_DAYS` (default 730) with their media |
