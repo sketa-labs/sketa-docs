@@ -113,7 +113,7 @@ The same applies to anything a self-hoster can switch off or raise: platform ava
 
 ### Endpoints, shapes and pagination
 
-`openapi.json` is the source of truth for every operation, request field, response shape and error (hand-written from the app's `routes/api.php`, `app/Http/Requests/Api/**`, `app/Http/Resources/**`, `app/Http/Controllers/Api/**`). Public API = routes whose URI starts with `api/` (83 today: `php artisan route:list --path=api`). Edit the spec, not generated pages. `api-reference/introduction.mdx` covers auth, errors, pagination, rate limits and timestamps; `api-reference/guides/posting.mdx` covers `meta` per network, scheduling modes and thread replies; `api-reference/guides/media-uploads.mdx` covers media. Update those, not this file. Facts to keep in mind:
+`openapi.json` is the source of truth for every operation, request field, response shape and error (hand-written from the app's `routes/api.php`, `app/Http/Requests/Api/**`, `app/Http/Resources/**`, `app/Http/Controllers/Api/**`). Public API = routes whose URI starts with `api/` (85 today: `php artisan route:list --path=api`). Edit the spec, not generated pages. `api-reference/introduction.mdx` covers auth, errors, pagination, rate limits and timestamps; `api-reference/guides/posting.mdx` covers `meta` per network, scheduling modes and thread replies; `api-reference/guides/media-uploads.mdx` covers media. Update those, not this file. Facts to keep in mind:
 
 - Resources are unwrapped (`JsonResource::withoutWrapping()`); lists use the Laravel envelope `{ data, links, meta }` with the page size from `config('app.pagination.default')` (25 today). Always tell readers to read `meta.per_page`.
 - `PUT /posts/{post}` with `status: publishing` publishes now; there is no separate publish endpoint.
@@ -123,7 +123,7 @@ The same applies to anything a self-hoster can switch off or raise: platform ava
 
 ## MCP Server
 
-- The tool list is exactly `TryPostServer::$tools` (`app/Mcp/Servers/TryPostServer.php`), 81 tools today; `ai/tools-reference.mdx` documents every one and `check_coverage.py mcp` enforces it. Names are the class basename in kebab-case plus `-tool`, except `get-tiktok-creator-info-tool` (`#[Name]`).
+- The tool list is exactly `TryPostServer::$tools` (`app/Mcp/Servers/TryPostServer.php`), 83 tools today; `ai/tools-reference.mdx` documents every one and `check_coverage.py mcp` enforces it. Names are the class basename in kebab-case plus `-tool`, except `get-tiktok-creator-info-tool` (`#[Name]`).
 - `create-post-tool` / `create-posts-tool` / `update-post-tool` accept inline `media[]` (`url`, `upload_token` or `id`); `update-post-tool` cannot change the channel. `create-api-key-tool` returns `{token, plain_token}` like REST.
 - Gates mirror the web: any member (`createPost`) for posts, notes, ideas, labels, signatures, analytics and channel reads; `publishDirectly` for approve/reject, set recurrence, reorder queue, move to slot and every repurpose tool; admins (`manageAccounts`, `manageWebhooks`, `manageTeam`) for posting-schedule writes, webhooks and API keys.
 - Server route: `Mcp::web('/mcp/trypost', TryPostServer::class)->middleware(['auth:api', 'workspace.token:mcp'])`. `LoadWorkspaceFromToken` requires an active OAuth grant with `mcp:use` (`403 MCP OAuth authorization required.` otherwise), binds the token's workspace (`401 No workspace selected.`, `403 Workspace access denied.`), and returns `402 Active subscription required.` on Cloud without app access.
