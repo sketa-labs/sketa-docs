@@ -2440,13 +2440,25 @@
                       "null"
                     ],
                     "maxLength": 2000,
-                    "description": "Alt text. Applies to images only."
+                    "description": "Alt text. Applies to images only. `meta.alt_text` wins when both are sent."
+                  },
+                  "meta": {
+                    "$ref": "#/components/schemas/MediaItemMeta"
                   }
                 }
               },
               "example": {
                 "upload_token": "4f6c2b1e-8d3a-4e5f-9a7b-1c2d3e4f5a6b",
-                "alt": "Product launch banner"
+                "alt": "Product launch banner",
+                "meta": {
+                  "user_tags": [
+                    {
+                      "username": "trypost.it",
+                      "x": 0.42,
+                      "y": 0.6
+                    }
+                  ]
+                }
               }
             }
           }
@@ -2605,7 +2617,10 @@
                             "null"
                           ],
                           "maxLength": 2000,
-                          "description": "Alt text. Applies to images only."
+                          "description": "Alt text. Applies to images only. `meta.alt_text` wins when both are sent."
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/MediaItemMeta"
                         }
                       }
                     }
@@ -2616,7 +2631,16 @@
                 "urls": [
                   {
                     "url": "https://example.com/launch.jpg",
-                    "alt": "Product launch banner"
+                    "alt": "Product launch banner",
+                    "meta": {
+                      "user_tags": [
+                        {
+                          "username": "trypost.it",
+                          "x": 0.42,
+                          "y": 0.6
+                        }
+                      ]
+                    }
                   },
                   {
                     "url": "https://example.com/teaser.mp4"
@@ -3137,7 +3161,7 @@
         ],
         "summary": "List Pinterest boards",
         "operationId": "listPinterestBoards",
-        "description": "Lists the boards of a Pinterest account, read live from Pinterest. Use a board `id` as `meta.board_id` on a Pinterest destination. `truncated` is `true` when TryPost could not read every page of boards from Pinterest. This endpoint also counts against a limit of 60 requests per minute per user, shared with the other Pinterest, Discord and TikTok lookup endpoints and with the same user's channel lookups in the TryPost app.",
+        "description": "Lists the boards of a Pinterest account, read live from Pinterest. Use a board `id` as `meta.board_id` on a Pinterest destination. `truncated` is `true` when TryPost could not read every page of boards from Pinterest. This endpoint also counts against a limit of 60 requests per minute per user, shared with the other Pinterest, Discord, TikTok and Instagram lookup endpoints and with the same user's channel lookups in the TryPost app.",
         "responses": {
           "200": {
             "description": "The account's boards.",
@@ -3279,7 +3303,7 @@
         ],
         "summary": "Create Pinterest board",
         "operationId": "createPinterestBoard",
-        "description": "Creates a board on a Pinterest account. The name is trimmed. When Pinterest refuses (expired connection, permission, limit or any other error), the request returns `422` with the reason on `name`. This endpoint also counts against a limit of 60 requests per minute per user, shared with the other Pinterest, Discord and TikTok lookup endpoints and with the same user's channel lookups in the TryPost app.",
+        "description": "Creates a board on a Pinterest account. The name is trimmed. When Pinterest refuses (expired connection, permission, limit or any other error), the request returns `422` with the reason on `name`. This endpoint also counts against a limit of 60 requests per minute per user, shared with the other Pinterest, Discord, TikTok and Instagram lookup endpoints and with the same user's channel lookups in the TryPost app.",
         "requestBody": {
           "required": true,
           "content": {
@@ -3359,7 +3383,7 @@
         ],
         "summary": "List Discord channels",
         "operationId": "listDiscordChannels",
-        "description": "Lists the channels of a Discord account's server that TryPost's bot can post in, read from Discord and kept for 5 minutes per server. Use a channel `id` as `meta.channel_id` on a Discord destination. This endpoint also counts against a limit of 60 requests per minute per user, shared with the other Pinterest, Discord and TikTok lookup endpoints and with the same user's channel lookups in the TryPost app.",
+        "description": "Lists the channels of a Discord account's server that TryPost's bot can post in, read from Discord and kept for 5 minutes per server. Use a channel `id` as `meta.channel_id` on a Discord destination. This endpoint also counts against a limit of 60 requests per minute per user, shared with the other Pinterest, Discord, TikTok and Instagram lookup endpoints and with the same user's channel lookups in the TryPost app.",
         "responses": {
           "200": {
             "description": "The server's channels.",
@@ -3460,7 +3484,7 @@
         ],
         "summary": "Get TikTok creator info",
         "operationId": "getTikTokCreatorInfo",
-        "description": "Reads what TikTok allows this creator to publish now: the privacy levels to offer as `meta.privacy_level`, whether comments, duets and stitches are off, and the longest video allowed. A creator TikTok does not let post right now comes back with `can_post: false`. Successful answers are kept for 5 minutes. This endpoint also counts against a limit of 60 requests per minute per user, shared with the other Pinterest, Discord and TikTok lookup endpoints and with the same user's channel lookups in the TryPost app.",
+        "description": "Reads what TikTok allows this creator to publish now: the privacy levels to offer as `meta.privacy_level`, whether comments, duets and stitches are off, and the longest video allowed. A creator TikTok does not let post right now comes back with `can_post: false`. Successful answers are kept for 5 minutes. This endpoint also counts against a limit of 60 requests per minute per user, shared with the other Pinterest, Discord, TikTok and Instagram lookup endpoints and with the same user's channel lookups in the TryPost app.",
         "responses": {
           "200": {
             "description": "The creator's publishing options.",
@@ -9399,6 +9423,259 @@
           }
         }
       }
+    },
+    "/social-accounts/{account}/instagram-audio": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Social accounts"
+        ],
+        "summary": "Search Instagram audio",
+        "operationId": "searchInstagramAudio",
+        "description": "Searches the audio an Instagram account connected through Facebook (`instagram-facebook`) can put on a Reel: licensed music first, then original sounds. Without `q`, lists what is trending. With `q`, music is kept only when its title or artist contains every word (accents optional), because Instagram also answers with unrelated tracks. Send a result's `id` as `meta.audio.id` on an `instagram_reel` post.\n\nEach answer is kept for 10 minutes per account, `type` and query, and a cached answer costs nothing. An uncached one counts against the workspace's 30 audio lookups per minute. This endpoint also counts against a limit of 60 requests per minute per user, shared with the other Pinterest, Discord, TikTok and Instagram lookup endpoints and with the same user's channel lookups in the TryPost app.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "description": "Search words. Omit for trending audio."
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "music",
+                "original_sound"
+              ]
+            },
+            "description": "Only one catalog. Omit for both, music first."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The matching tracks, as a plain array (not paginated).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InstagramAudio"
+                  }
+                },
+                "example": [
+                  {
+                    "id": "1234567890123456",
+                    "type": "music",
+                    "title": "Grudge",
+                    "artist": "Olivia Rodrigo",
+                    "cover_url": "https://lookaside.fbsbx.com/cover.jpg",
+                    "duration_ms": 185000,
+                    "preview_url": "https://lookaside.fbsbx.com/preview.m4a"
+                  },
+                  {
+                    "id": "9876543210987654",
+                    "type": "original_sound",
+                    "title": "Original audio",
+                    "artist": "trypost.it",
+                    "cover_url": "https://scontent.cdninstagram.com/profile.jpg",
+                    "duration_ms": 15000,
+                    "preview_url": "https://lookaside.fbsbx.com/sound.m4a"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PaymentRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "description": "The account is not an Instagram account (`Instagram audio is only available for Instagram accounts.`), or it is connected with Instagram's own login (`instagram`) instead of through Facebook (`instagram-facebook`). Also returned for an invalid `q` or `type`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                },
+                "example": {
+                  "message": "Music needs an Instagram account connected through Facebook."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Our rate limit was exceeded, or the workspace already made 30 uncached audio lookups this minute (searches and track reads together, across the app, the API and MCP). `Retry-After` says when to try again.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RateLimitErrorBody"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorBody"
+                    }
+                  ]
+                },
+                "example": {
+                  "message": "Too many music searches. Wait a minute and try again."
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Instagram did not answer, or answered with an error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                },
+                "example": {
+                  "message": "Couldn't load music from Instagram. Try again."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/social-accounts/{account}/instagram-audio/{audioId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountId"
+        },
+        {
+          "name": "audioId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "description": "Instagram audio asset id, for example a post's `meta.audio.id`. Anything but digits answers `404`."
+        }
+      ],
+      "get": {
+        "tags": [
+          "Social accounts"
+        ],
+        "summary": "Get Instagram audio",
+        "operationId": "getInstagramAudio",
+        "description": "Reads one Instagram audio asset with fresh `cover_url` and `preview_url` links, which Instagram expires (the `id` does not). Needs an account connected through Facebook (`instagram-facebook`). The answer is kept for an hour per account and track; an uncached read counts against the workspace's 30 audio lookups per minute. This endpoint also counts against a limit of 60 requests per minute per user, shared with the other Pinterest, Discord, TikTok and Instagram lookup endpoints and with the same user's channel lookups in the TryPost app.",
+        "responses": {
+          "200": {
+            "description": "The track.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstagramAudio"
+                },
+                "example": {
+                  "id": "1234567890123456",
+                  "type": "music",
+                  "title": "Grudge",
+                  "artist": "Olivia Rodrigo",
+                  "cover_url": "https://lookaside.fbsbx.com/cover.jpg",
+                  "duration_ms": 185000,
+                  "preview_url": "https://lookaside.fbsbx.com/preview.m4a"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PaymentRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "description": "The account is not an Instagram account (`Instagram audio is only available for Instagram accounts.`), or it is connected with Instagram's own login (`instagram`) instead of through Facebook (`instagram-facebook`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                },
+                "example": {
+                  "message": "Music needs an Instagram account connected through Facebook."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Our rate limit was exceeded, or the workspace already made 30 uncached audio lookups this minute (searches and track reads together, across the app, the API and MCP). `Retry-After` says when to try again.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RateLimitErrorBody"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorBody"
+                    }
+                  ]
+                },
+                "example": {
+                  "message": "Too many music searches. Wait a minute and try again."
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Instagram did not answer, answered with an error, or the track is no longer available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                },
+                "example": {
+                  "message": "Couldn't load music from Instagram. Try again."
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -10106,7 +10383,8 @@
               "string",
               "null"
             ],
-            "description": "Channel name shown in the app."
+            "description": "Read-only: the name of `channel_id`, filled by TryPost from the server's channel list when it was read in the last 5 minutes (by the app, [List Discord channels](/api-reference/social-accounts/list-discord-channels) or MCP). A value you send is ignored. Without a cached list the post stores no name.",
+            "readOnly": true
           },
           "mentions": {
             "type": [
@@ -10275,7 +10553,7 @@
       "PlatformMetaInstagram": {
         "type": "object",
         "title": "Instagram",
-        "description": "Settings for `instagram_feed`, `instagram_reel` and `instagram_story` (both `instagram` and `instagram-facebook` accounts). An `instagram_feed` post with a single video publishes as a Reel. People tags are the media item's `meta.user_tags`; a video cover is `meta.cover_offset_ms`. A post may carry at most 5 hashtags.",
+        "description": "Settings for `instagram_feed`, `instagram_reel` and `instagram_story` (both `instagram` and `instagram-facebook` accounts). An `instagram_feed` post with a single video publishes as a Reel, without the Reel-only settings (`share_to_feed`, `trial_graduation`, `audio`). People tags are the media item's `meta.user_tags`; a video cover is `meta.cover_offset_ms`. A post may carry at most 5 hashtags.",
         "properties": {
           "is_ai_generated": {
             "type": "boolean",
@@ -10285,6 +10563,109 @@
             "type": "boolean",
             "default": true,
             "description": "`instagram_reel` only: also show the Reel in the profile feed."
+          },
+          "collaborators": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "maxItems": 3,
+            "items": {
+              "type": "string",
+              "pattern": "^@?[A-Za-z0-9._]{1,30}$"
+            },
+            "description": "Up to 3 Instagram usernames invited as co-authors of a feed post, carousel or Reel (ignored on stories). A leading `@` and duplicates are dropped. Each invited account must accept in the Instagram app. A username that does not exist fails the post when it publishes. Not allowed together with `trial_graduation`.",
+            "example": [
+              "trypost.it",
+              "paulocastellano"
+            ]
+          },
+          "trial_graduation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "MANUAL",
+              "SS_PERFORMANCE",
+              null
+            ],
+            "description": "`instagram_reel` only: publish a trial reel, shown to non-followers first. `SS_PERFORMANCE` lets Instagram share it with your followers when it performs well (after 72 hours); `MANUAL` waits for you to share it in the Instagram app. Only works on accounts where Instagram offers trial reels. Scheduling or publishing a trial reel that has `collaborators` is refused."
+          },
+          "audio": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "`instagram_reel` only, on an `instagram-facebook` account: music for the Reel. Get the `id` from [Search Instagram audio](/api-reference/social-accounts/search-instagram-audio). Copy `title`, `artist`, `cover_url` and `preview_url` from that result too, so the app shows the track; when they are missing, the app fills them in the first time the post is opened in the composer. Scheduling or publishing is refused when `id` is missing, or when the account is connected with Instagram's own login (`Music needs an Instagram account connected through Facebook.`); a post stored that way (for example after the channel was reconnected with Instagram's login) fails with the same message when its time comes. Instagram does not let you choose which part of the track plays.",
+            "properties": {
+              "id": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 64,
+                "pattern": "^[0-9]+$",
+                "description": "Instagram audio asset id, as a string of digits. A number is refused."
+              },
+              "title": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 255
+              },
+              "artist": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 255
+              },
+              "cover_url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uri",
+                "maxLength": 2048
+              },
+              "preview_url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uri",
+                "maxLength": 4096
+              },
+              "audio_volume": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 100,
+                "default": 100,
+                "description": "Music volume."
+              },
+              "video_volume": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 100,
+                "default": 100,
+                "description": "Volume of the Reel's own sound."
+              }
+            },
+            "example": {
+              "id": "1234567890123456",
+              "title": "Grudge",
+              "artist": "Olivia Rodrigo",
+              "audio_volume": 40,
+              "video_volume": 100
+            }
           }
         }
       },
@@ -13317,6 +13698,62 @@
             "items": {
               "$ref": "#/components/schemas/ContentTypeListing"
             }
+          }
+        }
+      },
+      "InstagramAudio": {
+        "type": "object",
+        "description": "One Instagram audio asset: licensed music or an original sound. Send its `id` as `meta.audio.id` on an `instagram_reel`.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9]+$",
+            "description": "Instagram audio asset id. Send it as `meta.audio.id`."
+          },
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "music",
+              "original_sound",
+              null
+            ],
+            "description": "`music` (licensed catalog) or `original_sound`."
+          },
+          "title": {
+            "type": "string"
+          },
+          "artist": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The artist, or for an original sound the creator's Instagram username."
+          },
+          "cover_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "description": "Cover art, or for an original sound the creator's profile picture. Instagram expires these links; read the track again with [Get Instagram audio](/api-reference/social-accounts/get-instagram-audio) for a fresh one."
+          },
+          "duration_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Length of the track in milliseconds."
+          },
+          "preview_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "description": "A playable preview. Expires like `cover_url`."
           }
         }
       }

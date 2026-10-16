@@ -99,9 +99,10 @@ A post carries its network's settings in `meta`. A draft can be saved without th
 | Pinterest | `board_id` | [List Pinterest boards](/api-reference/social-accounts/list-pinterest-boards) or [Create Pinterest board](/api-reference/social-accounts/create-pinterest-board) |
 | Discord | `channel_id` | [List Discord channels](/api-reference/social-accounts/list-discord-channels) |
 | YouTube | A title: `title`, or the first line of the text | Up to 100 characters, without `<` or `>` |
+| Instagram (`instagram_reel`) | With music, `audio.id` and an `instagram-facebook` account. A trial reel (`trial_graduation`) cannot have `collaborators` | [Search Instagram audio](/api-reference/social-accounts/search-instagram-audio) |
 | Google Business | `event` with `title`, `start_date` and `end_date` when `topic_type` is `EVENT` or `OFFER`; a `call_to_action` needs a `url` unless its `action_type` is `NONE` or `CALL` | — |
 
-Every other setting is optional: link previews, AI labels, YouTube privacy and category, Mastodon content warnings, Threads topics, and more. The full list per network is under `meta` on [Create post](/api-reference/posts/create-post). Keys TryPost does not know are dropped; settings of another network are accepted but not used.
+Every other setting is optional: link previews, AI labels, Instagram collaborators and trial reels, YouTube privacy and category, Mastodon content warnings, Threads topics, and more. The full list per network is under `meta` on [Create post](/api-reference/posts/create-post). Keys TryPost does not know are dropped; settings of another network are accepted but not used.
 
 ## 3. Create the post
 
