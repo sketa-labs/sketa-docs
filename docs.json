@@ -73,7 +73,8 @@
               "knowledge-base/scenes/collaboration",
               "knowledge-base/scenes/comments",
               "knowledge-base/scenes/version-history",
-              "knowledge-base/scenes/slides"
+              "knowledge-base/scenes/slides",
+              "knowledge-base/scenes/voice-and-spotlight"
             ]
           },
           {
