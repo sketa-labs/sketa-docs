@@ -4,7 +4,7 @@ description: "Every tool of the Sketa MCP server, what it does and its inputs."
 icon: "wrench"
 ---
 
-The Sketa MCP server (`https://sketa.app/mcp`) exposes 45 tools. Each one needs an [ability](/knowledge-base/developers/api-keys#abilities) (OAuth connections carry them all) and follows the same permissions as the [REST API](/api-reference/introduction).
+The Sketa MCP server (`https://sketa.app/mcp`) exposes 46 tools. Each one needs an [ability](/knowledge-base/developers/api-keys#abilities) (OAuth connections carry them all) and follows the same permissions as the [REST API](/api-reference/introduction).
 
 Conventions for every tool:
 
@@ -29,7 +29,7 @@ Conventions for every tool:
     `create-diagram-tool` for boxes and arrows with automatic layout, `edit-scene-content-tool` for anything else, `add-image-tool` for pictures, `add-library-item-tool` for ready-made shapes from the public library catalog, and the slides tools for decks.
   </Step>
   <Step title="Check the result">
-    `take-screenshot-tool` returns a PNG of the scene or one frame.
+    `take-screenshot-tool` returns a PNG of the scene or one frame. A slow render answers `status: pending` with a `render_id`: read it later with `get-render-result-tool`.
   </Step>
 </Steps>
 
@@ -92,7 +92,7 @@ Each skeleton in `add`:
 
 ### create-diagram-tool
 
-Draws a flowchart-style diagram with automatic layout, exactly as the editor's AI diagram insert does. Give nodes, edges between node ids and optional nested groups; Sketa sizes the shapes to their labels, arranges them top to bottom or left to right, and binds the arrows. It goes at `x`, `y` or 200 px to the right of the existing content. Returns the `contentVersion`, the ids of every element created and the diagram bounds. Prefer it over `edit-scene-content-tool` for any boxes-and-arrows chart.
+Draws a flowchart-style diagram with automatic layout, exactly as the editor's AI diagram insert does. Give nodes, edges between node ids and optional nested groups; Sketa sizes the shapes to their labels, arranges them top to bottom or left to right, and binds the arrows. It goes at `x`, `y` or 200 px to the right of the existing content. Returns the `contentVersion`, the ids of every element created and the diagram bounds. Prefer it over `edit-scene-content-tool` for any boxes-and-arrows chart. The layout runs in the background: if it takes longer than about 20 seconds, the tool answers with a [pending render](#get-render-result-tool) instead, and the diagram is still added to the scene when it finishes, so do not call the tool again for it.
 
 `scenes:write`
 
@@ -134,7 +134,7 @@ Places a copy of an item of the [public library catalog](#public-library-catalog
 
 ### take-screenshot-tool
 
-Returns a PNG image of the whole canvas, or of one frame (slide) when `frame_id` is given, drawn exactly as the editor draws it, at most 1600 px on the long side. Use it to check a layout after editing.
+Returns a PNG image of the whole canvas, or of one frame (slide) when `frame_id` is given, drawn exactly as the editor draws it, at most 1600 px on the long side. Use it to check a layout after editing. The screenshot renders in the background: if it takes longer than about 20 seconds, the tool answers with a [pending render](#get-render-result-tool) instead of the image.
 
 Read-only · `scenes:read`
 
@@ -143,6 +143,22 @@ Read-only · `scenes:read`
 | `scene_id` | string, required | The scene id. |
 | `frame_id` | string | A frame on the scene, to capture only that frame. |
 | `theme` | string | `light` (default) or `dark`. |
+
+### get-render-result-tool
+
+Returns the result of a render that `take-screenshot-tool` or `create-diagram-tool` answered as pending. Those tools wait about 20 seconds for their render; when it takes longer they answer:
+
+```json
+{ "status": "pending", "render_id": "9b2f…", "message": "The screenshot is still rendering. Call get-render-result-tool with this render_id in a few seconds to get the result." }
+```
+
+Call `get-render-result-tool` with that `render_id` a few seconds later. It waits up to the same 20 seconds and returns exactly what the original tool returns when it finishes in time (the PNG for a screenshot; `contentVersion`, `elementIds` and `bounds` for a diagram), a tool error if the render failed, or `status: pending` again while it is still running. Results are kept for 15 minutes, and only the member and workspace that started the render can read it: any other connection gets `Not found.`.
+
+Read-only · `scenes:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `render_id` | string, required | The `render_id` of a pending `take-screenshot-tool` or `create-diagram-tool` answer. |
 
 ### get-format-guide-tool
 
