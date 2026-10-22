@@ -1,23 +1,28 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "aspen",
-  "name": "TryPost Docs",
+  "name": "Sketa Docs",
   "colors": {
-    "primary": "#7c3aed",
+    "primary": "#6d28d9",
     "light": "#a78bfa",
-    "dark": "#7c3aed"
+    "dark": "#6d28d9"
   },
   "background": {
     "color": {
-      "light": "#faf8f5",
-      "dark": "#0a0a0a"
+      "light": "#ffffff",
+      "dark": "#111111"
     }
   },
   "appearance": {
     "default": "light",
-    "strict": true
+    "strict": false
   },
-  "favicon": "/favicon.png",
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://sketa.app"
+  },
   "navigation": {
     "tabs": [
       {
@@ -25,36 +30,78 @@
         "icon": "book-open",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Getting started",
             "pages": [
               "index",
-              "getting-started/quickstart"
+              "getting-started/quickstart",
+              "getting-started/drawing-without-an-account",
+              "getting-started/workspaces"
             ]
           },
           {
-            "group": "Platforms",
+            "group": "Help",
             "pages": [
-              "platforms/linkedin",
-              "platforms/x-twitter",
-              "platforms/facebook",
-              "platforms/instagram",
-              "platforms/tiktok",
-              "platforms/youtube",
-              "platforms/threads",
-              "platforms/pinterest",
-              "platforms/bluesky",
-              "platforms/mastodon",
-              "platforms/telegram",
-              "platforms/discord",
-              "platforms/google-business"
-            ]
-          },
-          {
-            "group": "Community",
-            "pages": [
-              "contributing",
-              "discussions",
               "support"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Knowledge Base",
+        "icon": "book",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": [
+              "knowledge-base/introduction"
+            ]
+          },
+          {
+            "group": "Editor",
+            "pages": [
+              "knowledge-base/editor/basics",
+              "knowledge-base/editor/tools-and-shortcuts",
+              "knowledge-base/editor/files-and-exports",
+              "knowledge-base/editor/library"
+            ]
+          },
+          {
+            "group": "Scenes",
+            "pages": [
+              "knowledge-base/scenes/dashboard-and-collections",
+              "knowledge-base/scenes/sharing-and-public-links",
+              "knowledge-base/scenes/collaboration",
+              "knowledge-base/scenes/comments",
+              "knowledge-base/scenes/version-history",
+              "knowledge-base/scenes/slides"
+            ]
+          },
+          {
+            "group": "AI",
+            "pages": [
+              "knowledge-base/ai"
+            ]
+          },
+          {
+            "group": "Workspace",
+            "pages": [
+              "knowledge-base/workspace/members-and-invites",
+              "knowledge-base/workspace/teams",
+              "knowledge-base/workspace/settings",
+              "knowledge-base/workspace/audit-log",
+              "knowledge-base/workspace/plans-and-billing"
+            ]
+          },
+          {
+            "group": "Account",
+            "pages": [
+              "knowledge-base/account/profile-and-preferences"
+            ]
+          },
+          {
+            "group": "Developers",
+            "pages": [
+              "knowledge-base/developers/api-keys"
             ]
           }
         ]
@@ -68,178 +115,82 @@
             "group": "Overview",
             "pages": [
               "api-reference/introduction",
-              "api-reference/guides/posting",
-              "api-reference/guides/media-uploads"
-            ]
-          },
-          {
-            "group": "Posts",
-            "pages": [
-              "GET /posts",
-              "POST /posts",
-              "POST /posts/batch",
-              "GET /posts/{post}",
-              "PUT /posts/{post}",
-              "DELETE /posts/{post}",
-              "GET /posts/{post}/metrics",
-              "GET /posts/{post}/preview"
-            ]
-          },
-          {
-            "group": "Post notes",
-            "pages": [
-              "GET /posts/{post}/notes",
-              "POST /posts/{post}/notes",
-              "PUT /posts/{post}/notes/{note}",
-              "DELETE /posts/{post}/notes/{note}"
-            ]
-          },
-          {
-            "group": "Approvals",
-            "pages": [
-              "POST /posts/{post}/approve",
-              "POST /posts/{post}/reject"
-            ]
-          },
-          {
-            "group": "Recurrence",
-            "pages": [
-              "PATCH /posts/{post}/recurrence",
-              "DELETE /posts/{post}/recurrence"
-            ]
-          },
-          {
-            "group": "Media and uploads",
-            "pages": [
-              "POST /posts/{post}/media",
-              "POST /posts/{post}/media/from-upload",
-              "POST /posts/{post}/media/from-url",
-              "POST /uploads",
-              "POST /uploads/{token}"
-            ]
-          },
-          {
-            "group": "Social accounts",
-            "pages": [
-              "GET /social-accounts",
-              "GET /social-accounts/{account}/boards",
-              "POST /social-accounts/{account}/boards",
-              "GET /social-accounts/{account}/channels",
-              "GET /social-accounts/{account}/tiktok-creator-info",
-              "GET /social-accounts/{account}/instagram-audio",
-              "GET /social-accounts/{account}/instagram-audio/{audioId}"
-            ]
-          },
-          {
-            "group": "Channels",
-            "pages": [
-              "GET /channels/{account}/posting-schedule",
-              "PUT /channels/{account}/posting-schedule",
-              "POST /channels/{account}/posting-schedule/generate",
-              "POST /channels/{account}/posting-schedule/copy",
-              "GET /channels/{account}/queue/slots",
-              "PUT /channels/{account}/queue/order",
-              "PUT /channels/{account}/queue/slot"
-            ]
-          },
-          {
-            "group": "Ideas",
-            "pages": [
-              "GET /ideas",
-              "POST /ideas",
-              "DELETE /ideas",
-              "GET /ideas/{idea}",
-              "PUT /ideas/{idea}",
-              "DELETE /ideas/{idea}",
-              "POST /ideas/{idea}/duplicate",
-              "PUT /ideas/{idea}/move"
-            ]
-          },
-          {
-            "group": "Idea stages",
-            "pages": [
-              "GET /idea-stages",
-              "POST /idea-stages",
-              "PUT /idea-stages/order",
-              "PUT /idea-stages/{ideaStage}",
-              "DELETE /idea-stages/{ideaStage}"
-            ]
-          },
-          {
-            "group": "Analytics",
-            "pages": [
-              "GET /analytics",
-              "GET /analytics/publications/{publication}",
-              "GET /channels/{account}/insights",
-              "GET /channels/{account}/insights/publications"
-            ]
-          },
-          {
-            "group": "Labels",
-            "pages": [
-              "GET /labels",
-              "POST /labels",
-              "PUT /labels/{label}",
-              "DELETE /labels/{label}"
-            ]
-          },
-          {
-            "group": "Signatures",
-            "pages": [
-              "GET /signatures",
-              "POST /signatures",
-              "PUT /signatures/{signature}",
-              "DELETE /signatures/{signature}"
+              "api-reference/scene-content"
             ]
           },
           {
             "group": "Workspace",
             "pages": [
-              "GET /workspace"
+              "GET /workspace",
+              "PATCH /workspace"
             ]
           },
           {
-            "group": "API keys",
+            "group": "Users",
             "pages": [
-              "GET /api-keys",
-              "POST /api-keys",
-              "DELETE /api-keys/{apiToken}"
+              "GET /users",
+              "GET /users/{user}",
+              "PATCH /users/{user}",
+              "DELETE /users/{user}",
+              "GET /blocks",
+              "DELETE /blocks/{block}"
             ]
           },
           {
-            "group": "Webhooks",
+            "group": "Invites",
             "pages": [
-              "GET /webhooks",
-              "POST /webhooks",
-              "GET /webhooks/{webhook}",
-              "PUT /webhooks/{webhook}",
-              "DELETE /webhooks/{webhook}",
-              "GET /webhooks/{webhook}/logs",
-              "POST /webhooks/{webhook}/logs/{webhookLog}/replay",
-              "POST /webhooks/{webhook}/rotate-secret",
-              "POST /webhooks/{webhook}/send-test"
+              "GET /invites",
+              "POST /invites",
+              "GET /invites/{invite}",
+              "PATCH /invites/{invite}",
+              "DELETE /invites/{invite}"
             ]
           },
           {
-            "group": "Repurposes",
+            "group": "Collections",
             "pages": [
-              "GET /repurpose-source-formats",
-              "GET /repurposes",
-              "POST /repurposes",
-              "GET /repurposes/{repurpose}",
-              "PUT /repurposes/{repurpose}",
-              "DELETE /repurposes/{repurpose}",
-              "POST /repurposes/{repurpose}/activate",
-              "POST /repurposes/{repurpose}/disable",
-              "GET /repurposes/{repurpose}/items",
-              "POST /repurposes/{repurpose}/pause",
-              "POST /repurposes/{repurpose}/resume"
+              "GET /collections",
+              "POST /collections",
+              "GET /collections/{collection}",
+              "PATCH /collections/{collection}",
+              "DELETE /collections/{collection}",
+              "GET /collections/{collection}/scenes"
             ]
           },
           {
-            "group": "Platform",
+            "group": "Scenes",
             "pages": [
-              "GET /content-types"
+              "GET /scenes",
+              "POST /scenes",
+              "GET /scenes/{scene}",
+              "PATCH /scenes/{scene}",
+              "DELETE /scenes/{scene}"
+            ]
+          },
+          {
+            "group": "Scene content",
+            "pages": [
+              "GET /scenes/{scene}/content",
+              "PUT /scenes/{scene}/content",
+              "PATCH /scenes/{scene}/content"
+            ]
+          },
+          {
+            "group": "Teams",
+            "pages": [
+              "GET /teams",
+              "POST /teams",
+              "GET /teams/{team}",
+              "PATCH /teams/{team}",
+              "DELETE /teams/{team}",
+              "GET /teams/{team}/members",
+              "PUT /teams/{team}/members"
+            ]
+          },
+          {
+            "group": "Audit logs",
+            "pages": [
+              "GET /audit-logs"
             ]
           }
         ]
@@ -249,14 +200,15 @@
         "icon": "microchip-ai",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Getting started",
             "pages": [
               "ai/introduction",
-              "ai/tools-reference"
+              "ai/tools-reference",
+              "ai/format-guides"
             ]
           },
           {
-            "group": "Setup Guides",
+            "group": "Setup guides",
             "pages": [
               "ai/claude",
               "ai/claude-code",
@@ -279,436 +231,20 @@
             ]
           }
         ]
-      },
-      {
-        "tab": "Knowledge Base",
-        "icon": "book",
-        "groups": [
-          {
-            "group": "Getting started",
-            "pages": [
-              "knowledge-base/introduction"
-            ]
-          },
-          {
-            "group": "Create",
-            "pages": [
-              "knowledge-base/create/ideas",
-              "knowledge-base/create/templates",
-              "knowledge-base/create/feeds"
-            ]
-          },
-          {
-            "group": "Publish",
-            "pages": [
-              "knowledge-base/publish/overview",
-              "knowledge-base/publish/composer",
-              "knowledge-base/media",
-              "knowledge-base/publish/queue",
-              "knowledge-base/publish/approvals",
-              "knowledge-base/publish/recurring-posts"
-            ]
-          },
-          {
-            "group": "Insights",
-            "pages": [
-              "knowledge-base/insights/overview",
-              "knowledge-base/insights/channel-insights"
-            ]
-          },
-          {
-            "group": "Repurpose",
-            "pages": [
-              "knowledge-base/repurpose"
-            ]
-          },
-          {
-            "group": "Channels",
-            "pages": [
-              "knowledge-base/channels/connecting",
-              "knowledge-base/channels/settings",
-              "knowledge-base/channels/disconnecting"
-            ]
-          },
-          {
-            "group": "Settings",
-            "pages": [
-              {
-                "group": "Personal",
-                "pages": [
-                  "knowledge-base/settings/profile",
-                  "knowledge-base/settings/preferences",
-                  "knowledge-base/settings/authentication",
-                  "knowledge-base/settings/notifications"
-                ]
-              },
-              {
-                "group": "Workspace",
-                "pages": [
-                  "knowledge-base/settings/workspaces",
-                  "knowledge-base/settings/members-and-permissions"
-                ]
-              },
-              {
-                "group": "Features",
-                "pages": [
-                  "knowledge-base/settings/signatures",
-                  "knowledge-base/settings/labels",
-                  "knowledge-base/settings/webhooks"
-                ]
-              },
-              {
-                "group": "Developers",
-                "pages": [
-                  "knowledge-base/settings/api-keys",
-                  "knowledge-base/settings/mcp"
-                ]
-              },
-              {
-                "group": "Account",
-                "pages": [
-                  "knowledge-base/settings/plans-and-billing"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Self-Hosting",
-        "icon": "server",
-        "groups": [
-          {
-            "group": "Getting Started",
-            "pages": [
-              "self-hosting/overview",
-              "self-hosting/requirements"
-            ]
-          },
-          {
-            "group": "Installation",
-            "pages": [
-              "self-hosting/installation",
-              "self-hosting/docker"
-            ]
-          },
-          {
-            "group": "Configuration",
-            "pages": [
-              "self-hosting/configuration",
-              "self-hosting/ai",
-              "self-hosting/production",
-              "self-hosting/upgrading"
-            ]
-          }
-        ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "GitHub",
-          "href": "https://github.com/trypostit/trypost",
-          "icon": "github"
-        },
-        {
-          "anchor": "Discord",
-          "href": "https://trypost.it/discord",
-          "icon": "discord"
-        },
-        {
-          "anchor": "YouTube",
-          "href": "https://www.youtube.com/@trypostit",
-          "icon": "youtube"
-        }
-      ]
-    }
-  },
-  "redirects": [
-    {
-      "source": "/knowledge-base/account-and-security",
-      "destination": "/knowledge-base/settings/authentication"
-    },
-    {
-      "source": "/knowledge-base/ai-features",
-      "destination": "/knowledge-base/publish/composer"
-    },
-    {
-      "source": "/knowledge-base/analytics",
-      "destination": "/knowledge-base/insights/overview"
-    },
-    {
-      "source": "/knowledge-base/api-keys",
-      "destination": "/knowledge-base/settings/api-keys"
-    },
-    {
-      "source": "/knowledge-base/assets",
-      "destination": "/knowledge-base/media"
-    },
-    {
-      "source": "/knowledge-base/brand-profile",
-      "destination": "/knowledge-base/settings/workspaces"
-    },
-    {
-      "source": "/knowledge-base/labels",
-      "destination": "/knowledge-base/settings/labels"
-    },
-    {
-      "source": "/knowledge-base/notifications",
-      "destination": "/knowledge-base/settings/notifications"
-    },
-    {
-      "source": "/knowledge-base/plans-and-billing",
-      "destination": "/knowledge-base/settings/plans-and-billing"
-    },
-    {
-      "source": "/knowledge-base/posts",
-      "destination": "/knowledge-base/publish/overview"
-    },
-    {
-      "source": "/knowledge-base/repurposes",
-      "destination": "/knowledge-base/repurpose"
-    },
-    {
-      "source": "/knowledge-base/signatures",
-      "destination": "/knowledge-base/settings/signatures"
-    },
-    {
-      "source": "/knowledge-base/social-accounts",
-      "destination": "/knowledge-base/channels/connecting"
-    },
-    {
-      "source": "/knowledge-base/team",
-      "destination": "/knowledge-base/settings/members-and-permissions"
-    },
-    {
-      "source": "/knowledge-base/templates",
-      "destination": "/knowledge-base/create/templates"
-    },
-    {
-      "source": "/knowledge-base/webhooks",
-      "destination": "/knowledge-base/settings/webhooks"
-    },
-    {
-      "source": "/knowledge-base/workspaces",
-      "destination": "/knowledge-base/settings/workspaces"
-    },
-    {
-      "source": "/api-reference/endpoint/list-assets",
-      "destination": "/api-reference/guides/media-uploads"
-    },
-    {
-      "source": "/api-reference/endpoint/get-asset",
-      "destination": "/api-reference/guides/media-uploads"
-    },
-    {
-      "source": "/api-reference/endpoint/attach-existing-asset",
-      "destination": "/api-reference/guides/media-uploads"
-    },
-    {
-      "source": "/api-reference/endpoint/activate-repurpose",
-      "destination": "/api-reference/repurposes/activate-repurpose"
-    },
-    {
-      "source": "/api-reference/endpoint/attach-media-from-url",
-      "destination": "/api-reference/media-and-uploads/attach-media-from-url"
-    },
-    {
-      "source": "/api-reference/endpoint/create-api-key",
-      "destination": "/api-reference/api-keys/create-api-key"
-    },
-    {
-      "source": "/api-reference/endpoint/create-label",
-      "destination": "/api-reference/labels/create-label"
-    },
-    {
-      "source": "/api-reference/endpoint/create-post",
-      "destination": "/api-reference/posts/create-post"
-    },
-    {
-      "source": "/api-reference/endpoint/create-repurpose",
-      "destination": "/api-reference/repurposes/create-repurpose"
-    },
-    {
-      "source": "/api-reference/endpoint/create-signature",
-      "destination": "/api-reference/signatures/create-signature"
-    },
-    {
-      "source": "/api-reference/endpoint/create-webhook",
-      "destination": "/api-reference/webhooks/create-webhook"
-    },
-    {
-      "source": "/api-reference/endpoint/delete-api-key",
-      "destination": "/api-reference/api-keys/delete-api-key"
-    },
-    {
-      "source": "/api-reference/endpoint/delete-label",
-      "destination": "/api-reference/labels/delete-label"
-    },
-    {
-      "source": "/api-reference/endpoint/delete-post",
-      "destination": "/api-reference/posts/delete-post"
-    },
-    {
-      "source": "/api-reference/endpoint/delete-repurpose",
-      "destination": "/api-reference/repurposes/delete-repurpose"
-    },
-    {
-      "source": "/api-reference/endpoint/delete-signature",
-      "destination": "/api-reference/signatures/delete-signature"
-    },
-    {
-      "source": "/api-reference/endpoint/delete-webhook",
-      "destination": "/api-reference/webhooks/delete-webhook"
-    },
-    {
-      "source": "/api-reference/endpoint/disable-repurpose",
-      "destination": "/api-reference/repurposes/disable-repurpose"
-    },
-    {
-      "source": "/api-reference/endpoint/get-post",
-      "destination": "/api-reference/posts/get-post"
-    },
-    {
-      "source": "/api-reference/endpoint/get-post-metrics",
-      "destination": "/api-reference/posts/get-post-metrics"
-    },
-    {
-      "source": "/api-reference/endpoint/get-post-preview",
-      "destination": "/api-reference/posts/get-post-preview"
-    },
-    {
-      "source": "/api-reference/endpoint/get-repurpose",
-      "destination": "/api-reference/repurposes/get-repurpose"
-    },
-    {
-      "source": "/api-reference/endpoint/get-webhook",
-      "destination": "/api-reference/webhooks/get-webhook"
-    },
-    {
-      "source": "/api-reference/endpoint/get-workspace",
-      "destination": "/api-reference/workspace/get-workspace"
-    },
-    {
-      "source": "/api-reference/endpoint/list-api-keys",
-      "destination": "/api-reference/api-keys/list-api-keys"
-    },
-    {
-      "source": "/api-reference/endpoint/list-content-types",
-      "destination": "/api-reference/platform/list-content-types"
-    },
-    {
-      "source": "/api-reference/endpoint/list-discord-channels",
-      "destination": "/api-reference/social-accounts/list-discord-channels"
-    },
-    {
-      "source": "/api-reference/endpoint/list-labels",
-      "destination": "/api-reference/labels/list-labels"
-    },
-    {
-      "source": "/api-reference/endpoint/list-pinterest-boards",
-      "destination": "/api-reference/social-accounts/list-pinterest-boards"
-    },
-    {
-      "source": "/api-reference/endpoint/list-posts",
-      "destination": "/api-reference/posts/list-posts"
-    },
-    {
-      "source": "/api-reference/endpoint/list-repurpose-items",
-      "destination": "/api-reference/repurposes/list-repurpose-items"
-    },
-    {
-      "source": "/api-reference/endpoint/list-repurpose-source-formats",
-      "destination": "/api-reference/repurposes/list-repurpose-source-formats"
-    },
-    {
-      "source": "/api-reference/endpoint/list-repurposes",
-      "destination": "/api-reference/repurposes/list-repurposes"
-    },
-    {
-      "source": "/api-reference/endpoint/list-signatures",
-      "destination": "/api-reference/signatures/list-signatures"
-    },
-    {
-      "source": "/api-reference/endpoint/list-social-accounts",
-      "destination": "/api-reference/social-accounts/list-social-accounts"
-    },
-    {
-      "source": "/api-reference/endpoint/list-webhook-logs",
-      "destination": "/api-reference/webhooks/list-webhook-logs"
-    },
-    {
-      "source": "/api-reference/endpoint/list-webhooks",
-      "destination": "/api-reference/webhooks/list-webhooks"
-    },
-    {
-      "source": "/api-reference/endpoint/pause-repurpose",
-      "destination": "/api-reference/repurposes/pause-repurpose"
-    },
-    {
-      "source": "/api-reference/endpoint/replay-webhook-log",
-      "destination": "/api-reference/webhooks/replay-webhook-log"
-    },
-    {
-      "source": "/api-reference/endpoint/request-media-upload",
-      "destination": "/api-reference/media-and-uploads/upload-to-signed-url"
-    },
-    {
-      "source": "/api-reference/endpoint/resume-repurpose",
-      "destination": "/api-reference/repurposes/resume-repurpose"
-    },
-    {
-      "source": "/api-reference/endpoint/rotate-webhook-secret",
-      "destination": "/api-reference/webhooks/rotate-webhook-secret"
-    },
-    {
-      "source": "/api-reference/endpoint/send-webhook-test",
-      "destination": "/api-reference/webhooks/send-webhook-test"
-    },
-    {
-      "source": "/api-reference/endpoint/toggle-social-account",
-      "destination": "/api-reference/social-accounts/list-social-accounts"
-    },
-    {
-      "source": "/api-reference/endpoint/update-label",
-      "destination": "/api-reference/labels/update-label"
-    },
-    {
-      "source": "/api-reference/endpoint/update-post",
-      "destination": "/api-reference/posts/update-post"
-    },
-    {
-      "source": "/api-reference/endpoint/update-repurpose",
-      "destination": "/api-reference/repurposes/update-repurpose"
-    },
-    {
-      "source": "/api-reference/endpoint/update-signature",
-      "destination": "/api-reference/signatures/update-signature"
-    },
-    {
-      "source": "/api-reference/endpoint/update-webhook",
-      "destination": "/api-reference/webhooks/update-webhook"
-    },
-    {
-      "source": "/api-reference/endpoint/upload-media",
-      "destination": "/api-reference/media-and-uploads/upload-media"
-    }
-  ],
-  "logo": {
-    "light": "/logo/light.png",
-    "dark": "/logo/dark.png"
+    ]
   },
   "navbar": {
     "links": [
       {
-        "label": "GitHub",
-        "href": "https://github.com/trypostit/trypost"
+        "label": "Sign in",
+        "href": "https://sketa.app/login"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Sign up on Cloud",
-      "href": "https://trypost.it"
+      "label": "Open Sketa",
+      "href": "https://sketa.app"
     }
   },
   "contextual": {
@@ -723,19 +259,9 @@
       "vscode"
     ]
   },
-  "integrations": {
-    "posthog": {
-      "apiKey": "phc_qZKcjfjndNDmU4k5KSfhsiSCjS9yGuVuFLYfqri0YG1",
-      "apiHost": "https://dt.trypost.it"
-    }
-  },
   "footer": {
     "socials": {
-      "x": "https://x.com/trypostit",
-      "github": "https://github.com/trypostit",
-      "youtube": "https://www.youtube.com/@trypostit",
-      "instagram": "https://www.instagram.com/trypost.it",
-      "discord": "https://trypost.it/discord"
+      "github": "https://github.com/sketa-labs"
     }
   }
 }

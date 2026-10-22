@@ -1,15 +1,15 @@
 ---
 title: "ChatGPT"
-description: "Connect TryPost to ChatGPT for AI-powered social media management"
+description: "Connect Sketa to ChatGPT to draw diagrams and slides with AI"
 icon: "/images/ai/chatgpt.svg"
 ---
 
-[ChatGPT](https://chatgpt.com) can connect to TryPost's MCP server as a developer-mode app, so you can manage social media scheduling with natural language in chat.
+[ChatGPT](https://chatgpt.com) can connect to Sketa's MCP server as a developer-mode app, so you can draw and organize scenes with natural language in chat.
 
 ## Prerequisites
 
 - A ChatGPT **Pro, Plus, Business, Enterprise, or Education** account on the **web** ([Developer mode](https://developers.openai.com/api/docs/guides/developer-mode) — not available on Free; not guaranteed on mobile)
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
@@ -26,32 +26,32 @@ icon: "/images/ai/chatgpt.svg"
 
     | Field | Value |
     |-------|-------|
-    | **Name** | `TryPost` |
-    | **Description** | `Schedule and publish social posts with TryPost` |
-    | **MCP server URL** | `https://app.trypost.it/mcp/trypost` |
+    | **Name** | `Sketa` |
+    | **Description** | `Draw diagrams and slides in Sketa` |
+    | **MCP server URL** | `https://sketa.app/mcp` |
 
-    For authentication, use **OAuth**. Leave Client ID / Secret blank if shown — TryPost supports Dynamic Client Registration and discovers OAuth from the URL.
+    For authentication, use **OAuth**. Leave Client ID / Secret blank if shown — Sketa supports Dynamic Client Registration and discovers OAuth from the URL.
   </Step>
   <Step title="Authorize and review tools">
-    Create the connection. ChatGPT may let you finish creating it without signing in; it then asks you to sign in inside the conversation the first time you use TryPost, and again whenever the sign-in expires. Complete the TryPost OAuth sign-in when prompted: pick the **Workspace** this connection may use and click **Authorize**. To use another workspace, connect again and pick it. Open the app details page to review discovered tools; you can toggle tools on or off and **Refresh** later when the MCP server changes.
+    Create the connection. ChatGPT may let you finish creating it without signing in; it then asks you to sign in inside the conversation the first time you use Sketa, and again whenever the sign-in expires. Complete the Sketa OAuth sign-in when prompted: pick the **Workspace** this connection may use and click **Allow**. To use another workspace, connect again and pick it. Open the app details page to review discovered tools; you can toggle tools on or off and **Refresh** later when the MCP server changes.
   </Step>
-  <Step title="Use TryPost in a conversation">
-    Start a new chat. From the composer **+** / Plus menu, choose **Developer mode**, enable the **TryPost** app for that conversation, and ask:
+  <Step title="Use Sketa in a conversation">
+    Start a new chat. From the composer **+** / Plus menu, choose **Developer mode**, enable the **Sketa** app for that conversation, and ask:
 
     ```
-    List all my scheduled posts
+    List my Sketa scenes
     ```
 
-    ChatGPT will call the TryPost tools to fetch your posts.
+    ChatGPT will call the Sketa tools to list your scenes.
   </Step>
 </Steps>
 
 <Note>
-  ChatGPT only connects to remote HTTPS MCP servers (from OpenAI's infrastructure). The hosted endpoint `https://app.trypost.it/mcp/trypost` works out of the box. Self-hosted instances must be publicly reachable over HTTPS — local `stdio` MCP servers are not supported.
+  ChatGPT only connects to remote HTTPS MCP servers (from OpenAI's infrastructure). The hosted endpoint `https://sketa.app/mcp` works out of the box. Local `stdio` MCP servers are not supported.
 </Note>
 
 <Note>
-  Write actions (create, update, publish, delete) require confirmation by default in Developer mode. Review each tool payload before approving. Tools annotated as read-only skip that confirmation.
+  Write actions (create, update, delete) require confirmation by default in Developer mode. Review each tool payload before approving. Tools annotated as read-only skip that confirmation.
 </Note>
 
 <Tip>
@@ -61,17 +61,17 @@ icon: "/images/ai/chatgpt.svg"
 ## Example prompts
 
 ```
-Show me all my connected social media accounts
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Create a draft LinkedIn post for tomorrow at 9am New York time
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-What posts do I have scheduled for this week?
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
 ```
 
 ```
-Create a label called "Campaign" with color #f59e0b
+Which scenes did I edit this week?
 ```

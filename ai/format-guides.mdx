@@ -1,0 +1,62 @@
+---
+title: "Format guides"
+description: "The drawing guides the MCP server gives assistants for diagrams, presentations and freeform boards."
+icon: "ruler-combined"
+---
+
+Before drawing, an assistant reads a guide with [`get-format-guide-tool`](/ai/tools-reference#get-format-guide-tool) (`topic`: `diagrams`, `presentations` or `freeform`). The guides keep what assistants draw consistent with what people draw in Sketa. This page summarizes them so you know what to expect, and what to ask for.
+
+## Diagrams
+
+For flowcharts, architecture and other boxes-and-arrows content, assistants prefer `create-diagram-tool` (automatic layout) and check the result with `take-screenshot-tool`. `edit-scene-content-tool` is for small diagrams or precise placement.
+
+- **Layout**: a 20 px grid; shapes 160 × 80 by default, same size for the same role; 80 px between shapes in a row and 100 px between rows; one flow direction per diagram; new content goes beside what is already there.
+- **Shapes**: rectangles for steps, services and screens; ellipses for start and end; diamonds for decisions (short labels); frames to group a part under a name; sticky notes for side comments.
+- **Labels**: text goes inside shapes as their `label`, under about four words per line; arrows get labels only when the relation is not obvious.
+- **Arrows**: both ends bound to shapes so they follow them; `line` for connections without direction; dashed for optional or asynchronous flows.
+- **Colors**: at most three hues per diagram, chosen by meaning. Fills use shade 2, strokes shade 5:
+
+| Hue | Fill | Stroke |
+| --- | --- | --- |
+| gray | `#e4e5e9` | `#3d414a` |
+| red | `#ffcfcb` | `#d1352b` |
+| violet | `#d6ccff` | `#5f43cf` |
+| blue | `#b8dcff` | `#1d63bd` |
+| teal | `#a7efd8` | `#0c8a66` |
+| green | `#bdf0c6` | `#2a8c40` |
+| yellow | `#fff0a3` | `#d98a00` |
+| orange | `#ffdcb3` | `#db5e0b` |
+
+## Presentations
+
+A presentation is a scene whose frames are the slides.
+
+- **Slides** are 1920 × 1080 frames created with `create-slide-tool`, which places each one after the last and returns its safe area and regions.
+- **Safe area**: 5 % in from every edge (96 px left and right, 54 px top and bottom). The title takes the top 15 %; the body is the rest, split into left and right halves for two columns.
+- Every element of a slide belongs to its frame, so it moves and exports with the slide.
+- **Text**: titles on one line at font size 64 to 80; body at 32 to 40, at most six lines; the `normal` font for long text. One idea per slide.
+- **Notes and order**: `list-slides-tool` and `update-slide-tool` manage titles, speaker notes (up to 10,000 characters, never shown on the slide or public links), the hidden flag and position.
+- **Look**: one or two hues, the same on every slide, titles aligned on the same line.
+
+## Freeform
+
+- **Notes and brainstorms**: one idea per sticky note (200 × 200), up to about 20 words, on a grid with 40 px gaps, themes grouped under named frames, one sticky color per theme or author.
+- **Moodboards**: images from `add-image-tool`, 400 to 600 px wide, in rows with 40 px gaps, small captions underneath, framed so the board exports as one picture.
+- **Wireframes**: clean lines (`roughness: 0`, stroke `#3d414a`, `normal` font); screens as 390 × 844 (phone) or 1440 × 900 (desktop) frames; buttons 120 × 40, inputs 280 × 40; arrows from the control that leads to the next screen.
+- **Charts**: bars on a shared baseline with equal widths and gaps, values above and categories below, two lines for the axes, one hue with a stronger shade for the bar that matters.
+
+## Prompts that work well
+
+```
+Read the diagrams guide, then draw our signup flow in a new scene called "Signup":
+visitor lands, fills the form, confirms the e-mail, picks a plan. Screenshot it when done.
+```
+
+```
+Create a 4-slide deck in the scene "Q3 review": a title slide, two slides of results
+with a simple bar chart, and a next-steps slide. Put my talking points in the speaker notes.
+```
+
+```
+Make a brainstorm board with sticky notes grouped in frames by theme, from these ideas: ...
+```

@@ -1,15 +1,15 @@
 ---
 title: "Cursor"
-description: "Connect TryPost to Cursor for AI-powered social media management in your editor"
+description: "Connect Sketa to Cursor to draw diagrams and slides from your editor"
 icon: "/images/ai/cursor.svg"
 ---
 
-[Cursor](https://cursor.com) is an AI-powered code editor. You can connect it to TryPost's MCP server to manage your social media scheduling directly from the editor.
+[Cursor](https://cursor.com) is an AI-powered code editor. You can connect it to Sketa's MCP server to draw and organize your scenes directly from the editor.
 
 ## Prerequisites
 
 - Cursor 1.0 or later (earlier versions don't support OAuth for remote MCP servers)
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
@@ -20,8 +20,8 @@ icon: "/images/ai/cursor.svg"
     ```json
     {
       "mcpServers": {
-        "trypost": {
-          "url": "https://app.trypost.it/mcp/trypost"
+        "sketa": {
+          "url": "https://sketa.app/mcp"
         }
       }
     }
@@ -30,29 +30,31 @@ icon: "/images/ai/cursor.svg"
     No `Authorization` header is needed — Cursor detects OAuth from the URL and registers itself dynamically.
   </Step>
   <Step title="Sign in through your browser">
-    Open Cursor's MCP settings (or the AI chat) and click **Connect** next to **trypost**. Cursor opens a browser window for the TryPost sign-in. Sign in, pick the **Workspace** this connection may use and click **Authorize**, then return to Cursor. To use another workspace, connect again and pick it.
+    Open Cursor's MCP settings (or the AI chat) and click **Connect** next to **sketa**. Cursor opens a browser window for the Sketa sign-in. Sign in, pick the **Workspace** this connection may use and click **Allow**, then return to Cursor. To use another workspace, connect again and pick it.
   </Step>
   <Step title="Verify the connection">
     Open the AI chat panel and ask:
 
     ```
-    List all my TryPost social accounts
+    List my Sketa collections
     ```
   </Step>
 </Steps>
 
 ## Example prompts
 
-Use Cursor's AI chat or inline editing to interact with TryPost:
-
 ```
-Create a new post for all my connected accounts
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Show me all my signatures
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-What workspace am I connected to?
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
+```
+
+```
+Which scenes did I edit this week?
 ```

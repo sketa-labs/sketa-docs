@@ -1,15 +1,15 @@
 ---
 title: "Gemini CLI"
-description: "Connect TryPost to Gemini CLI for AI-powered social media management from the terminal"
+description: "Connect Sketa to Gemini CLI to draw diagrams and slides from the terminal"
 icon: "/images/ai/gemini.svg"
 ---
 
-[Gemini CLI](https://github.com/google-gemini/gemini-cli) is Google's command-line AI assistant. You can connect it to TryPost's MCP server to manage your social media scheduling with natural language.
+[Gemini CLI](https://github.com/google-gemini/gemini-cli) is Google's command-line AI assistant. You can connect it to Sketa's MCP server to draw and organize your scenes with natural language.
 
 ## Prerequisites
 
 - Gemini CLI installed
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
@@ -20,8 +20,8 @@ icon: "/images/ai/gemini.svg"
     ```json
     {
       "mcpServers": {
-        "trypost": {
-          "httpUrl": "https://app.trypost.it/mcp/trypost",
+        "sketa": {
+          "httpUrl": "https://sketa.app/mcp",
           "oauth": {
             "enabled": true
           }
@@ -30,16 +30,16 @@ icon: "/images/ai/gemini.svg"
     }
     ```
 
-    With `oauth.enabled`, Gemini CLI discovers TryPost's OAuth metadata from the URL and registers dynamically. For project-level configuration, create `.gemini/settings.json` in your project root instead.
+    With `oauth.enabled`, Gemini CLI discovers Sketa's OAuth metadata from the URL and registers dynamically. For project-level configuration, create `.gemini/settings.json` in your project root instead.
   </Step>
   <Step title="Restart Gemini CLI and sign in">
-    Close and reopen Gemini CLI. The first TryPost call prompts you to sign in — Gemini CLI prints the authorize URL or opens your browser. Sign in, pick the **Workspace** this connection may use and click **Authorize**, then return to the terminal. To use another workspace, connect again and pick it.
+    Close and reopen Gemini CLI. The first Sketa call prompts you to sign in — Gemini CLI prints the authorize URL or opens your browser. Sign in, pick the **Workspace** this connection may use and click **Allow**, then return to the terminal. To use another workspace, connect again and pick it.
   </Step>
   <Step title="Verify the connection">
-    Ask Gemini to interact with your TryPost account:
+    Ask Gemini to interact with your Sketa account:
 
     ```
-    List all my TryPost posts
+    List my Sketa scenes
     ```
   </Step>
 </Steps>
@@ -50,13 +50,17 @@ icon: "/images/ai/gemini.svg"
 ## Example prompts
 
 ```
-Create a new signature called "Growth Hacking"
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-What workspace am I connected to?
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-Show me all my labels
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
+```
+
+```
+Which scenes did I edit this week?
 ```

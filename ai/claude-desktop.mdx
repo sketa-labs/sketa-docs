@@ -1,15 +1,15 @@
 ---
 title: "Claude Desktop"
-description: "Connect TryPost to the Claude Desktop app for AI-powered social media management"
+description: "Connect Sketa to the Claude Desktop app to draw diagrams and slides with AI"
 icon: "/images/ai/claude.svg"
 ---
 
-[Claude Desktop](https://claude.ai/download) is Anthropic's desktop application for chatting with Claude. You can connect it to TryPost's MCP server to manage your social media scheduling through conversation.
+[Claude Desktop](https://claude.ai/download) is Anthropic's desktop application for chatting with Claude. You can connect it to Sketa's MCP server to draw and organize your scenes through conversation.
 
 ## Prerequisites
 
 - Claude Desktop installed
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
@@ -17,47 +17,47 @@ icon: "/images/ai/claude.svg"
   <Step title="Open the Connectors settings">
     In Claude Desktop, go to **Settings** → **Connectors** and click **Add custom connector**.
   </Step>
-  <Step title="Add the TryPost server URL">
+  <Step title="Add the Sketa server URL">
     Paste the server URL:
 
     ```
-    https://app.trypost.it/mcp/trypost
+    https://sketa.app/mcp
     ```
 
-    Leave the **Advanced settings** (Client ID / Client Secret) empty — TryPost supports Dynamic Client Registration, so Claude Desktop registers itself automatically.
+    Leave the **Advanced settings** (Client ID / Client Secret) empty — Sketa supports Dynamic Client Registration, so Claude Desktop registers itself automatically.
   </Step>
   <Step title="Sign in through your browser">
-    Claude Desktop opens a browser window to TryPost asking you to sign in. Pick the **Workspace** this connection may use and click **Authorize**, then return to Claude Desktop — the connector flips to **Connected**. To use another workspace, connect again and pick it.
+    Claude Desktop opens a browser window to Sketa asking you to sign in. Pick the **Workspace** this connection may use and click **Allow**, then return to Claude Desktop — the connector flips to **Connected**. To use another workspace, connect again and pick it.
   </Step>
   <Step title="Verify the connection">
-    Start a new conversation and ask Claude to interact with your TryPost account:
+    Start a new conversation and ask Claude to interact with your Sketa account:
 
     ```
-    List all my scheduled posts
+    List my Sketa scenes
     ```
 
-    Claude will use the TryPost tools to fetch your posts.
+    Claude will use the Sketa tools to list your scenes.
   </Step>
 </Steps>
 
 <Note>
-  Claude Desktop's connector runs from Anthropic's cloud, not from your machine, so the MCP server has to be reachable over the public internet. The hosted endpoint `https://app.trypost.it/mcp/trypost` is. Self-hosted instances must be exposed publicly (or use a tunnel) for Claude Desktop to reach them.
+  Claude Desktop's connector runs from Anthropic's cloud, not from your machine, so the MCP server has to be reachable over the public internet. The hosted endpoint `https://sketa.app/mcp` is.
 </Note>
 
 ## Example prompts
 
 ```
-Show me all my connected social media accounts
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Create a new signature called "Content Marketing"
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-What posts do I have scheduled for this week?
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
 ```
 
 ```
-Create a label called "Urgent" with a red color
+Which scenes did I edit this week?
 ```

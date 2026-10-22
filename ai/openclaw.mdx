@@ -1,25 +1,25 @@
 ---
 title: "OpenClaw"
-description: "Connect TryPost to OpenClaw for AI-powered social media management"
+description: "Connect Sketa to OpenClaw to draw diagrams and slides with AI"
 icon: "/images/ai/openclaw.svg"
 ---
 
-[OpenClaw](https://openclaw.ai) is an open-source personal AI assistant that runs on your machine and talks across chat channels. You can connect it to TryPost's MCP server so the agent can manage your social media scheduling with natural language.
+[OpenClaw](https://openclaw.ai) is an open-source personal AI assistant that runs on your machine and talks across chat channels. You can connect it to Sketa's MCP server so the agent can draw and organize your scenes with natural language.
 
 ## Prerequisites
 
 - OpenClaw installed ([getting started](https://docs.openclaw.ai/start/getting-started))
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
 <Steps>
-  <Step title="Add the TryPost MCP server">
+  <Step title="Add the Sketa MCP server">
     Register the remote server with OAuth (Streamable HTTP):
 
     ```bash
-    openclaw mcp add trypost \
-      --url https://app.trypost.it/mcp/trypost \
+    openclaw mcp add sketa \
+      --url https://sketa.app/mcp \
       --transport streamable-http \
       --auth oauth \
       --oauth-scope mcp:use
@@ -31,13 +31,13 @@ icon: "/images/ai/openclaw.svg"
     Start the login flow:
 
     ```bash
-    openclaw mcp login trypost
+    openclaw mcp login sketa
     ```
 
-    OpenClaw prints an authorization URL and stores a temporary PKCE verifier. Open the URL in a browser, sign in to TryPost, pick the **Workspace** this connection may use and click **Authorize** (to use another workspace, connect again and pick it). After approval, pass the returned code back:
+    OpenClaw prints an authorization URL and stores a temporary PKCE verifier. Open the URL in a browser, sign in to Sketa, pick the **Workspace** this connection may use and click **Allow** (to use another workspace, connect again and pick it). After approval, pass the returned code back:
 
     ```bash
-    openclaw mcp login trypost --code YOUR_CODE
+    openclaw mcp login sketa --code YOUR_CODE
     ```
   </Step>
   <Step title="Reload and verify">
@@ -45,25 +45,25 @@ icon: "/images/ai/openclaw.svg"
 
     ```bash
     openclaw mcp reload
-    openclaw mcp doctor trypost --probe
+    openclaw mcp doctor sketa --probe
     ```
 
     Or:
 
     ```bash
-    openclaw mcp probe trypost
+    openclaw mcp probe sketa
     ```
 
     Then ask your OpenClaw agent (Control UI, Telegram, Discord, etc.):
 
     ```
-    List all my scheduled posts
+    List my Sketa scenes
     ```
   </Step>
 </Steps>
 
 <Tip>
-  Manage servers in the Control UI at **Settings → MCP** (`openclaw dashboard`, path `/settings/mcp`). Use `openclaw mcp logout trypost` to clear stored OAuth credentials without removing the server definition. If `openclaw mcp status --verbose` reports `authorization-required`, run `openclaw mcp login trypost` again.
+  Manage servers in the Control UI at **Settings → MCP** (`openclaw dashboard`, path `/settings/mcp`). Use `openclaw mcp logout sketa` to clear stored OAuth credentials without removing the server definition. If `openclaw mcp status --verbose` reports `authorization-required`, run `openclaw mcp login sketa` again.
 </Tip>
 
 ## Manual configuration
@@ -74,8 +74,8 @@ Equivalent config written by `openclaw mcp add`:
 {
   mcp: {
     servers: {
-      trypost: {
-        url: "https://app.trypost.it/mcp/trypost",
+      sketa: {
+        url: "https://sketa.app/mcp",
         transport: "streamable-http",
         auth: "oauth",
         oauth: {
@@ -87,21 +87,21 @@ Equivalent config written by `openclaw mcp add`:
 }
 ```
 
-Save in `~/.openclaw/openclaw.json`, then run `openclaw mcp login trypost` and complete the `--code` step.
+Save in `~/.openclaw/openclaw.json`, then run `openclaw mcp login sketa` and complete the `--code` step.
 ## Example prompts
 
 ```
-Show me all my connected social media accounts
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Create a draft LinkedIn post for tomorrow at 9am New York time
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-What posts do I have scheduled for this week?
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
 ```
 
 ```
-Create a label called "Campaign" with color #f59e0b
+Which scenes did I edit this week?
 ```

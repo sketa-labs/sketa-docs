@@ -1,195 +1,118 @@
 ---
 title: "Introduction"
-description: "Authenticate with a workspace API key and call the TryPost REST API: base URL, permissions, errors, pagination and rate limits."
+description: "Authentication, abilities, responses, pagination, errors and rate limits of the Sketa REST API."
 icon: "book-open"
 ---
 
-The TryPost REST API lets scripts and integrations do what you do in the app: create, schedule and publish posts, upload media, manage channel queues and posting schedules, ideas, labels, signatures, webhooks and repurposes, and read analytics.
+The Sketa REST API reads and writes the scenes, scene content, collections, members, invites, teams and audit log of one workspace. It is part of **Sketa Plus**.
 
 ## Base URL
 
 ```
-https://app.trypost.it/api
+https://sketa.app/api/v1
 ```
-
-<Note>
-  Self-hosting TryPost? The API lives at your `APP_URL` followed by `/api`, for example `https://trypost.yourdomain.com/api`. Everything on these pages applies the same way.
-</Note>
 
 ## Authentication
 
-Every request sends a workspace API key as a Bearer token in the `Authorization` header:
+Create an API key in **Settings → API keys** (see [API keys](/knowledge-base/developers/api-keys)) and send it as a Bearer token:
 
 ```bash
-curl https://app.trypost.it/api/workspace \
-  -H "Authorization: Bearer YOUR_API_KEY" \
+curl https://sketa.app/api/v1/workspace \
+  -H "Authorization: Bearer sketa_YOUR_API_KEY" \
   -H "Accept: application/json"
 ```
 
-Always send `Accept: application/json`, as in every example on these pages. Without it, some errors (for example the `409` for a busy channel queue) come back as a redirect instead of a JSON body.
+Every key is bound to one workspace, the one it was created in. There are two kinds:
 
-Create a key in the app under **Settings → API Keys → Generate API Key** (see [API keys](/knowledge-base/settings/api-keys)), or with [Create API key](/api-reference/api-keys/create-api-key). The key is shown once, when it is created. Store it right away; if you lose it, generate a new one.
+- **Personal keys** act as the member who created them, with the same permissions as in the app, including their private collection. They stop working if the member leaves the workspace or an admin turns personal keys off.
+- **Workspace keys** act as the workspace. They can do what an admin can over shared resources (members, invites, teams, audit log, shared collections and their scenes), but never see private collections or collections restricted to teams. Scenes they create have `createdBy: null`.
 
-<Warning>
-  Treat an API key like a password. Do not put it in client-side code or commit it to a repository.
-</Warning>
+Only API keys work here; a signed-in browser session does not.
 
-API keys authenticate the REST API only. The [MCP server](/ai/introduction) uses OAuth sign-in, and an MCP token sent to the REST API is refused with `403` `Personal access token required.`.
+## Abilities
 
-### Who can use API keys
+Each key carries abilities, and every endpoint needs one (shown on each endpoint page):
 
-API keys work only for **workspace admins**: the account owner and members marked as admin. When the key's owner is not an admin of the workspace, every request returns `403` with `Insufficient workspace permissions.`, and when they have left the workspace, `403` with `Workspace access denied.`. See [Members and permissions](/knowledge-base/settings/members-and-permissions).
+| Ability | Endpoints |
+| --- | --- |
+| `workspace:read`, `workspace:write` | `/workspace` |
+| `users:read`, `users:write` | `/users`, `/blocks` |
+| `invites:read`, `invites:write` | `/invites` |
+| `collections:read`, `collections:write` | `/collections` |
+| `scenes:read`, `scenes:write` | `/scenes`, `/scenes/{scene}/content` |
+| `audit-logs:read` | `/audit-logs` |
+| `teams:read`, `teams:write` | `/teams` |
 
-### One key, one workspace
+`GET /collections/{collection}/scenes` needs both `collections:read` and `scenes:read`. A key without the ability gets `403 This API key is missing the <ability> ability.` Abilities never widen what the key's user may do: a member's personal key cannot change roles even with `users:write`.
 
-A key is bound to the workspace it was created in. Every request acts on that workspace, whatever workspace you have open in the app, and resources of other workspaces answer `404`. To automate several workspaces, create one key in each.
+## Responses
 
-## Approvals
+- Single resources are wrapped in `data`: `{"data": {"id": "...", "name": "..."}}`.
+- Field names are camelCase; ids are UUIDs; timestamps are ISO 8601.
+- Creating returns `201`; deleting returns `204` with no body.
+- Scene content (`/scenes/{scene}/content`) is not wrapped: reads return `{contentVersion, elements, files}` and writes return `{contentVersion}`. See [Scene content](/api-reference/scene-content).
+- Deleting a scene or a collection moves it to the trash, restorable from the app for 30 days.
 
-Admins publish directly, so a post created or edited through the API is never held for approval: `status: scheduled` schedules it and `status: publishing` publishes it right away.
+## Pagination
 
-Members who need approval still send requests from the app and the MCP server. Those posts show up in the API with `status: pending_approval`, and you can decide them with [Approve post](/api-reference/approvals/approve-post) and [Reject post](/api-reference/approvals/reject-post). [Get workspace](/api-reference/workspace/get-workspace) returns your own permissions in `me` (`is_admin`, `requires_approval`, `publishes_directly`).
-
-## Subscription
-
-On TryPost Cloud the workspace's account needs an active subscription or trial. Without one, every request returns `402`:
-
-```json
-{
-  "message": "Active subscription required."
-}
-```
-
-<Note>
-  Self-hosted installs have no billing, so they never return `402`.
-</Note>
-
-## AI features
-
-AI writing and image tools are part of the web app only. The API has no AI endpoint, and creating a post through the API never calls AI. A repurpose may shorten a caption that is too long for a destination with AI (see [Create repurpose](/api-reference/repurposes/create-repurpose)).
-
-## Rate limits
-
-Each workspace can make **60 requests per minute**. All keys of a workspace share that budget. Responses carry `X-RateLimit-Limit` and `X-RateLimit-Remaining`.
-
-Six calls that reach a network directly also count against a second limit of **60 requests per minute per user**, shared by the six of them, by all your workspaces, and by the same lookups in the app (channel, board and music pickers): [List Pinterest boards](/api-reference/social-accounts/list-pinterest-boards), [Create Pinterest board](/api-reference/social-accounts/create-pinterest-board), [List Discord channels](/api-reference/social-accounts/list-discord-channels), [Get TikTok creator info](/api-reference/social-accounts/get-tiktok-creator-info), [Search Instagram audio](/api-reference/social-accounts/search-instagram-audio) and [Get Instagram audio](/api-reference/social-accounts/get-instagram-audio). Instagram audio also has its own limit of 30 uncached lookups per minute per workspace.
-
-Over the limit, the API answers `429` with a `Retry-After` header (seconds to wait):
+Lists are paginated with a fixed page size (25 today). Pass `?page=2` to move on, and read the size from `meta.per_page` instead of assuming it:
 
 ```json
 {
-  "name": "rate_limit_exceeded",
-  "message": "Rate limit exceeded. Please retry after 30 seconds."
+  "data": [ ... ],
+  "links": { "first": "...?page=1", "last": "...?page=3", "prev": null, "next": "...?page=2" },
+  "meta": { "current_page": 1, "from": 1, "last_page": 3, "path": "...", "per_page": 25, "to": 25, "total": 61 }
 }
 ```
 
 ## Errors
 
-The API uses standard HTTP status codes and always answers JSON with a `message`.
-
-| Status | Meaning |
-|--------|---------|
-| `200` | Success |
-| `201` | Created |
-| `204` | Success with no body (deletes except [Remove post recurrence](/api-reference/recurrence/remove-post-recurrence), queue reorder) |
-| `401` | Missing, invalid or expired API key (`Token expired.`) |
-| `402` | Cloud only: no active subscription (`Active subscription required.`) |
-| `403` | Not allowed: the key's owner is not a workspace admin (`Insufficient workspace permissions.`), or the action is not allowed for this resource |
-| `404` | The resource does not exist in this workspace |
-| `409` | Another change to the same post or channel queue is in progress. Retry the request |
-| `422` | Validation failed, or the action does not fit the resource's state (for example, editing a post that was already published) |
-| `429` | Rate limit exceeded |
-
-Validation errors list the messages of each field under `errors`, with the field path as key:
+Every error has the same shape:
 
 ```json
 {
-  "message": "Select a Pinterest board to publish this post.",
-  "errors": {
-    "meta.board_id": [
-      "Select a Pinterest board to publish this post."
-    ]
-  }
+  "statusCode": 404,
+  "error": "Not Found",
+  "message": "Not found."
 }
 ```
 
-On [Create post](/api-reference/posts/create-post) and [Update post](/api-reference/posts/update-post) the key is the field itself: `meta.board_id`, `content_type`, `content`, `media`. On [Create posts in batch](/api-reference/posts/create-posts-in-batch) it names the destination, for example `destinations.0.meta.board_id`.
-
-Other errors carry only `message`:
+Validation errors (`422`) add the messages per field:
 
 ```json
 {
-  "message": "Insufficient workspace permissions."
+  "statusCode": 422,
+  "error": "Unprocessable Content",
+  "message": "The name field is required.",
+  "errors": { "name": ["The name field is required."] }
 }
 ```
 
-## Response shape
+| Status | When |
+| --- | --- |
+| `401` | No key, an invalid or revoked key, `API key expired.`, or `API key revoked.` (a personal key whose member left the workspace) |
+| `402` | `Sketa Plus required.` The key's workspace does not have Plus. |
+| `403` | The key lacks the ability; the acting user may not do this; `Personal API keys are turned off in this workspace.`; or `Workspace is read-only.` on a write |
+| `404` | `Not found.` The resource does not exist, is in another workspace, or is not visible to the key (another member's private collection, a restricted collection for a workspace key) |
+| `413` | The body is over 10 MB (scene content and scene creation) |
+| `422` | Invalid input |
+| `429` | Too many requests |
 
-A single resource comes back as a plain object, with no `data` wrapper:
+## Read-only workspaces
 
-```json
-{
-  "id": "9d3c1f2a-6b4e-4c8a-9f1e-2a7b5c8d0e41",
-  "content": "We just shipped scheduled threads.",
-  "status": "scheduled"
-}
-```
+When a workspace's Plus ends it becomes read-only: `GET` requests keep working, and every write returns `403 Workspace is read-only.`
 
-Lists are paginated (see below). A few responses have their own shape, documented on their page: [List content types](/api-reference/platform/list-content-types) returns `{ "platforms": [...] }`, [List idea stages](/api-reference/idea-stages/list-idea-stages) a plain array, [List repurpose source formats](/api-reference/repurposes/list-repurpose-source-formats) `{ "data": [...] }`, [Create posts in batch](/api-reference/posts/create-posts-in-batch) `{ "posts": [...] }`, and [Create API key](/api-reference/api-keys/create-api-key) `{ "token": {...}, "plain_token": "..." }`.
+## Rate limits
 
-Posts, notes, ideas, idea stages, labels, signatures and the workspace give their timestamps as `Y-m-d H:i:s` in UTC (`2026-10-12 14:00:00`). API keys, webhooks, webhook logs, repurposes, uploads, free queue slots and channel post performance use ISO 8601. In analytics, top posts use `Y-m-d H:i:s`; publication analytics and coverage use ISO 8601. In requests, send dates as ISO 8601 with an offset or `Z` (`2026-10-12T14:00:00Z`).
+- **120 requests per minute per key**, and
+- **600 requests per minute per workspace**, across all its keys.
 
-## Pagination
+Over either limit you get `429` with a `Retry-After` header: wait that many seconds before retrying.
 
-Lists such as posts, ideas, labels, signatures, social accounts, API keys, webhooks, webhook logs, repurposes and post notes are paginated. Pick a page with the `page` query parameter:
+## Audit log
 
-```bash
-curl "https://app.trypost.it/api/posts?page=2" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Accept: application/json"
-```
+Every write made through the API is recorded in the workspace's [audit log](/knowledge-base/workspace/audit-log) with the source **API** and the key that made it.
 
-The server sets the page size; there is no `per_page` parameter. Read it from `meta.per_page` rather than assuming a number (it is 25 today). The response uses the standard envelope:
+## AI assistants
 
-```json
-{
-  "data": [
-    { "id": "9d3c1f2a-6b4e-4c8a-9f1e-2a7b5c8d0e41", "...": "..." }
-  ],
-  "links": {
-    "first": "https://app.trypost.it/api/posts?page=1",
-    "last": "https://app.trypost.it/api/posts?page=3",
-    "prev": "https://app.trypost.it/api/posts?page=1",
-    "next": "https://app.trypost.it/api/posts?page=3"
-  },
-  "meta": {
-    "current_page": 2,
-    "from": 26,
-    "last_page": 3,
-    "path": "https://app.trypost.it/api/posts",
-    "per_page": 25,
-    "to": 50,
-    "total": 72,
-    "links": [
-      { "url": "https://app.trypost.it/api/posts?page=1", "label": "&laquo; Previous", "page": 1, "active": false },
-      { "url": "https://app.trypost.it/api/posts?page=1", "label": "1", "page": 1, "active": false },
-      { "url": "https://app.trypost.it/api/posts?page=2", "label": "2", "page": 2, "active": true },
-      { "url": "https://app.trypost.it/api/posts?page=3", "label": "3", "page": 3, "active": false },
-      { "url": "https://app.trypost.it/api/posts?page=3", "label": "Next &raquo;", "page": 3, "active": false }
-    ]
-  }
-}
-```
-
-Keep requesting `links.next` until it is `null`.
-
-## Next steps
-
-<CardGroup cols={2}>
-  <Card title="Posting" icon="paper-plane" href="/api-reference/guides/posting">
-    Pick a channel, fill its settings, then schedule, queue or publish a post.
-  </Card>
-  <Card title="Media uploads" icon="image" href="/api-reference/guides/media-uploads">
-    Upload files, attach them from URLs and reuse media across posts.
-  </Card>
-</CardGroup>
+The [MCP server](/ai/introduction) at `https://sketa.app/mcp` accepts the same keys and enforces the same permissions, so an assistant can do whatever the key could do over REST.

@@ -1,19 +1,19 @@
 ---
 title: "Perplexity"
-description: "Connect TryPost to Perplexity for AI-powered social media management"
+description: "Connect Sketa to Perplexity to draw diagrams and slides with AI"
 icon: "/images/ai/perplexity.svg"
 ---
 
-[Perplexity](https://www.perplexity.ai) supports custom remote MCP connectors on paid plans, so you can connect TryPost and manage social media scheduling from Perplexity chat and [Computer](https://www.perplexity.ai/changelog/what-we-shipped---march-13-2026) workflows.
+[Perplexity](https://www.perplexity.ai) supports custom remote MCP connectors on paid plans, so you can connect Sketa and draw and organize your scenes from Perplexity chat and [Computer](https://www.perplexity.ai/changelog/what-we-shipped---march-13-2026) workflows.
 
 <Note>
-  This guide connects **TryPost into Perplexity** as a custom remote connector. Perplexity also ships its own search MCP for use *inside* other clients (Claude, Cursor, etc.) — that is a different product: [Perplexity MCP Server](https://docs.perplexity.ai/docs/getting-started/integrations/mcp-server).
+  This guide connects **Sketa into Perplexity** as a custom remote connector. Perplexity also ships its own search MCP for use *inside* other clients (Claude, Cursor, etc.) — that is a different product: [Perplexity MCP Server](https://docs.perplexity.ai/docs/getting-started/integrations/mcp-server).
 </Note>
 
 ## Prerequisites
 
 - A Perplexity **Pro, Max, or Enterprise** account ([custom remote connectors](https://www.perplexity.ai/help-center/en/articles/13915507-adding-custom-remote-connectors) are not available on Free)
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
@@ -26,33 +26,33 @@ icon: "/images/ai/perplexity.svg"
 
     | Field | Value |
     |-------|-------|
-    | **Name** | `TryPost` |
-    | **MCP Server URL** | `https://app.trypost.it/mcp/trypost` |
-    | **Authentication** | **OAuth 2.0** (leave Client ID / Secret empty — TryPost uses Dynamic Client Registration) |
+    | **Name** | `Sketa` |
+    | **MCP Server URL** | `https://sketa.app/mcp` |
+    | **Authentication** | **OAuth 2.0** (leave Client ID / Secret empty — Sketa uses Dynamic Client Registration) |
     | **Transport** | Streamable HTTP if offered (prefer over SSE; often auto-detected) |
 
     Acknowledge the risk notice for custom connectors, then click **Add**.
   </Step>
-  <Step title="Authorize TryPost">
-    Open the new connector card and complete OAuth. Sign in to TryPost, pick the **Workspace** this connection may use and click **Authorize**. To use another workspace, connect again and pick it. The connector should show as connected with TryPost tools available.
+  <Step title="Authorize Sketa">
+    Open the new connector card and complete OAuth. Sign in to Sketa, pick the **Workspace** this connection may use and click **Allow**. To use another workspace, connect again and pick it. The connector should show as connected with Sketa tools available.
   </Step>
-  <Step title="Use TryPost in a thread">
-    Start a new conversation or Computer task, enable the **TryPost** connector for that thread if it is not already on, and ask:
+  <Step title="Use Sketa in a thread">
+    Start a new conversation or Computer task, enable the **Sketa** connector for that thread if it is not already on, and ask:
 
     ```
-    List all my scheduled posts
+    List my Sketa scenes
     ```
 
-    Perplexity will call the TryPost tools to fetch your posts.
+    Perplexity will call the Sketa tools to list your scenes.
   </Step>
 </Steps>
 
 <Note>
-  Perplexity reaches the MCP server from its cloud over HTTPS. The hosted endpoint `https://app.trypost.it/mcp/trypost` works out of the box. Self-hosted instances must be publicly reachable over HTTPS (or use a tunnel).
+  Perplexity reaches the MCP server from its cloud over HTTPS. The hosted endpoint `https://sketa.app/mcp` works out of the box.
 </Note>
 
 <Warning>
-  Choose **OAuth 2.0** for the connector. TryPost rejects Personal Access Tokens on `/mcp/trypost` — an “API Key” auth mode in Perplexity will not work against TryPost MCP.
+  Choose **OAuth 2.0** for the connector. If you prefer an API key, use an auth mode that sends it as an `Authorization: Bearer sketa_...` header; see [API keys](/knowledge-base/developers/api-keys).
 </Warning>
 
 <Accordion title="Enterprise / organization connectors">
@@ -62,17 +62,17 @@ icon: "/images/ai/perplexity.svg"
 ## Example prompts
 
 ```
-Show me all my connected social media accounts
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Create a draft LinkedIn post for tomorrow at 9am New York time
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-What posts do I have scheduled for this week?
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
 ```
 
 ```
-Create a label called "Campaign" with color #f59e0b
+Which scenes did I edit this week?
 ```

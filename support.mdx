@@ -1,76 +1,28 @@
 ---
 title: Support
-description: Get help with TryPost Cloud and self-hosted deployments
+description: Where to get help with Sketa, report abuse and fix the docs.
 icon: "life-ring"
 ---
 
-Sometimes things go wrong, or you need a hand.
+## Billing and your subscription
 
-<Note>
-  The **self-hosted** version of TryPost is supported by the community in their free time, on a best-effort basis. Post your question and be patient.
-</Note>
+Admins manage the subscription in **Settings → Billing**: **Manage billing** opens the Stripe portal to change the card or cancel, and the page lists past invoices to download. See [Plans and billing](/knowledge-base/workspace/plans-and-billing).
 
-<Columns cols={2}>
-  <Card title="Discord" icon="discord" href="https://trypost.it/discord">
-    Flexible chat with screenshots and screen sharing — usually the fastest way to get help.
-  </Card>
-  <Card title="GitHub Discussions" icon="comments" href="https://github.com/trypostit/trypost/discussions">
-    Backup option if you can't use Discord, or prefer an async thread.
-  </Card>
-</Columns>
+## Report abuse
 
-## TryPost Cloud — billing
+Found a shared drawing or public link that breaks the rules? Report it at [sketa.app/abuse](https://sketa.app/abuse) with the link.
 
-For questions specific to a paid TryPost Cloud subscription (refunds, invoice changes, plan changes, account closure):
+## Problems with these docs
 
-- Use the **in-app chat** inside [TryPost Cloud](https://app.trypost.it) — open the chat widget while you're signed in. That's the right place for billing and account issues.
-- **GitHub Issues** are for bugs in the open-source app, not for billing.
-- Don't share API keys, OAuth secrets, or payment details in Discord or other public channels.
+Spotted a mistake or something missing? Open an issue or a pull request on [GitHub](https://github.com/sketa-labs/sketa-docs).
 
-Before opening a billing conversation, check [Plans & billing](/knowledge-base/settings/plans-and-billing) — many billing questions are answered there.
+## How to ask for help effectively
 
-## How to ask for support effectively
+Follow this order: **Goal → Environment → Changes → Results**.
 
-Follow this order when you ask for help: **Goal → Environment → Changes → Results**.
+- **Goal:** what you were trying to do. *I want to export my slides as PPTX.*
+- **Environment:** browser and OS, and whether you were signed in. *Chrome on macOS, in a Plus workspace.*
+- **Changes:** what changed before it broke. *It worked until I renamed the frames.*
+- **Results:** what happened and what you expected. Include the exact error message, the HTTP status for API calls (`402 Sketa Plus required.`) or a screenshot.
 
-### Goal
-
-Explain what you were trying to do:
-
-- *I want to schedule a LinkedIn carousel for Friday at 6pm*
-- *I want to run TryPost in Docker on a VPS*
-- *I want to connect Instagram via Facebook Business*
-
-### Environment
-
-Share the relevant parts of your environment.
-
-Web app issues — browser and OS:
-
-- *I'm using Chrome on macOS*
-- *I'm using Firefox on Windows 11*
-
-Self-hosted / install issues — machine and how you installed:
-
-- *I'm on Ubuntu 24.04 with PHP 8.4, PostgreSQL, and Redis*
-- *This is a fresh Docker install on a Hetzner CX22*
-- *I'm on TryPost Cloud*
-
-### Changes
-
-What changed before it broke?
-
-- *I updated my browser and now…*
-- *I pulled the latest release and now…*
-- *This used to work, but now…*
-
-### Results
-
-What happened, and what did you expect?
-
-- *I see a blank screen*
-- *I get a `402 Active subscription required` response*
-- *The post stays stuck in `publishing`*
-- *I expected the Instagram account picker, but got an error*
-
-Include screenshots, logs, or the exact error message when you can. That usually cuts the back-and-forth in half.
+Never share API keys or OAuth tokens in public channels.

@@ -1,102 +1,47 @@
 ---
 title: "Introduction"
-description: "How TryPost is organized: Create, Publish, Insights, Repurpose, Channels and Settings."
+description: "How Sketa is organized: the editor, cloud scenes, workspaces, AI and integrations."
 icon: "book-open"
 ---
 
-## What is TryPost?
+## What is Sketa?
 
-TryPost is an open-source social media scheduler. You write a post once, adapt it for each network, and publish or schedule it to LinkedIn, X, TikTok, YouTube, Facebook, Instagram, Threads, Pinterest, Bluesky, Mastodon, Telegram, Discord and Google Business from one place. Use it on [TryPost Cloud](https://app.trypost.it) or [host it yourself](/self-hosting/overview).
-
-## Getting started
-
-<Steps>
-  <Step title="Create your account">
-    Sign up at [app.trypost.it/register](https://app.trypost.it/register) with your email, Google or GitHub.
-  </Step>
-  <Step title="Answer the welcome steps">
-    **About you** → **Your goals** → **Plan**. The plan step takes you to Stripe Checkout. See [Plans and billing](/knowledge-base/settings/plans-and-billing).
-  </Step>
-  <Step title="Connect a channel">
-    **New** → **Connect a new channel**. See [Connecting a channel](/knowledge-base/channels/connecting).
-  </Step>
-  <Step title="Write your first post">
-    **New** → **Post** opens the [composer](/knowledge-base/publish/composer).
-  </Step>
-</Steps>
-
-<Note>
-  If you were invited to an account whose owner has not subscribed yet, you see **Waiting for the account owner** until the subscription is active. The page updates by itself. Self-hosted installs have no plan step.
-</Note>
+Sketa is an infinite whiteboard for diagrams and sketches with a hand-drawn look. Every shape keeps its own random seed, so its wobbly outline looks the same every time and for everyone. The full editor is free and works without an account, on desktop, tablet and phone (touch and pen).
 
 ## How the app is organized
 
-The sidebar mirrors this Knowledge Base.
-
 | Area | What it is for |
 | --- | --- |
-| **New** | Quick menu: **Post**, **Idea**, and, for the owner and admins, **Connect a new channel** and **Invite a team member**. |
-| **Create** | [Ideas](/knowledge-base/create/ideas), [Templates](/knowledge-base/create/templates) and [Feeds](/knowledge-base/create/feeds): where content starts. |
-| **Publish** | Your posts for all channels: [Queue, Approvals, Drafts and Sent](/knowledge-base/publish/overview), as a list or a calendar. |
-| **Insights** | [Analytics](/knowledge-base/insights/overview) for the workspace and [for each channel](/knowledge-base/insights/channel-insights). |
-| **Repurpose** (Beta) | [Republish](/knowledge-base/repurpose) every new Instagram or Facebook video to your other networks. Shown only to members who publish directly. |
-| **Channels** | One entry per connected channel, with its number of scheduled posts. Open one for its **Publish**, **Insights** and **Channel settings**, or **New post in this channel**. Search the list, or drag a channel to reorder it. A channel that lost its connection says "Reconnect this channel to keep publishing." |
-| **Settings** | Personal (Profile, Preferences, Authentication, Notifications), Workspace (General, Channels, Members), Features (Signatures, Labels, Webhooks), Developers (API Keys, MCP) and Account (Billing). |
+| **Editor** | The canvas, at [sketa.app](https://sketa.app) for drawings in your browser or on any cloud scene. See [Editor basics](/knowledge-base/editor/basics). |
+| **Dashboard** | The first page after you sign in: **Home** (pinned and recent scenes), **Shared with me**, **Collections**, search and **Trash**. See [Dashboard and collections](/knowledge-base/scenes/dashboard-and-collections). |
+| **Settings** | **Account**: Profile, Security, Preferences. **Workspace**: General, Billing, Teams, Audit log, API keys, Workspaces. |
 
-### Command palette
+## Scenes
 
-Press <kbd>⌘</kbd> <kbd>K</kbd> (or <kbd>Ctrl</kbd> <kbd>K</kbd>) anywhere to "Search channels, pages and actions." It lists your **Recent** picks, **Quick actions** (**Create new post**, **Create idea**, and for admins **Invite team member** and **Connect new channel**), every page of the app, each channel with its number of scheduled posts, and every Settings page. Use the arrow keys to move, <kbd>Enter</kbd> to open and <kbd>Esc</kbd> to close. It only shows what your permissions allow.
+A **scene** is one whiteboard. Without an account it lives in your browser. Signed in, scenes are saved to the cloud in a workspace, synced continuously, and open from any device:
 
-## Workspaces
+- **Free**: 1 cloud scene per personal workspace.
+- **Sketa Plus**: unlimited scenes in collections, plus [public links and embeds](/knowledge-base/scenes/sharing-and-public-links), [comments](/knowledge-base/scenes/comments), [version history](/knowledge-base/scenes/version-history), [slides](/knowledge-base/scenes/slides), PDF and PPTX [exports](/knowledge-base/editor/files-and-exports) and the server [library](/knowledge-base/editor/library).
 
-A workspace is one brand or client. It has its own channels, posts, ideas, signatures, labels, analytics, members and MCP connection. Switch between workspaces from the menu at the bottom of the sidebar. See [Workspaces](/knowledge-base/settings/workspaces).
+## Collaboration
 
-The same menu also switches your **Language** and **Theme** in one click, opens **Preferences**, **Manage team** and **Plans and billing**, and has **Help & support**: the help center, chat support, the community and the app status page.
+Edits from several people merge without losing anything: each element has its own version, deletions propagate, and undo only reverts your own changes. Live sessions by link are free for everyone; in a Plus workspace, members who open the same scene are together automatically. See [Collaboration](/knowledge-base/scenes/collaboration).
 
-## Who can do what
+## AI
 
-There are no roles to pick. Each member of a workspace is either an **admin** or not, and either **Publishes directly** or **Needs approval**. The account owner is always an admin and always publishes directly.
+Describe a diagram in plain words, paste Mermaid code, or turn a wireframe in a frame into a working HTML page. Untitled scenes get a name automatically. Free accounts get 10 AI requests a day, Plus members 100. See [AI](/knowledge-base/ai).
 
-- Everyone can write posts, ideas and templates.
-- Publishing without review, approving other people's posts and Repurpose need **Publishes directly**.
-- Channels, members, webhooks, API keys and workspace settings need an admin.
+## Privacy
 
-See [Members and permissions](/knowledge-base/settings/members-and-permissions) and [Approvals](/knowledge-base/publish/approvals).
-
-## How publishing works
-
-<Steps>
-  <Step title="You save a post">
-    Saving creates one post per selected channel. Each one can be edited, moved or deleted on its own.
-  </Step>
-  <Step title="TryPost publishes it on time">
-    At its time (a custom time or a [queue slot](/knowledge-base/publish/queue)), TryPost sends the post to the network. Each channel is published on its own; if one fails, the others still go out.
-  </Step>
-  <Step title="You get an email">
-    Notifications are sent by email. Choose which ones in [Notifications](/knowledge-base/settings/notifications).
-  </Step>
-</Steps>
-
-## AI in TryPost
-
-AI helps in four places, all in the web app:
-
-- The composer's **AI Assistant** writes a post or rephrases, shortens, expands or changes the tone of your text. See [Composer](/knowledge-base/publish/composer#ai-assistant).
-- **Use the AI assistant** in the [idea editor](/knowledge-base/create/ideas) helps write an idea's body.
-- **Generate ideas** on the [Ideas](/knowledge-base/create/ideas#generate-ideas) board.
-- **Generate with AI** for image alt text in the [media editor](/knowledge-base/media#alt-text).
-
-[Repurpose](/knowledge-base/repurpose) also uses AI to shorten a caption that is too long for a destination.
-
-New text is written in your interface language. AI is not available through the REST API or the MCP server.
+Cloud scenes, shared links and live sessions are encrypted at rest and in transit. They are not end-to-end encrypted: Sketa needs to read content to make previews, search, exports, AI, the API and MCP work, and to handle abuse reports.
 
 ## Integrations
 
 <Columns cols={2}>
   <Card title="REST API" icon="code" href="/api-reference/introduction">
-    Manage posts, ideas, channels, analytics, repurposes and webhooks from your own code.
+    Read and write scenes, collections, members, invites, teams and the audit log.
   </Card>
   <Card title="MCP server" icon="microchip-ai" href="/ai/introduction">
-    Connect Claude, ChatGPT, Cursor and other assistants to your workspace.
+    Let AI assistants draw diagrams and slides in your workspace.
   </Card>
 </Columns>

@@ -1,169 +1,89 @@
-# TryPost Documentation
+# Sketa Documentation
 
 ## Agent instructions
 
 `AGENTS.md` is the single source of repository instructions for all coding agents. Read and follow this file before working on the documentation.
 
-- Mintlify site: pages are MDX with YAML frontmatter; navigation, `openapi` and `redirects` live in `docs.json`.
-- Preview with `mint dev`; check with `npx mint validate` and `npx mint broken-links`.
-- Never rename or remove the frozen URLs listed below; every moved or removed slug gets a `docs.json` redirect.
-- Every factual claim must trace to the app at `~/Herd/trypost` (cite `file:line` in the PR).
-- Use active voice, second person, sentence-case headings, bold for UI labels exactly as in `lang/en/*.php`.
+- Mintlify site (docs.sketa.app): pages are MDX with YAML frontmatter; navigation, `openapi` and `redirects` live in `docs.json`.
+- Preview with `npx mint dev`; check with `npx mint validate` and `npx mint broken-links`.
+- Every moved or removed slug gets a `docs.json` redirect.
+- Every factual claim must trace to the app at `~/Herd/sketa` (cite `file:line` in the PR).
+- Use active voice, second person, sentence-case headings, bold for UI labels exactly as in the app's `lang/en-US/*.php`.
 
-Docs for [TryPost](https://trypost.it) — open-source social media scheduling platform. Built with [Mintlify](https://mintlify.com).
+## Project context
 
-## Project Context
+Sketa is a hand-drawn infinite whiteboard (an Excalidraw / Excalidraw+ alternative). Anyone can draw at `https://sketa.app` without an account; signing in saves scenes to the cloud; **Sketa Plus** workspaces (US$3 per seat/month or US$30 per seat/year) add collections, members, guests, teams, public links and embeds, slides, comments, version history, PDF/PPTX exports, the server library, the REST API and the MCP server.
 
-TryPost is a Laravel + Inertia.js + **Vue 3** application that lets users plan, schedule and publish posts across 13 social networks (15 platform identifiers in code, since LinkedIn and Instagram each have two connection flavors), and see their performance in Insights. It has two deployment modes: **Cloud** (managed by us) and **Self-Hosted** (user deploys on their own server).
+Sketa is a hosted product only: it is **not open source and not self-hostable**. Never write self-hosting instructions, environment variables, install steps or "open-source" claims, and never link to the app's source code.
 
-The app source code lives at `~/Herd/trypost`. This repo (`trypost-docs`) is the documentation site only.
+The app lives at `~/Herd/sketa` (Laravel + Inertia + Vue). Product spec: `docs/superpowers/specs/2026-10-21-sketa-product-design.md` there. This repo (`sketa-docs`) is the documentation site only.
 
-## URL Architecture
+## URLs
 
-**CRITICAL: There are NO subdomains. Everything uses path-based routing under a single domain.**
+Everything is path-based on one domain.
 
-### Cloud
 | Service | URL |
 |---------|-----|
-| Web app | `https://app.trypost.it` |
-| REST API | `https://app.trypost.it/api` |
-| MCP server | `https://app.trypost.it/mcp/trypost` |
-| Register | `https://app.trypost.it/register` |
+| Editor (no account) | `https://sketa.app` |
+| Dashboard | `https://sketa.app/dashboard` |
+| Register / sign in | `https://sketa.app/register`, `https://sketa.app/login` |
+| REST API | `https://sketa.app/api/v1` |
+| MCP server | `https://sketa.app/mcp` |
+| Public links | `https://sketa.app/l/{token}`, `/embed/{token}`, `/slides/{token}` |
+| Scene content schema | `https://sketa.app/schemas/scene-content.v1.json` |
+| Abuse reports | `https://sketa.app/abuse` |
 
-### Self-Hosted
-Same paths, user configures `APP_URL` in `.env`:
-| Service | URL |
-|---------|-----|
-| Web app | `{APP_URL}` |
-| REST API | `{APP_URL}/api` |
-| MCP server | `{APP_URL}/mcp/trypost` |
+There is no `api.sketa.app`, `mcp.sketa.app` or `app.sketa.app`.
 
-**Never use `api.trypost.it` or `mcp.trypost.it` — these do not exist.**
+## Documentation structure
 
-## Documentation Structure
-
-5 top-level tabs in `docs.json` (`navigation.tabs`):
+4 tabs in `docs.json` (`navigation.tabs`):
 
 | Tab | Icon | Purpose |
 |-----|------|---------|
-| **Documentation** | `book-open` | Home (`index`), quickstart, one page per network under `platforms/`, community pages |
-| **API Reference** | `code` | REST API. Operation pages are generated from **`openapi.json`** at the repo root (hand-written from the app's `routes/api.php`, `app/Http/Requests/Api/**`, `app/Http/Resources/**`). Prose that does not fit one operation lives in `api-reference/introduction.mdx` and `api-reference/guides/*.mdx`. There are no per-endpoint `.mdx` files any more; old `api-reference/endpoint/*` slugs redirect |
-| **Build with AI** | `microchip-ai` | MCP server intro, tools reference, setup guides per client |
-| **Knowledge Base** | `book` | How the app works. Groups mirror the app sidebar, then the settings sidebar: Getting started, Create, Publish, Insights, Repurpose, Channels, Settings (Personal, Workspace, Features, Developers, Account). Page titles use the on-screen labels from `lang/en/*.php` |
-| **Self-Hosting** | `server` | Overview, requirements, installation, configuration, AI providers, Docker, production, upgrading — isolated from the rest |
+| **Documentation** | `book-open` | Home (`index`), `getting-started/` (quickstart, drawing without an account, workspaces/members/guests), `support` |
+| **Knowledge Base** | `book` | How the app works: `knowledge-base/editor/`, `scenes/`, `ai`, `workspace/`, `account/`, `developers/`. Page titles and labels use the on-screen strings from `lang/en-US/*.php` |
+| **API Reference** | `code` | REST API. Operation pages are generated from **`openapi.json`** at the repo root, written from the app's `routes/api.php`, `app/Http/Requests/Api/**`, `app/Http/Resources/Api/**` and `app/Http/Controllers/Api/**`. Prose lives in `api-reference/introduction.mdx` (auth, abilities, responses, pagination, errors, rate limits) and `api-reference/scene-content.mdx` (element format, PUT vs PATCH) |
+| **Build with AI** | `microchip-ai` | MCP intro (`ai/introduction`), `ai/tools-reference`, `ai/format-guides`, one setup guide per client |
 
-Every removed or moved slug gets an entry in `docs.json` `redirects`.
+## Writing rules
 
-### Platform pages
-
-`platforms/<slug>.mdx`, one per network: `linkedin`, `x-twitter`, `facebook`, `instagram`, `tiktok`, `youtube`, `threads`, `pinterest`, `bluesky`, `mastodon`, `telegram`, `discord`, `google-business`. Each follows the same layout: Connect, Supported content types, Media limits, Text and per-post options, Insights, OAuth scopes, Self-hosting setup (credentials inside `<Accordion>`).
-
-### Frozen URLs (the app links to them — never rename or remove)
-
-- `/platforms/<slug>` for every page above (`resources/js/lib/docs.ts` `platformGuideDocsUrl`)
-- `/knowledge-base/media` and its per-network anchors `#instagram`, `#facebook`, `#threads`, `#x-twitter`, `#linkedin`, `#tiktok`, `#youtube`, `#pinterest`, `#bluesky`, `#mastodon`, `#discord`, `#telegram`, `#google-business-profile` (`mediaLimitsDocsUrl`)
-- `/ai/introduction` and the site root
-
-If one of these must move, add a redirect and change the app in the same release.
-
-## Writing Rules
-
-### Cloud-first
-- Default instructions assume the user is on **TryPost Cloud**
-- Self-hosted specifics go in `<Accordion>`, `<Note>`, or the Self-Hosting tab
-- Example: Platform pages say "click Connect" for cloud, API credentials in `<Accordion>` for self-hosted
-- This includes `api-reference/` — those endpoints are documented against `https://app.trypost.it/api`, so describe the Cloud response
-
-**When a fixed behaviour becomes configurable**, keep the Cloud value as the statement and push the setting into self-hosting. Do not rewrite body prose into a two-mode comparison — it makes every reader parse a branch that only one of them is on.
-
-```mdx
-{/* Wrong — the Cloud reader has to work out which half applies to them */}
-On TryPost Cloud you can connect several accounts on the same network. On
-self-hosted instances that used to be a setting.
-
-{/* Right — Cloud is the statement, self-hosting is a pointer */}
-A workspace can connect as many accounts as you want on the same network.
-
-<Note>
-  Self-hosting TryPost? Same rule — see
-  [multiple accounts per network](/self-hosting/configuration#multiple-accounts-per-network).
-</Note>
-```
-
-The same applies to anything a self-hoster can switch off or raise: platform availability, limits, AI providers. State what Cloud does; link out for the knob.
+- Describe the current app only. No roadmap promises beyond what the app itself shows (voice and screen sharing are "coming later").
+- Mark Plus-only features with a `<Note>` at the top of the page or section ("… needs Sketa Plus.").
+- Use the UI labels from `lang/en-US/*.php` in bold. Settings live in **Settings → Account** (Profile, Security, Preferences) and **Settings → Workspace** (General, Billing, Teams, Audit log, API keys, Workspaces).
+- Locales are `en-US` and `pt-BR` only. Docs are written in English only.
+- Don't invent screenshots. Images live in `images/`; only add real captures of the app.
 
 ### URLs in examples
-- API curl examples: `https://app.trypost.it/api/...`
-- MCP server configs: `https://app.trypost.it/mcp/trypost`
-- Dashboard links: `https://app.trypost.it`
-- Cloud media URLs (R2 with custom domain): `https://media.trypost.it/medias/{uuid}.{ext}`
-- Self-hosted examples: `{APP_URL}/api/...` or `https://trypost.yourdomain.com/api/...`
-- Stored media `path` is always `medias/{uuid}.{ext}`; the public URL comes from `Storage::url($path)` which prepends the configured disk URL (`R2_URL`, S3 endpoint, or local `${APP_URL}/storage`).
 
-### Affiliate & partner links
-- **SendKit** (default mailer): `https://sendkit.dev?utm_source=trypost&utm_medium=docs&utm_campaign={context}`
-- **Hetzner** (recommended hosting): `https://hetzner.cloud/?ref=V4djx1Vt7Mm7` — always disclose as referral link
+- API curl examples: `https://sketa.app/api/v1/...` with `Authorization: Bearer sketa_YOUR_API_KEY`.
+- MCP configs: `https://sketa.app/mcp`, server name `sketa`.
 
-## API Reference
+## API reference
 
-### Authentication
-- **REST API**: Bearer token in the `Authorization` header (Personal Access Tokens issued by Laravel Passport, JWT format — do not assume any prefix or fixed length). In examples use `YOUR_API_KEY` as the placeholder.
-- **MCP server**: OAuth 2.1 with Dynamic Client Registration (PKCE S256, scope `mcp:use`). Clients discover endpoints via `/.well-known/oauth-authorization-server` and `/.well-known/oauth-protected-resource`, register at `/oauth/register`, then walk the user through `/oauth/authorize` → `/oauth/token` in a browser. Personal Access Tokens are **not** accepted on `/mcp/trypost` — use the REST API for scripts/CI that cannot complete OAuth.
-- Issued via `POST /api/api-keys` or **Settings > API Keys** in the dashboard.
+- `openapi.json` is the source of truth for every operation, field and error. Public API = the `/api/v1` routes (`php artisan route:list --path=api/v1`), 35 operations today. The anonymous `api/snapshots` and `api/rooms` routes are internal to the editor; never document them.
+- Auth: `Authorization: Bearer sketa_...`. Keys are Passport personal-access tokens bound to one workspace (`App\Models\AccessToken`), **personal** (act as the member) or **workspace** (act as the workspace, shared collections only, admin-equivalent). Abilities come from `App\Enums\Api\Ability`; each route declares one with `abilities:` middleware.
+- `ResolveApiActor` errors: `401 Unauthenticated.` / `API key expired.` / `API key revoked.`, `402 Sketa Plus required.`, `403 Personal API keys are turned off in this workspace.`, `403 Workspace is read-only.` (writes only).
+- Error shape is always `{statusCode, error, message}` plus `errors` on 422 (`App\Support\Api\ApiErrorResponse`).
+- Single resources are wrapped in `data`; lists use the Laravel envelope `{data, links, meta}` with `config('app.pagination.default')` (25). Always tell readers to read `meta.per_page`. Scene content responses are not wrapped.
+- Rate limits: 120/min per key, 600/min per workspace (`config/sketa.php` `api`), 429 with `Retry-After`.
+- Enum values (audit actions, roles, element types) are copied from the app's enums and `public/schemas/scene-content.v1.json`, never from memory.
+- When the API changes, regenerate or edit `openapi.json` and update `docs.json` navigation (`"METHOD /path"` entries).
 
-### Endpoints, shapes and pagination
+## MCP server
 
-`openapi.json` is the source of truth for every operation, request field, response shape and error (hand-written from the app's `routes/api.php`, `app/Http/Requests/Api/**`, `app/Http/Resources/**`, `app/Http/Controllers/Api/**`). Public API = routes whose URI starts with `api/` (85 today: `php artisan route:list --path=api`). Edit the spec, not generated pages. `api-reference/introduction.mdx` covers auth, errors, pagination, rate limits and timestamps; `api-reference/guides/posting.mdx` covers `meta` per network, scheduling modes and thread replies; `api-reference/guides/media-uploads.mdx` covers media. Update those, not this file. Facts to keep in mind:
+- The tool list is exactly `SketaServer::$tools` (`app/Mcp/Servers/SketaServer.php`), 42 tools today; `ai/tools-reference.mdx` documents every one with its inputs (from each tool's `schema()`), its ability (`asActor(...)`) and its annotations (`#[IsReadOnly]`, `#[IsDestructive]`, `#[IsOpenWorld]`).
+- Route: `Mcp::web('/mcp', SketaServer::class)` behind `api.key`, `auth:api`, `LoadMcpActor` and `throttle:mcp` (120/min per token). It accepts an OAuth grant (`mcp:use`, consent screen picks one Plus workspace, acts as the user with every ability) **or** an API key in the `Authorization` header.
+- `ai/format-guides.mdx` summarizes `resources/views/prompts/mcp/guides/*.blade.php`; keep it in sync.
 
-- Resources are unwrapped (`JsonResource::withoutWrapping()`); lists use the Laravel envelope `{ data, links, meta }` with the page size from `config('app.pagination.default')` (25 today). Always tell readers to read `meta.per_page`.
-- `PUT /posts/{post}` with `status: publishing` publishes now; there is no separate publish endpoint.
-- Post `meta` rules live only in the app's `App\Support\PostPlatformMetaRules`; document them from there. Unknown keys are dropped; on update `meta` is merged and `null` clears a nullable key. Boolean meta keys do not accept `null`; send `true` or `false`.
-- There is no asset-library endpoint and no account toggle in the REST API.
-- Enum values (statuses, content types, webhook events, platforms) are documented in `openapi.json` schemas; copy them from the app enums under `app/Enums/**`, never from memory.
+## Plans and limits (from `config/sketa.php`)
 
-## MCP Server
+- Free: 1 cloud scene (`scenes.free_scene_limit`), no members.
+- AI per UTC day: Free 10, Plus member 100, anonymous 10 per device and 30 per IP; text-to-diagram costs 1, wireframe-to-code 5, scene naming 0 (`App\Enums\AiUsage\Kind::quotaCost()`).
+- Trash keeps items 30 days; payment grace period 7 days, then read-only; up to 20 public links per scene; invites expire after 3 days; images 4 MB (16 MB on Plus).
 
-- The tool list is exactly `TryPostServer::$tools` (`app/Mcp/Servers/TryPostServer.php`), 83 tools today; `ai/tools-reference.mdx` documents every one and `check_coverage.py mcp` enforces it. Names are the class basename in kebab-case plus `-tool`, except `get-tiktok-creator-info-tool` (`#[Name]`).
-- `create-post-tool` / `create-posts-tool` / `update-post-tool` accept inline `media[]` (`url`, `upload_token` or `id`); `update-post-tool` cannot change the channel. `create-api-key-tool` returns `{token, plain_token}` like REST.
-- Gates mirror the web: any member (`createPost`) for posts, notes, ideas, labels, signatures, analytics and channel reads; `publishDirectly` for approve/reject, set recurrence, reorder queue, move to slot and every repurpose tool; admins (`manageAccounts`, `manageWebhooks`, `manageTeam`) for posting-schedule writes, webhooks and API keys.
-- Server route: `Mcp::web('/mcp/trypost', TryPostServer::class)->middleware(['auth:api', 'workspace.token:mcp'])`. `LoadWorkspaceFromToken` requires an active OAuth grant with `mcp:use` (`403 MCP OAuth authorization required.` otherwise), binds the token's workspace (`401 No workspace selected.`, `403 Workspace access denied.`), and returns `402 Active subscription required.` on Cloud without app access.
-- There is no REST endpoint or MCP tool for generating or rewriting content with AI. Repurpose can shorten captions with AI in the background, including for repurposes created through REST or MCP (`app/Services/Repurpose/CaptionAdapter.php`).
-
-## Notifications and permissions
-
-### Notification types (email only)
-`post_published`, `post_failed`, `account_disconnected`, `post_at_risk`, `post_note_added`, `collaboration` (approval requests and decisions). `post_ready` and `mentioned_in_comment` exist only so 1.x queued jobs finish; never document them. There is no in-app notification center and no notification channel setting: every notification is an email.
-
-### Member permissions (no roles)
-A membership (`user_workspace`) and an invite carry two flags: `is_admin` (manages members, settings, channels) and `requires_approval` (the member's posts need approval; always false for admins). The Admin / Member / Viewer roles were removed in 2.0. The account owner is always an admin and publishes directly. Every member can create posts.
-
-## Emails
-
-Every email the app sends is a Maizzle template in `maizzle/templates/` with a Mailable in `app/Mail/`; the self-hosting list is `self-hosting/configuration.mdx` → **Emails sent by TryPost**. Default mailer is SendKit (`config/mail.php:19`).
-
-## Coverage checker
-
-`python3 ~/Herd/trypost/docs/superpowers/audits/2026-10-07-docs-inventory/check_coverage.py all` must print `OK` (api, mcp, env, platforms, redirects).
-
-## Scheduled Commands
-
-The full table (17 entries, including analytics, retention and Google Business review checks) lives in `self-hosting/production.mdx` → **Scheduled Tasks (Cron)**; the source is `routes/console.php` / `php artisan schedule:list`.
-
-## Self-Hosted Requirements
-
-- PHP 8.4.1+ (the Docker image ships 8.4), Node.js 22.12+, PostgreSQL or MySQL, Redis
-- Horizon (queues), Reverb (WebSockets) and the scheduler running continuously
-- Imagick with HEIC for iPhone photo conversion (in the Docker image)
-- Upload limits: `upload_max_filesize=1G`, `post_max_size=1G` (matches the Docker image)
-- Bluesky and Mastodon work without API credentials; every other network needs developer app credentials (Google Business Profile has its own Google client, separate from YouTube)
-- The docs describe the current `main` only (owner decision October 2026): no upgrade path from 1.x, no `release:trypost-2`, no "before/since 2.0" history. An upgrade is the routine in `self-hosting/upgrading.mdx` plus the GitHub release notes
-
-## Supported Languages
-
-16 locales (`App\Enums\User\Locale`): `en`, `uk`, `pt-BR`, `es`, `fr`, `de`, `it`, `nl`, `pl`, `el`, `ja`, `ko`, `zh`, `ru`, `tr`, `ar`. Docs are written in English only.
-
-## Running Docs Locally
+## Running docs locally
 
 ```bash
-npx @mintlify/cli dev
+npx mint dev
 ```

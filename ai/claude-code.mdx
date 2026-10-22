@@ -1,40 +1,40 @@
 ---
 title: "Claude Code"
-description: "Connect TryPost to Claude Code for AI-powered social media management from the terminal"
+description: "Connect Sketa to Claude Code to draw diagrams and slides from the terminal"
 icon: "/images/ai/claude.svg"
 ---
 
-[Claude Code](https://code.claude.com/docs) is Anthropic's CLI tool for working with Claude directly in your terminal. You can connect it to TryPost's MCP server to manage your social media scheduling with natural language.
+[Claude Code](https://code.claude.com/docs) is Anthropic's CLI tool for working with Claude directly in your terminal. You can connect it to Sketa's MCP server to draw and organize your scenes with natural language.
 
 ## Prerequisites
 
 - Claude Code installed ([install guide](https://code.claude.com/docs/en/setup))
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
 <Steps>
-  <Step title="Add the TryPost MCP server">
+  <Step title="Add the Sketa MCP server">
     Run the following command in your terminal:
 
     ```bash
-    claude mcp add --transport http trypost https://app.trypost.it/mcp/trypost
+    claude mcp add --transport http sketa https://sketa.app/mcp
     ```
 
     This adds the server for the current project, for you only (local scope). Use `--scope project` to share it through `.mcp.json`, or `--scope user` for every project.
   </Step>
   <Step title="Sign in through your browser">
-    Start Claude Code and trigger the first TryPost call:
+    Start Claude Code and trigger the first Sketa call:
 
     ```bash
     claude
     ```
 
     ```
-    List all my scheduled posts
+    List my Sketa scenes
     ```
 
-    Claude Code opens a browser window asking you to sign in to TryPost and authorize the connection. Sign in, pick the **Workspace** this connection may use and click **Authorize**. Claude Code stores the OAuth token and refreshes it automatically from then on. To use another workspace, connect again and pick it.
+    Claude Code opens a browser window asking you to sign in to Sketa and authorize the connection. Sign in, pick the **Workspace** this connection may use and click **Allow**. Claude Code stores the OAuth token and refreshes it automatically from then on. To use another workspace, connect again and pick it.
   </Step>
 </Steps>
 
@@ -45,9 +45,9 @@ If you prefer to edit the config file directly, this is what `claude mcp add --s
 ```json
 {
   "mcpServers": {
-    "trypost": {
+    "sketa": {
       "type": "http",
-      "url": "https://app.trypost.it/mcp/trypost"
+      "url": "https://sketa.app/mcp"
     }
   }
 }
@@ -58,17 +58,17 @@ Drop it in `.mcp.json` for project scope. With `--scope user` the same block goe
 ## Example prompts
 
 ```
-Create a new post scheduled for tomorrow at 10am New York time
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Show me all my connected social accounts
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-Create a signature called "SaaS Marketing" with #saas #marketing #growth #startup
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
 ```
 
 ```
-List all my labels
+Which scenes did I edit this week?
 ```

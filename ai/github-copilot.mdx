@@ -1,16 +1,16 @@
 ---
 title: "GitHub Copilot"
-description: "Connect TryPost to GitHub Copilot in VS Code for AI-powered social media management"
+description: "Connect Sketa to GitHub Copilot in VS Code to draw diagrams and slides with AI"
 icon: "/images/ai/github-copilot.svg"
 ---
 
-[GitHub Copilot](https://github.com/features/copilot) supports MCP servers in agent mode, allowing you to connect TryPost directly to your VS Code workflow.
+[GitHub Copilot](https://github.com/features/copilot) supports MCP servers in agent mode, allowing you to connect Sketa directly to your VS Code workflow.
 
 ## Prerequisites
 
 - VS Code with the GitHub Copilot extension installed
 - Copilot agent mode enabled
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup (IDE agent mode)
 
@@ -21,9 +21,9 @@ icon: "/images/ai/github-copilot.svg"
     ```json
     {
       "servers": {
-        "trypost": {
+        "sketa": {
           "type": "http",
-          "url": "https://app.trypost.it/mcp/trypost"
+          "url": "https://sketa.app/mcp"
         }
       }
     }
@@ -35,13 +35,13 @@ icon: "/images/ai/github-copilot.svg"
     Reload the window to load the new MCP configuration.
   </Step>
   <Step title="Sign in through your browser">
-    Open Copilot Chat in agent mode. VS Code prompts you to sign in to TryPost. In the browser, pick the **Workspace** this connection may use and click **Authorize**; the server flips to **Connected**. To use another workspace, connect again and pick it.
+    Open Copilot Chat in agent mode. VS Code prompts you to sign in to Sketa. In the browser, pick the **Workspace** this connection may use and click **Allow**; the server flips to **Connected**. To use another workspace, connect again and pick it.
   </Step>
   <Step title="Verify the connection">
     Ask Copilot:
 
     ```
-    List all my TryPost posts
+    List my Sketa scenes
     ```
   </Step>
 </Steps>
@@ -52,24 +52,28 @@ icon: "/images/ai/github-copilot.svg"
 
 ## Copilot coding agent (cloud)
 
-GitHub's **coding agent** (the one that runs on GitHub's infrastructure to handle issues and PRs) does not yet support OAuth for remote MCP servers. TryPost's MCP endpoint requires OAuth (`mcp:use`) and **rejects** Personal Access Tokens, so cloud coding agent MCP is not supported today.
+GitHub's **coding agent** (the one that runs on GitHub's infrastructure to handle issues and PRs) does not support OAuth for remote MCP servers. Sketa's MCP endpoint also accepts an API key, so you can connect the coding agent with an `Authorization: Bearer sketa_...` header from a key created in **Settings → API keys** (see [API keys](/knowledge-base/developers/api-keys)), if your coding agent MCP configuration lets you set headers. Store the key as a secret, never in the repository.
 
-Use Copilot's **IDE agent mode** (above) for MCP, or call the [REST API](/api-reference/introduction) from Actions / scripts with an API key (workspace admins only) from **Settings → API Keys**.
+Or use Copilot's **IDE agent mode** (above), or call the [REST API](/api-reference/introduction) from Actions and scripts with the same key.
 
 ## Global IDE configuration
 
-To make TryPost available across all projects in your IDE, open the command palette and run **MCP: Open User Configuration** to add the server to your user-level settings.
+To make Sketa available across all projects in your IDE, open the command palette and run **MCP: Open User Configuration** to add the server to your user-level settings.
 
 ## Example prompts
 
 ```
-Create a new post scheduled for tomorrow at 9am New York time
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Show me all my signatures
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-What social accounts are connected to my workspace?
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
+```
+
+```
+Which scenes did I edit this week?
 ```

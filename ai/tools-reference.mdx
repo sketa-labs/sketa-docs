@@ -1,266 +1,540 @@
 ---
 title: "Tools reference"
-description: "Every tool the TryPost MCP server exposes, with its arguments, who can call it and its REST equivalent"
+description: "Every tool of the Sketa MCP server, what it does and its inputs."
 icon: "wrench"
 ---
 
-The TryPost MCP server exposes **83 tools**. This page lists all of them, grouped like the app: posts, ideas, analytics, social accounts and the queue, repurpose, labels, signatures, webhooks, API keys, workspace and platform rules.
+The Sketa MCP server (`https://sketa.app/mcp`) exposes 42 tools. Each one needs an [ability](/knowledge-base/developers/api-keys#abilities) (OAuth connections carry them all) and follows the same permissions as the [REST API](/api-reference/introduction).
 
-Tool names are exactly what your assistant sees (kebab-case with a `-tool` suffix). Every tool acts on the one workspace you picked when you authorized the connection. Times in arguments are ISO 8601 (without an offset they are read as UTC). In responses, post, idea, label, signature, note and workspace times are UTC `Y-m-d H:i:s`; webhooks, API keys, repurposes, free slots and the upload `expires_at` are ISO 8601 with an offset.
+Conventions for every tool:
 
-<Note>
-  There is no MCP tool that writes a caption, an image or a video for you. Your assistant writes the text itself and sends it with `create-post-tool`; the built-in AI writing assistant is available in the web app. Repurpose may shorten captions with AI in the background, including for rules created through MCP.
-</Note>
+- **Ids are UUIDs** (element and frame ids are strings). Take them from the list tools; never invent them.
+- **List tools are paginated**: pass `page` (from 1) and read `data`, `total`, `per_page`, `current_page` and `last_page` from the result.
+- Objects are returned with the same fields as the REST API returns under `data`.
+- Errors come back as tool errors: "Not found." (outside the workspace or not visible to the connection), "Workspace is read-only." (any write on a read-only workspace), "This connection is missing the … ability.", or a validation message.
 
-## Recommended workflow
+## Recommended workflow for drawing
 
-### Create and publish a post
+<Steps>
+  <Step title="Find or create the scene">
+    `list-scenes-tool` (with `search`) or `create-scene-tool`.
+  </Step>
+  <Step title="Look at what is there">
+    `search-scene-tool` to find elements by their words, or `get-scene-content-tool` for everything.
+  </Step>
+  <Step title="Read the format guide">
+    `get-format-guide-tool` with `diagrams`, `presentations` or `freeform`. See [Format guides](/ai/format-guides).
+  </Step>
+  <Step title="Draw">
+    `create-diagram-tool` for boxes and arrows with automatic layout, `edit-scene-content-tool` for anything else, `add-image-tool` for pictures, and the slides tools for decks.
+  </Step>
+  <Step title="Check the result">
+    `take-screenshot-tool` returns a PNG of the scene or one frame.
+  </Step>
+</Steps>
 
-1. **`get-workspace-tool`**: check `me.requires_approval`. When it is `true`, anything you schedule, queue or publish waits for approval (see [Approvals](#approvals)).
-2. **`list-social-accounts-tool`**: pick the channel. Note its `max_content_length`, `timezone` and `has_posting_schedule`.
-3. **Settle the time zone.** Times you say in conversation ("tomorrow at 9am") are local, but every tool takes UTC and no tool returns your own time zone. Tell the assistant your time zone, or let it use the channel's `timezone` from the previous step. It must send `scheduled_at` with an offset or in UTC.
-4. **`list-content-types-tool`**: pick a `content_type` and read its media rules, hashtag limit and `required_meta`.
-5. Resolve required settings: **`get-tiktok-creator-info-tool`** (TikTok `privacy_level`), **`list-pinterest-boards-tool`** or **`create-pinterest-board-tool`** (Pinterest `board_id`), **`list-discord-channels-tool`** (Discord `channel_id`).
-6. Get media in: a public URL goes straight into `media[]`. For a local file, call **`request-media-upload-tool`**, upload the file with `curl -F media=@file "<upload_url>"` within 15 minutes (a CLI agent can run it; in a web or mobile chat you run it yourself), then pass the `upload_token`. Chat apps that run in the cloud can only use files at a public URL or the `id` of media already in TryPost.
-7. **`create-post-tool`** (one channel) or **`create-posts-tool`** (several channels, one post each). Send `status: draft` to review first, or `scheduled` / `publishing` to go straight out.
-8. **`preview-post-tool`**: see the exact text each network gets.
-9. **`publish-post-tool`**: publish a draft now, at a time, or into the queue.
-10. **`get-post-metrics-tool`**: read the saved analytics after it is published.
+## Drawing
 
-### Use the queue
+### search-scene-tool
 
-1. **`get-posting-schedule-tool`**: see the channel's posting times (set them with `update-posting-schedule-tool`, `generate-posting-schedule-tool` or `copy-posting-schedule-tool` if it has none).
-2. Create with `status: scheduled` and `queue: next` (first free slot) or `queue: top` (first slot, shifting queued posts back).
-3. To take one exact slot: **`list-free-slots-tool`**, then `create-post-tool` with `queue_slot`, or **`move-post-to-slot-tool`** for an existing post.
-4. **`reorder-queue-tool`**: swap queued posts among the slots they already hold.
+Finds elements on a scene's canvas by their words: every word of `query` must appear in the element's text, frame name or link, ignoring case and accents. A label inside a shape or arrow is reported with that shape's id as `containerId`. Returns each match's `id`, `type`, `text`, `containerId`, `frameId` and bounds (`x`, `y`, `width`, `height`).
 
-How the queue keeps slots is explained in [Queue](/knowledge-base/publish/queue).
+Read-only · `scenes:read`
 
-## Access and permissions
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
+| `query` | string | The words to find. Empty lists every element (of the given types). |
+| `types` | string[] | Only elements of these types: `rectangle`, `diamond`, `ellipse`, `arrow`, `line`, `freedraw`, `text`, `image`, `frame`, `embed`, `sticky`. A label also matches its container's type. |
 
-MCP accepts every member of the workspace, not only admins (the [REST API](/api-reference/introduction) only accepts admin API keys). Each tool then checks the same permission as the matching page in the app:
+### get-scene-content-tool
 
-| Who | Can call |
-|-----|----------|
-| **Any member** | Every Posts tool except approve, reject and set recurrence (including notes and media); ideas and idea stages; analytics; labels; signatures; `list-social-accounts-tool`, `get-posting-schedule-tool`, `list-free-slots-tool`, Pinterest boards, Discord channels, Instagram audio, TikTok creator info; `get-workspace-tool`; `list-content-types-tool` |
-| **Members who publish directly** (owner, admins, and members who do not need approval) | `approve-post-tool`, `reject-post-tool`, `set-post-recurrence-tool`, `reorder-queue-tool`, `move-post-to-slot-tool`, every repurpose tool (reads included) |
-| **Admins** (and the account owner) | `update-posting-schedule-tool`, `generate-posting-schedule-tool`, `copy-posting-schedule-tool`, every webhook tool and every API key tool (reads included) |
+Reads everything on a scene's canvas: its live elements in z-order (bottom first) with every field, the `contentVersion`, and signed links (valid one hour) to the image files the elements use. Large scenes are big: prefer `search-scene-tool` to find specific elements. The element format is described in [Scene content](/api-reference/scene-content#the-element-format).
 
-A refused call returns a tool error such as `This action is unauthorized.` Items from another workspace answer as not found (`Post not found.`, `Repurpose not found.`, …). See [Members and permissions](/knowledge-base/settings/members-and-permissions).
+Read-only · `scenes:read`
 
-### Approvals
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
 
-A member who needs approval can create and edit posts. When they schedule, queue or publish, TryPost stores the post with status `pending_approval` instead, and it waits for `approve-post-tool` or `reject-post-tool` from a member who publishes directly. The same happens when such a member edits an approved scheduled post or attaches media to it. A pending post is visible only to approvers and to the member who asked. A member who needs approval may delete only posts they wrote, or their own requests that are still pending. See [Approvals](/knowledge-base/publish/approvals).
+### edit-scene-content-tool
 
-## Posts
+Changes a scene's canvas in one step, live for everyone editing it. Returns the `contentVersion` and the ids added (by `ref`), updated and removed.
 
-| Tool | What it does | Key arguments |
-|------|--------------|---------------|
-| `list-posts-tool` | List posts, newest scheduled date first. Read-only. REST: [List posts](/api-reference/posts/list-posts) | `status` (`draft` \| `scheduled` \| `pending_approval` \| `published` \| `failed`), `search` (substring of the text), `channels[]`, `labels[]`, `untagged`, `page` |
-| `get-post-tool` | Get one post: text, media, labels, status, `schedule_mode`, `scheduled_at`, `published_at`, recurrence, approval fields, `origin`, `post_group_id`, and its channel at the top level: `publish_status`, `platform`, `content_type`, `meta`, `error_message`, `platform_url` and `social_account`. Read-only. REST: [Get post](/api-reference/posts/get-post) | `post_id` (required) |
-| `create-post-tool` | Create one post on one channel: a draft, a post at a custom time, a queue post (next or top, or one exact free slot), or a post published now. Returns the post. REST: [Create post](/api-reference/posts/create-post) | `social_account_id` (required), `content_type`, `meta`, `content`, `media[]`, `status` (`draft` default \| `scheduled` \| `publishing`), `scheduled_at`, `queue` (`next` \| `top`), `queue_slot`, `label_ids[]` |
-| `create-posts-tool` | Create one independent post per destination, as the composer does with several channels; the posts share a `post_group_id`. Each destination may override text, media, type and meta. No `queue_slot` here. Returns `{posts}`. REST: [Create posts in batch](/api-reference/posts/create-posts-in-batch) | `status` (required), `destinations[]` (required: `{social_account_id, content_type?, content?, media?, meta?}`), `content`, `media[]`, `scheduled_at`, `queue`, `label_ids[]` |
-| `update-post-tool` | Change a post's text, media (replaces the list), `content_type`, `meta` (merged; `null` clears a key, `thread_replies` replaces the list), status, schedule, queue or labels. The channel itself is fixed. On Pinterest and TikTok, new media re-decides the type when `content_type` is omitted. REST: [Update post](/api-reference/posts/update-post) | `post_id` (required), `content`, `media[]`, `content_type`, `meta`, `status` (`draft` \| `scheduled` \| `publishing`), `scheduled_at`, `queue`, `label_ids[]` |
-| `publish-post-tool` | Publish a draft or scheduled post now, at `scheduled_at`, or into the queue. Validated like a scheduled post (text limits, required meta, media rules, thread replies); a failure names the platform and field and nothing is published. Destructive. No single REST operation: REST uses [Update post](/api-reference/posts/update-post) with a status | `post_id` (required), `scheduled_at`, `queue` |
-| `approve-post-tool` | Approve a `pending_approval` post. By default it is scheduled as its author asked (queue or requested time); pass a new time or publish now instead. One of them is required when the requested time has passed or the author asked to publish now. Pass one of `scheduled_at` (future, before 2038-01-19) or `publish_now`, not both. Destructive. REST: [Approve post](/api-reference/approvals/approve-post) | `post_id` (required), `scheduled_at`, `publish_now` |
-| `reject-post-tool` | Reject a `pending_approval` post. It goes back to drafts and the member who asked is emailed; no reason is stored. REST: [Reject post](/api-reference/approvals/reject-post) | `post_id` (required) |
-| `preview-post-tool` | Show the exact text the post's network gets (X links defused when that is on), next to the original, with length stats. One object, with `platform` and `content_type` at the top. Nothing is truncated. Read-only. REST: [Get post preview](/api-reference/posts/get-post-preview) | `post_id` (required) |
-| `delete-post-tool` | Delete a post from TryPost permanently. It is never removed from the network. Returns `{deleted: true}`. Destructive. REST: [Delete post](/api-reference/posts/delete-post) | `post_id` (required) |
-| `attach-media-from-url-tool` | Download files from public URLs and append them to the post. Returns `post`, `attached_count`, `failed_urls` and `failures[]` with a reason (`unreachable`, `type_not_allowed`, `too_large`, `host_not_allowed`). REST: [Attach media from URL](/api-reference/media-and-uploads/attach-media-from-url) | `post_id` (required), `urls[]` (required, 1–10 `{url, alt?}`) |
-| `request-media-upload-tool` | Issue a one-time signed URL to upload a local file. Returns `upload_token`, `upload_url`, `expires_at`, `max_bytes`, `max_bytes_by_type` and `field_name` (`media`). Upload with `curl -F media=@file "<upload_url>"`. REST: [Upload to signed URL](/api-reference/media-and-uploads/upload-to-signed-url) | none |
-| `attach-media-from-upload-tool` | Append an uploaded file to a post. Returns `{post}`. REST: [Attach media from upload](/api-reference/media-and-uploads/attach-media-from-upload) | `post_id` (required), `upload_token` (required), `alt` |
-| `get-post-metrics-tool` | Read the latest saved analytics of a published post (reactions, comments, saves, reach, views, watch time where supported). Returns one object: `post_id`, `platform`, `publish_status`, `platform_post_id`, `platform_url` and `metrics`. Values may lag the network until the next analytics run; an unpublished post or a network without analytics answers `unsupported`. Read-only. REST: [Get post metrics](/api-reference/posts/get-post-metrics) | `post_id` (required) |
-| `list-post-notes-tool` | List a post's notes (internal team comments, never published), newest first. Read-only. REST: [List post notes](/api-reference/post-notes/list-post-notes) | `post_id` (required), `page` |
-| `create-post-note-tool` | Add a note. Every other member who has note emails on is emailed; on a pending post, only the approvers and the member who asked. REST: [Create post note](/api-reference/post-notes/create-post-note) | `post_id` (required), `body` (required, max 2000) |
-| `update-post-note-tool` | Edit a note. Only its author can. No email is sent. REST: [Update post note](/api-reference/post-notes/update-post-note) | `post_id`, `note_id`, `body` (all required) |
-| `delete-post-note-tool` | Delete a note. Only its author can. Destructive. REST: [Delete post note](/api-reference/post-notes/delete-post-note) | `post_id`, `note_id` (both required) |
-| `set-post-recurrence-tool` | Make a scheduled post repeat every `interval` days, weeks, months or years, `times` more times, at the same local time in the channel's zone. The last occurrence must be on or before 2037-12-31 23:59:59 UTC. Members who publish directly only. REST: [Set post recurrence](/api-reference/recurrence/set-post-recurrence) | `post_id`, `interval` (1–365), `frequency` (`day` \| `week` \| `month` \| `year`), `times` (1–100), all required |
-| `clear-post-recurrence-tool` | Stop a post from repeating. The post and its next time stay. REST: [Remove post recurrence](/api-reference/recurrence/remove-post-recurrence) | `post_id` (required) |
+Destructive · `scenes:write`
 
-Posts that are `publishing`, `published` or `failed` cannot be changed or deleted. Notes and recurrence follow [Recurring posts](/knowledge-base/publish/recurring-posts).
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
+| `add` | object[] | Skeletons of elements to add (below). |
+| `update` | object[] | Patches `{id, ...fields}` merged into existing elements, with the same fields `get-scene-content-tool` returns. The type cannot change. |
+| `remove` | string[] | Ids of elements to delete. |
 
-### Before a post can be scheduled or published
+Each skeleton in `add`:
 
-Drafts may be incomplete. Scheduling, queueing or publishing needs:
+| Field | Type | Description |
+| --- | --- | --- |
+| `type` | string, required | `rectangle`, `ellipse`, `diamond`, `text`, `arrow`, `line`, `frame` or `sticky`. |
+| `x`, `y` | number, required | Left and top edge (start point for arrows and lines), in scene pixels. |
+| `ref` | string | A name for this skeleton, so arrows and frames of the same call can point at it. |
+| `width`, `height` | number | Shapes default to 160 × 80, stickies to 200 × 200, frames to 800 × 450. Text is sized from its content. |
+| `label` | string | Text centered inside a shape, sticky or arrow; the name of a frame. |
+| `text` | string | The content of a text element (new lines with `\n`). |
+| `start`, `end` | object | Where an arrow or line starts and ends: `{ref}` (a skeleton of this call), `{id}` (an element on the scene) or `{x, y}`. Ends that name a shape bind to it. |
+| `frame` | object | `{ref}` or `{id}` of the frame this element belongs to. |
+| `strokeColor`, `backgroundColor` | string | For example `#1e1e1e`, `#b8dcff` or `transparent`. |
+| `fillStyle` | string | `hachure`, `cross-hatch`, `solid` or `zigzag`. |
+| `strokeStyle` | string | `solid`, `dashed` or `dotted`. |
+| `strokeWidth` | integer | `1`, `2` or `4`. |
+| `roughness` | integer | `0` clean, `1` hand-drawn (default), `2` loose. |
+| `fontSize` | number | Font size of the text or label, default 20. |
+| `fontFamily` | string | `hand` (default), `normal` or `code`. |
 
-- Text or media.
-- TikTok `meta.privacy_level`, one of the `privacy_level_options` from `get-tiktok-creator-info-tool`.
-- Pinterest `meta.board_id` and Discord `meta.channel_id`.
-- Google Business: `meta.event` with a title and start/end dates on `EVENT` and `OFFER` (the end may not precede the start). A `call_to_action` needs a `url` unless its `action_type` is `NONE` or `CALL`, and offers take no call to action.
-- Thread replies (X, Bluesky, Mastodon): each reply has text or media and fits the account limit.
-- YouTube: a title (`meta.title`, or the first line of the text).
+### create-diagram-tool
 
-`list-content-types-tool` lists these per platform as `required_meta`. Media rules (count, size, duration, aspect ratio, GIF and MOV) are checked at the same moment, never on a draft.
+Draws a flowchart-style diagram with automatic layout, exactly as the editor's AI diagram insert does. Give nodes, edges between node ids and optional nested groups; Sketa sizes the shapes to their labels, arranges them top to bottom or left to right, and binds the arrows. It goes at `x`, `y` or 200 px to the right of the existing content. Returns the `contentVersion`, the ids of every element created and the diagram bounds. Prefer it over `edit-scene-content-tool` for any boxes-and-arrows chart.
 
-### Media
+`scenes:write`
 
-Every `media[]` item gives exactly one of:
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
+| `nodes` | object[], required | The boxes, at least one and up to 150: `id` (required, up to 100 characters), `label` (required, up to 200 characters), `shape` (`rectangle` default, `ellipse`, `diamond` or `text`), `group` (a group id) and `color` (fill, `#rgb` or `#rrggbb`). |
+| `edges` | object[] | Up to 300 arrows: `from` and `to` (required node ids), `label`, `style` (`solid` default or `dashed`) and `arrow` (`end` default, `both` or `none`). |
+| `groups` | object[] | Up to 30 dashed boxes around related nodes: `id` and `label` (required) and `parent` (up to 3 levels). |
+| `direction` | string | `down` (default) or `right`. |
+| `x`, `y` | number | Top-left corner of the diagram. |
 
-| Key | Use |
-|-----|-----|
-| `url` | A public `http(s)` URL that serves the file itself. Redirects are not followed and web pages are refused; the download must finish within 20 seconds. |
-| `upload_token` | A file uploaded with `request-media-upload-tool`. A token is spent by the first post that takes it; uploads are kept 24 hours. |
-| `id` | A media item already in this workspace (from a post's `media`). It is copied for the post. On update, send the current ids in a new order to reorder, and leave one out to remove it. |
+### add-image-tool
 
-Optional per item: `alt` (images), and `meta` with `alt_text` (max 2000; it wins over `alt`), `user_tags` (Instagram feed images, up to 20 `{username, x, y}`) and `cover_offset_ms` (video cover frame, where `supports_video_cover`). `attach-media-from-upload-tool` and `attach-media-from-url-tool` take the same `alt` and `meta`. A PDF must be the only attachment. The first item is the cover of a carousel.
+Puts an image on a scene, from a public http(s) URL (downloaded by Sketa, up to 3 redirects) or from base64 bytes. PNG, JPEG, GIF, WebP and SVG are accepted, up to the workspace's file size (16 MB on Plus). It keeps its proportions. Returns the new image element id and its file id.
 
-Accepted files: JPEG, PNG, GIF and WebP images (HEIC and HEIF when the server can convert them), MP4 and MOV videos, and PDF. Server ceilings by default: **10 MB** and 67 megapixels per image, **1 GB** per video, **100 MB** per PDF. Each network's own, usually smaller, limits apply when the post is scheduled or published. The signed upload URL works once and expires after 15 minutes. More in [Media uploads](/api-reference/guides/media-uploads).
+Open-world · `scenes:write`
 
-### Per-platform `meta`
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
+| `url` | string | A public http(s) URL of the image. Give `url` or `base64`. |
+| `base64` | string | The image bytes in base64 (a `data:` URL is accepted). |
+| `x`, `y` | number | Top-left corner (default: beside the existing content). |
+| `width` | number | Width in scene pixels (default: the image's own width, at most 800). |
 
-`meta` holds the settings of the post's channel. The same keys work on the REST API ([Posting guide](/api-reference/guides/posting)). Unknown keys are dropped. Enum values are exact JSON strings.
+### take-screenshot-tool
 
-| Platform | Keys | Required to schedule or publish |
-|----------|------|---------------------------------|
-| X, Bluesky, Mastodon | `thread_replies`: up to 24 replies published under the post, each `{text, media}` (up to 4 media items per reply) or a plain string. Each reply fits the account's text limit. X also takes `is_ai_generated` | — |
-| Mastodon | `spoiler_text` (content warning, max 500; counts toward the 500 characters and is repeated on every reply) | — |
-| TikTok | `privacy_level` (`PUBLIC_TO_EVERYONE` \| `MUTUAL_FOLLOW_FRIENDS` \| `FOLLOWER_OF_CREATOR` \| `SELF_ONLY`); `allow_comments`, `disclose`, `brand_content_toggle`, `brand_organic_toggle`; on `tiktok_video` also `allow_duet`, `allow_stitch`, `is_aigc`; on `tiktok_photo` also `auto_add_music`. `SELF_ONLY` cannot be combined with `brand_content_toggle` | `privacy_level` |
-| Pinterest | `board_id`, `title` (max 100), `link` | `board_id` |
-| Discord | `channel_id`, `mentions` (`[{token, label}]`), `embeds` (up to 10 `{title, description, url, image, color}`). The channel name is filled by TryPost from the channel list read in the last 5 minutes; a `channel_name` you send is ignored | `channel_id` |
-| YouTube | `title` (max 100, no `<` or `>`), `description` (max 5000 bytes), `category_id` (default `22`), `privacy_status` (`public` \| `unlisted` \| `private`), `license`, `notify_subscribers`, `embeddable`, `made_for_kids`, `is_ai_generated` | A title, or text to derive it from |
-| Instagram | `is_ai_generated`; `collaborators` (up to 3 usernames, feed posts, carousels and reels, not stories; the post shows on a collaborator's profile only after they accept the invite in the Instagram app, and a username that does not exist is only refused when the post publishes); on `instagram_reel` also `share_to_feed` (default `true`), `trial_graduation` (`MANUAL` \| `SS_PERFORMANCE`, not with `collaborators`, only on accounts where Instagram offers trial reels) and `audio` (`instagram-facebook` accounts only: `{id, title, artist, cover_url, preview_url, audio_volume, video_volume}`, `id` from `search-instagram-audio-tool` as a string of digits, volumes 0–100, default 100). People tags and a video cover are per media item (see [Media](#media)). At most 5 hashtags | `audio.id` when `audio` is set; no `collaborators` on a trial reel |
-| Threads | `topic_tag` (1–50 characters, no `.` or `&`). Content type `threads_ghost_post` is a text-only post archived after 24 hours | — |
-| Facebook, Bluesky, LinkedIn | `link_preview` (default `true`; `false` publishes the link without a preview card) | — |
-| LinkedIn, LinkedIn Page | `document_title` (max 300, for PDF document posts) | — |
-| Google Business | `topic_type` (`STANDARD` \| `EVENT` \| `OFFER`), `call_to_action` `{action_type, url}`, `event` `{title, start_date, end_date, start_time, end_time}`, `offer` `{coupon_code, redeem_online_url, terms_conditions}` | `event` on `EVENT`/`OFFER`; `call_to_action.url` unless `NONE`/`CALL`. `action_type` is one of `NONE`, `BOOK`, `ORDER`, `SHOP`, `LEARN_MORE`, `SIGN_UP`, `CALL`; offers take no call to action |
-| Telegram, Facebook reels and stories | none | — |
+Returns a PNG image of the whole canvas, or of one frame (slide) when `frame_id` is given, drawn exactly as the editor draws it, at most 1600 px on the long side. Use it to check a layout after editing.
 
-Instagram and Facebook stories publish no text.
+Read-only · `scenes:read`
 
-## Ideas
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
+| `frame_id` | string | A frame on the scene, to capture only that frame. |
+| `theme` | string | `light` (default) or `dark`. |
 
-Any member can use the ideas tools. Ideas cannot be turned into posts through MCP: create a post with the idea's text instead. See [Ideas](/knowledge-base/create/ideas).
+### get-format-guide-tool
 
-| Tool | What it does | Key arguments |
-|------|--------------|---------------|
-| `list-ideas-tool` | List ideas, newest first. Filters combine like the ideas board. Read-only. REST: [List ideas](/api-reference/ideas/list-ideas) | `stages[]`, `unassigned`, `labels[]`, `untagged`, `page` |
-| `get-idea-tool` | Get one idea with its title, body, stage, media and labels. Read-only. REST: [Get idea](/api-reference/ideas/get-idea) | `idea_id` (required) |
-| `create-idea-tool` | Create an idea. It needs a title, a body or media. REST: [Create idea](/api-reference/ideas/create-idea) | `title` (max 255), `body` (max 10000), `idea_stage_id`, `media_ids[]` (max 10, media already in the workspace), `label_ids[]` |
-| `update-idea-tool` | Update an idea. Only sent fields change; `media_ids` and `label_ids` replace the lists. A new stage places it last. To move it to no stage use `move-ideas-tool`. REST: [Update idea](/api-reference/ideas/update-idea) | `idea_id` (required), `title`, `body`, `idea_stage_id`, `media_ids[]`, `label_ids[]` |
-| `delete-ideas-tool` | Delete up to 500 ideas with their media. Ids from other workspaces are ignored. Destructive. REST: [Delete ideas](/api-reference/ideas/delete-ideas) | `idea_ids[]` (required) |
-| `duplicate-idea-tool` | Copy an idea with its media and labels, right after the original. REST: [Duplicate idea](/api-reference/ideas/duplicate-idea) | `idea_id` (required) |
-| `move-ideas-tool` | Move an idea to a stage (or none) and set that column's order. A stale list is refused. REST: [Move idea](/api-reference/ideas/move-idea) | `idea_id` (required), `idea_ids[]` (required: every idea of the target column in the new order), `idea_stage_id` (omit for no stage) |
-| `list-idea-stages-tool` | List the board's stages in order, with the number of ideas in each. Read-only. REST: [List idea stages](/api-reference/idea-stages/list-idea-stages) | none |
-| `create-idea-stage-tool` | Add a stage at the end of the board. REST: [Create idea stage](/api-reference/idea-stages/create-idea-stage) | `name` (required, max 60) |
-| `update-idea-stage-tool` | Rename a stage. REST: [Update idea stage](/api-reference/idea-stages/update-idea-stage) | `idea_stage_id`, `name` (both required) |
-| `delete-idea-stage-tool` | Delete a stage. Its ideas move to the unassigned column. Destructive. REST: [Delete idea stage](/api-reference/idea-stages/delete-idea-stage) | `idea_stage_id` (required) |
-| `reorder-idea-stages-tool` | Reorder the stages. Returns `{stages}`. REST: [Reorder idea stages](/api-reference/idea-stages/reorder-idea-stages) | `stage_ids[]` (required: every stage, in the new order) |
+Returns Sketa's drawing guide for a kind of content, in Markdown. See [Format guides](/ai/format-guides).
 
-## Analytics
+Read-only · no ability needed
 
-Any member can read analytics. Ranges are calendar days in your time zone: `range` is `7d`, `30d` (default), `mtd` or `custom` (with `start` and `end` as `YYYY-MM-DD`). See [Insights](/knowledge-base/insights/overview).
+| Input | Type | Description |
+| --- | --- | --- |
+| `topic` | string, required | `diagrams`, `presentations` or `freeform`. |
 
-| Tool | What it does | Key arguments |
-|------|--------------|---------------|
-| `get-analytics-report-tool` | The workspace report: summary, follower and post charts, top posts, per-account performance, data bounds and sync coverage. Unknown channel ids are ignored. Read-only. REST: [Get workspace analytics](/api-reference/analytics/get-workspace-analytics) | `range`, `start`, `end`, `channels[]` |
-| `get-analytics-publication-tool` | All saved metrics and metadata of one publication from the report, including posts imported from the network. Read-only. REST: [Get publication analytics](/api-reference/analytics/get-publication-analytics) | `publication_id` (required) |
-| `get-channel-insights-tool` | One channel's summary, metrics and series for the range and the previous range of the same length, plus `growth` (monthly follower growth over 12 months). Not available for LinkedIn, LinkedIn Page, Telegram, Discord and Google Business. Read-only. REST: [Get channel insights](/api-reference/analytics/get-channel-insights) | `account_id` (required), `range`, `start`, `end`, `period`, `sort`, `labels[]`, `untagged`, `types[]` |
-| `list-channel-publications-tool` | A channel's best posts in the range, ranked by `sort` (top 50). Not available for LinkedIn, LinkedIn Page, Telegram, Discord and Google Business. Read-only. REST: [List channel post performance](/api-reference/analytics/list-channel-post-performance) | `account_id` (required), `range`, `start`, `end`, `period` (`current` \| `previous`), `sort` (`reactions` \| `comments` \| `engagement_rate` \| `views` \| `impressions` \| `shares` \| `saves` \| `reach`), `labels[]`, `untagged`, `types[]`, `page` |
+## Slides
 
-## Social accounts and queue
+Every frame of a scene is a slide. See [Slides](/knowledge-base/scenes/slides).
 
-MCP cannot connect, disconnect or reconnect channels; do that in the app ([Connecting channels](/knowledge-base/channels/connecting)).
+### list-slides-tool
 
-| Tool | What it does | Key arguments |
-|------|--------------|---------------|
-| `list-social-accounts-tool` | List connected channels: `id`, `platform`, `display_name`, `username`, `status` (`connected` \| `token_expired` \| `disconnected`), `timezone`, `posting_goal`, `has_posting_schedule`, `max_content_length`, `long_posts`, `verified_badge`. An X account with `long_posts` may post 25000 characters, others 280. Read-only. REST: [List social accounts](/api-reference/social-accounts/list-social-accounts) | `page` |
-| `get-posting-schedule-tool` | A channel's time zone, weekly goal and the seven days with their local posting times (day `0` is Sunday). Read-only. REST: [Get posting schedule](/api-reference/channels/get-posting-schedule) | `account_id` (required) |
-| `update-posting-schedule-tool` | Replace a channel's schedule. At most 4 unique `HH:mm` times per day. `null` clears it. Queued posts whose slot vanished are re-placed; a zone change keeps each queued post at the same local clock time. Admins only. REST: [Update posting schedule](/api-reference/channels/update-posting-schedule) | `account_id` (required), `timezone` (required, IANA), `posting_goal` (1–28 or `null`), `posting_schedule` (exactly 7 `{day, enabled, times[]}` or `null`) |
-| `generate-posting-schedule-tool` | Generate a schedule from the network's recommended windows for a weekly goal, replacing the current one. It also saves `goal` as the channel's weekly goal. `mode` has no effect today. Admins only. REST: [Generate posting schedule](/api-reference/channels/generate-posting-schedule) | `account_id` (required), `mode` (required, `goal` \| `recommended`), `goal` (1–28; default the channel goal, else 3) |
-| `copy-posting-schedule-tool` | Copy another channel's schedule onto this one. The source must have a schedule. Admins only. REST: [Copy posting schedule](/api-reference/channels/copy-posting-schedule) | `account_id` (required), `from` (required) |
-| `list-free-slots-tool` | The channel's next free queue slots as UTC instants, soonest first: at most 30, within 90 days. Read-only. REST: [List free queue slots](/api-reference/channels/list-free-queue-slots) | `account_id` (required) |
-| `reorder-queue-tool` | Reorder a channel's queue: the posts swap among the slots they hold. The ids must be exactly the first reorderable queued posts, otherwise the call is refused. Returns `{post_ids}`. Members who publish directly only. REST: [Reorder queue](/api-reference/channels/reorder-queue) | `account_id` (required), `post_ids[]` (required, max 500) |
-| `move-post-to-slot-tool` | Move a scheduled post onto one free slot; it becomes a queue post there. Taken, off-schedule or pending-held slots are refused. Members who publish directly only. REST: [Move post to queue slot](/api-reference/channels/move-post-to-queue-slot) | `account_id`, `post_id`, `slot_at` (all required) |
-| `list-pinterest-boards-tool` | List a Pinterest account's boards: `{boards: [{id, name, cover_url}], truncated}`. Use a board `id` as `meta.board_id`. REST: [List Pinterest boards](/api-reference/social-accounts/list-pinterest-boards) | `account_id` (required) |
-| `create-pinterest-board-tool` | Create a board on a Pinterest account. Returns `id`, `name`, `cover_url`. REST: [Create Pinterest board](/api-reference/social-accounts/create-pinterest-board) | `account_id` (required), `name` (required, max 50) |
-| `list-discord-channels-tool` | List the text and announcement channels the bot can post to: `{channels: [{id, name}]}`. Use an `id` as `meta.channel_id`. REST: [List Discord channels](/api-reference/social-accounts/list-discord-channels) | `account_id` (required) |
-| `search-instagram-audio-tool` | Search the music and original sounds an Instagram account connected through Facebook can put on a reel: `{audio: [{id, type, title, artist, cover_url, duration_ms, preview_url}]}`, music first. Omit `q` for trending audio; with `q`, music must name every word. Use an `id` as `meta.audio.id`, and copy its `title`, `artist`, `cover_url` and `preview_url` into `meta.audio` so the app shows the track. Answers are cached for 10 minutes; a workspace may make 30 uncached audio lookups per minute. An Instagram Login account returns an error. Read-only. REST: [Search Instagram audio](/api-reference/social-accounts/search-instagram-audio) | `account_id` (required), `q` (max 100), `type` (`music` \| `original_sound`) |
-| `get-instagram-audio-tool` | One audio track by id, with fresh `cover_url` and `preview_url` (Instagram expires them). Fails when the track is no longer available. Same account rule and lookup limit as the search. Read-only. REST: [Get Instagram audio](/api-reference/social-accounts/get-instagram-audio) | `account_id`, `audio_id` (both required) |
-| `get-tiktok-creator-info-tool` | What TikTok lets this creator publish now: `privacy_level_options`, `comment_disabled` / `duet_disabled` / `stitch_disabled`, `max_video_post_duration_sec`, `can_post`. `max_video_post_duration_sec` is not checked when you schedule, so compare the video length yourself. A TikTok posting limit or outage returns an error. Read-only. REST: [Get TikTok creator info](/api-reference/social-accounts/get-tiktok-creator-info) | `account_id` (required) |
+Lists the slides of a scene in play order: `frameId`, `title` (the frame name), speaker `notes`, `hidden`, `position` (1-based, hidden slides included) and bounds.
 
-## Repurpose
+Read-only · `scenes:read`
 
-A repurpose watches one Instagram or Facebook account for one video format and republishes each new video to its destinations. Members who publish directly can use these tools. See [Repurpose](/knowledge-base/repurpose).
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
 
-| Tool | What it does | Key arguments |
-|------|--------------|---------------|
-| `list-repurpose-source-formats-tool` | List the formats a repurpose can watch (`reel`, `video`, `story`) with labels. Returns `{source_formats}`. Read-only. REST: [List repurpose source formats](/api-reference/repurposes/list-repurpose-source-formats) | none |
-| `list-repurposes-tool` | List the workspace's repurposes. Read-only. REST: [List repurposes](/api-reference/repurposes/list-repurposes) | `page` |
-| `get-repurpose-tool` | Read one repurpose: format, destinations, status and last polling error. Read-only. REST: [Get repurpose](/api-reference/repurposes/get-repurpose) | `repurpose_id` (required) |
-| `create-repurpose-tool` | Create a repurpose as a draft. One repurpose per source and format; the source cannot also be a destination; Google Business cannot be a destination. Each destination picks a content type that accepts video. Thread-reply media in a destination's `meta` may only be media `id`s. Required meta is re-checked on every update of an active repurpose. REST: [Create repurpose](/api-reference/repurposes/create-repurpose) | `source_social_account_id` (required), `source_format` (default `reel`), `publish_mode` (`publish` default \| `draft`), `destinations[]` (`{social_account_id, content_type, meta?}`) |
-| `update-repurpose-tool` | Update a repurpose. Changing the source or format resets the watermark. `destinations` replaces the list. Thread-reply media in a destination's `meta` may only be media `id`s. Required meta is re-checked on every update of an active repurpose. REST: [Update repurpose](/api-reference/repurposes/update-repurpose) | `repurpose_id` (required), `source_social_account_id`, `source_format`, `publish_mode`, `destinations[]` |
-| `activate-repurpose-tool` | Start watching. Needs a usable source, at least one destination and the destinations' required meta. Only videos published from now on are replicated. REST: [Activate repurpose](/api-reference/repurposes/activate-repurpose) | `repurpose_id` (required) |
-| `pause-repurpose-tool` | Pause an active repurpose; the watermark is kept. REST: [Pause repurpose](/api-reference/repurposes/pause-repurpose) | `repurpose_id` (required) |
-| `resume-repurpose-tool` | Resume a paused repurpose, with the same checks as activation. After a pause you made it continues from where it stopped; after a pause TryPost made (for example the source needed reconnecting) it starts from now, so videos posted meanwhile are not replicated. REST: [Resume repurpose](/api-reference/repurposes/resume-repurpose) | `repurpose_id` (required) |
-| `disable-repurpose-tool` | Turn a repurpose off and clear its watermark. REST: [Disable repurpose](/api-reference/repurposes/disable-repurpose) | `repurpose_id` (required) |
-| `list-repurpose-items-tool` | Every source video the repurpose has seen, with why each was skipped. Read-only. REST: [List repurpose items](/api-reference/repurposes/list-repurpose-items) | `repurpose_id` (required), `page` |
-| `delete-repurpose-tool` | Delete a repurpose. Polling stops; posts it created stay. Returns `{deleted: true}`. REST: [Delete repurpose](/api-reference/repurposes/delete-repurpose) | `repurpose_id` (required) |
+### create-slide-tool
 
-Videos already published through TryPost are never replicated.
+Adds a slide: a frame (1920 × 1080 by default) placed 200 px to the right of the last slide and played after it. Returns its `frameId`, position, bounds, the safe area (5 % in from every edge) and the regions to lay content in: `title` (top 15 % of the safe area), `body` (the rest), `left` and `right` (the halves of the body). Then draw into it with `edit-scene-content-tool`, giving each element `frame: {id: frameId}`.
 
-## Labels
+`scenes:write`
 
-Any member can manage labels. See [Labels](/knowledge-base/settings/labels).
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
+| `title` | string | The slide title, shown as the frame name (up to 200 characters). |
+| `width`, `height` | number | Frame size in scene pixels (default 1920 × 1080, between 100 and 10000). |
 
-| Tool | What it does | Key arguments |
-|------|--------------|---------------|
-| `list-labels-tool` | List the workspace's labels. Read-only. REST: [List labels](/api-reference/labels/list-labels) | `page` |
-| `create-label-tool` | Create a label. REST: [Create label](/api-reference/labels/create-label) | `name` (required, max 255), `color` (required, `#RRGGBB`) |
-| `update-label-tool` | Update a label's name and color. REST: [Update label](/api-reference/labels/update-label) | `label_id`, `name`, `color` (all required) |
-| `delete-label-tool` | Delete a label and detach it from every post. Destructive. REST: [Delete label](/api-reference/labels/delete-label) | `label_id` (required) |
+### update-slide-tool
 
-## Signatures
+Changes a slide's title, speaker notes, hidden flag and position. Only the fields you send change. Returns the updated slide and the `contentVersion`.
 
-Any member can manage signatures. A signature is never added to a post on its own: append its content to the post text. See [Signatures](/knowledge-base/settings/signatures).
+`scenes:write`
 
-| Tool | What it does | Key arguments |
-|------|--------------|---------------|
-| `list-signatures-tool` | List the workspace's signatures. Read-only. REST: [List signatures](/api-reference/signatures/list-signatures) | `page` |
-| `create-signature-tool` | Create a signature. REST: [Create signature](/api-reference/signatures/create-signature) | `name` (required, max 255), `content` (required) |
-| `update-signature-tool` | Update a signature. REST: [Update signature](/api-reference/signatures/update-signature) | `signature_id`, `name`, `content` (all required) |
-| `delete-signature-tool` | Delete a signature. Destructive. REST: [Delete signature](/api-reference/signatures/delete-signature) | `signature_id` (required) |
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
+| `frame_id` | string, required | The slide's `frameId`. |
+| `title` | string | The new title (an empty string removes it; up to 200 characters). |
+| `notes` | string | Speaker notes, shown to the presenter only and never on public links (up to 10,000 characters; an empty string removes them). |
+| `hidden` | boolean | `true` leaves the slide out of the presentation and exports. |
+| `position` | integer | The new 1-based position (a number past the end moves it last). |
 
-## Webhooks
+## Scenes
 
-Admins only. Each delivery is a JSON `POST` signed with HMAC-SHA256 of the body; the hex digest is in `X-Webhook-Signature`. After 5 failed deliveries in a row the webhook is paused and the account owner is emailed. Events: `post.created`, `post.scheduled`, `post.unscheduled`, `post.published`, `post.failed`, `post.deleted`. See [Webhooks](/knowledge-base/settings/webhooks).
+### list-scenes-tool
 
-| Tool | What it does | Key arguments |
-|------|--------------|---------------|
-| `list-webhooks-tool` | List webhooks without their secrets. Read-only. REST: [List webhooks](/api-reference/webhooks/list-webhooks) | `page` |
-| `get-webhook-tool` | Get one webhook, including `signing_secret`. Read-only. REST: [Get webhook](/api-reference/webhooks/get-webhook) | `webhook_id` (required) |
-| `create-webhook-tool` | Create a webhook (always `enabled`). Returns it with `signing_secret`. Private or local endpoints are refused; no test request is sent. REST: [Create webhook](/api-reference/webhooks/create-webhook) | `endpoint` (required, max 255), `events[]` (required, at least one) |
-| `update-webhook-tool` | Update the endpoint, events or status. Re-enabling a paused webhook resets its failures. REST: [Update webhook](/api-reference/webhooks/update-webhook) | `webhook_id` (required), `endpoint`, `events[]`, `status` (`enabled` \| `disabled`) |
-| `delete-webhook-tool` | Delete a webhook and its logs. Destructive. REST: [Delete webhook](/api-reference/webhooks/delete-webhook) | `webhook_id` (required) |
-| `send-webhook-test-tool` | Send a signed `webhook.test` ping. Writes no delivery log. Returns `{tested: true}`. REST: [Send webhook test](/api-reference/webhooks/send-webhook-test) | `webhook_id` (required) |
-| `rotate-webhook-secret-tool` | Rotate the signing secret; the old one stops working at once. Returns the new `signing_secret`. Destructive. REST: [Rotate webhook secret](/api-reference/webhooks/rotate-webhook-secret) | `webhook_id` (required) |
-| `list-webhook-logs-tool` | List delivery logs, newest first, with payload and response body. Read-only. REST: [List webhook logs](/api-reference/webhooks/list-webhook-logs) | `webhook_id` (required), `page` |
-| `replay-webhook-log-tool` | Queue a new signed delivery of a log's payload, even when the webhook is paused or disabled. Returns `{replayed: true}`. REST: [Replay webhook log](/api-reference/webhooks/replay-webhook-log) | `webhook_id`, `log_id` (both required) |
+Lists the scenes the connection can see, most recently edited first: id, name, collection, pinned, content version, element count, preview and app links.
 
-## API keys
+Read-only · `scenes:read`
 
-Admins only. These manage the Personal Access Tokens used by the REST API; OAuth connections such as this one are not listed. Each admin sees and revokes only the keys they created in this workspace. See [API keys](/knowledge-base/settings/api-keys).
+| Input | Type | Description |
+| --- | --- | --- |
+| `collection_id` | string | Only scenes of this collection. |
+| `search` | string | Only scenes whose name or canvas text matches these words. |
+| `pinned` | boolean | `true` for pinned scenes only, `false` for the others. |
+| `page` | integer | The page, from 1. |
 
-| Tool | What it does | Key arguments |
-|------|--------------|---------------|
-| `list-api-keys-tool` | List API keys (metadata only, never the secret). Read-only. REST: [List API keys](/api-reference/api-keys/list-api-keys) | `page` |
-| `create-api-key-tool` | Create an API key. Returns `{token, plain_token}`: `token` is the metadata and `plain_token` the secret, shown once. REST: [Create API key](/api-reference/api-keys/create-api-key) | `name` (required, max 255), `expires_at` (today or later; omit for no expiry) |
-| `delete-api-key-tool` | Revoke an API key. Integrations using it stop working. Destructive. REST: [Delete API key](/api-reference/api-keys/delete-api-key) | `api_key_id` (required) |
+### get-scene-tool
+
+Gets one scene's metadata: name, collection, pinned, who created and last edited it, content version, element count, preview and app links and its share links.
+
+Read-only · `scenes:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
+
+### create-scene-tool
+
+Creates an empty scene. Workspace keys must give a shared `collection_id`; personal keys and OAuth connections default to the member's private collection. Returns the scene.
+
+`scenes:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `name` | string | Up to 120 characters. Untitled scenes get a name automatically. |
+| `collection_id` | string | The collection to create the scene in. |
+
+### update-scene-tool
+
+Renames a scene, moves it to another collection or pins it. Send only the fields to change. Returns the updated scene.
+
+`scenes:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
+| `name` | string | The new name, up to 120 characters. |
+| `collection_id` | string | The collection to move the scene to. |
+| `pinned` | boolean | `true` to pin, `false` to unpin. |
+
+### delete-scene-tool
+
+Moves a scene to the trash, where it stays restorable from the app for 30 days. Recorded in the audit log.
+
+Destructive · `scenes:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
+
+## Collections
+
+### list-collections-tool
+
+Lists the collections the connection can see, private collection first, then in the manual order. Workspace keys never see private collections.
+
+Read-only · `collections:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `page` | integer | The page, from 1. |
+
+### get-collection-tool
+
+Gets one collection: name, emoji, whether it is private, its order and when it was created.
+
+Read-only · `collections:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `collection_id` | string, required | The collection id. |
+
+### list-collection-scenes-tool
+
+Lists the scenes of one collection, most recently edited first, with the same fields as `list-scenes-tool`.
+
+Read-only · `collections:read` and `scenes:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `collection_id` | string, required | The collection id. |
+| `page` | integer | The page, from 1. |
+
+### create-collection-tool
+
+Creates a shared collection, last in the manual order. It is visible to every member unless `team_ids` restricts it (admins only; workspace keys cannot restrict). Returns the collection.
+
+`collections:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `name` | string, required | Up to 60 characters. |
+| `emoji` | string | An emoji shown before the name. |
+| `team_ids` | string[] | Team ids: only their members and the admins will see the collection. |
+
+### update-collection-tool
+
+Renames a collection, changes its emoji, moves it in the manual order or restricts it to teams. Send only the fields to change. Returns the updated collection.
+
+`collections:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `collection_id` | string, required | The collection id. |
+| `name` | string | The new name, up to 60 characters. |
+| `emoji` | string | The new emoji; an empty value removes it. |
+| `sort_order` | integer | The new place in the manual order, from 0. |
+| `team_ids` | string[] | The teams the collection is restricted to; an empty list opens it to every member (admins only). |
+
+### delete-collection-tool
+
+Moves a shared collection and all its scenes to the trash, restorable from the app for 30 days. Private collections cannot be deleted. Recorded in the audit log.
+
+Destructive · `collections:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `collection_id` | string, required | The collection id. |
 
 ## Workspace
 
-| Tool | What it does | Key arguments |
-|------|--------------|---------------|
-| `get-workspace-tool` | The workspace this connection acts in (`id`, `name`, timestamps) and what you may do there: `me.is_admin`, `me.requires_approval`, `me.publishes_directly`. Read-only. REST: [Get workspace](/api-reference/workspace/get-workspace) | none |
+### get-workspace-tool
 
-## Platform
+Gets the workspace the connection is bound to: id, name, whether it is personal, plan, member count, whether it is read-only and when it was created. No inputs.
 
-| Tool | What it does | Key arguments |
-|------|--------------|---------------|
-| `list-content-types-tool` | Every platform with its content types and rules. Per platform: `label`, `allowed_media_types`, `default_content_type`, `max_content_length` (the network default; the account limit is in `list-social-accounts-tool`), `recommended_content_length`, `max_hashtags`, `alt_text_max_length`, `required_meta`. Per content type: `value`, `label`, `description`, media counts (`min_media_count`, `requires_media`), `forbids_mixed_media`, `auto_fits_image`, accepted types, GIF and MOV, byte caps, video duration, aspect ratios, image sizes, alt text, user tags, video cover, `captionless`, `document_must_be_alone`, `supports_thread_replies`, `max_thread_replies`. Call it before choosing a `content_type` or attaching media. Read-only. REST: [List content types](/api-reference/platform/list-content-types) | none |
+Read-only · `workspace:read`
 
-## Notes
+### update-workspace-tool
 
-- **Lists are paginated** with the app page size (25 today; read `per_page` rather than assuming it). Pass `page`; responses carry `total`, `per_page`, `current_page` and `last_page` next to the rows.
-- **Errors** come back as tool errors with a message (`Post not found.`, `This action is unauthorized.`, or the validation message). When the queue of a channel is busy, retry in a moment.
-- **Confirmations**: every tool tells the client whether it only reads, whether it changes or removes existing data, and whether it reaches outside TryPost. Read-only tools run without asking in most clients. Tools that change or remove data, publish, approve or reject, send email or replay a webhook are marked destructive, so clients ask you first; purely additive tools (creating an idea, idea stage, label, signature, API key, repurpose, webhook or Pinterest board, and requesting an upload) are not. Tools that can publish to public networks, fetch a URL, call a webhook endpoint or read Instagram's audio catalog are marked as reaching outside TryPost.
-- **Not available through MCP**: AI generation, connecting or disconnecting channels, turning ideas into posts, templates, members and invites, billing. Use the web app for these.
+Renames the workspace. Recorded in the audit log. Returns the updated workspace.
+
+`workspace:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `name` | string, required | The new name, up to 255 characters. |
+
+## Members
+
+### list-users-tool
+
+Lists the members with their role (`admin` or `member`), whether they own the workspace and when they joined, oldest first.
+
+Read-only · `users:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `page` | integer | The page, from 1. |
+
+### get-user-tool
+
+Gets one member: name, e-mail, role, whether they own the workspace and when they joined.
+
+Read-only · `users:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `user_id` | string, required | The member's user id. |
+
+### update-user-tool
+
+Changes a member's role. The owner always stays an admin. Needs an admin (or a workspace key); recorded in the audit log. Returns the updated member.
+
+`users:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `user_id` | string, required | The member's user id. |
+| `role` | string, required | `admin` or `member`. |
+
+### remove-user-tool
+
+Removes a member. Their personal API keys are deleted, they leave every team and their private collection stays with the workspace. With `block`, their e-mail also cannot be invited again (nor accept an old invite) until the block is lifted. The owner cannot be removed. Needs an admin (or a workspace key); recorded in the audit log.
+
+Destructive · `users:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `user_id` | string, required | The member's user id. |
+| `block` | boolean | Also block the member's e-mail (default `false`). |
+
+### list-blocks-tool
+
+Lists the blocked e-mails, newest first: the e-mail, who blocked it and when. Needs an admin (or a workspace key).
+
+Read-only · `users:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `page` | integer | The page, from 1. |
+
+### unblock-member-tool
+
+Unblocks an e-mail: it can be invited again, but it does not rejoin by itself. Needs an admin (or a workspace key); recorded in the audit log.
+
+`users:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `block_id` | string, required | The block id, from `list-blocks-tool`. |
+
+## Invites
+
+### list-invites-tool
+
+Lists the invites not accepted yet (pending or expired), newest first, with e-mail, role, status and expiry.
+
+Read-only · `invites:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `page` | integer | The page, from 1. |
+
+### get-invite-tool
+
+Gets one invite: e-mail, role, status (`pending`, `accepted` or `expired`), who invited and when it expires.
+
+Read-only · `invites:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `invite_id` | string, required | The invite id. |
+
+### create-invite-tool
+
+Invites someone by e-mail with a role and sends them an invitation e-mail that expires in 3 days. Fails when the person is already a member or already has a pending invite. Each member is a paid seat. Returns the invite.
+
+Open-world · `invites:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `email` | string, required | The e-mail address to invite. |
+| `role` | string, required | `admin` or `member`. |
+
+### update-invite-tool
+
+Changes the role a pending invite grants. Accepted or expired invites cannot change. Returns the updated invite.
+
+`invites:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `invite_id` | string, required | The invite id. |
+| `role` | string, required | `admin` or `member`. |
+
+### delete-invite-tool
+
+Cancels an invite: its link stops working. Recorded in the audit log.
+
+Destructive · `invites:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `invite_id` | string, required | The invite id. |
+
+## Teams
+
+Team tools need an admin (or a workspace key).
+
+### list-teams-tool
+
+Lists the teams (groups of members that collections can be restricted to), by name, with their member count.
+
+Read-only · `teams:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `page` | integer | The page, from 1. |
+
+### get-team-tool
+
+Gets one team: its name and member count.
+
+Read-only · `teams:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `team_id` | string, required | The team id. |
+
+### list-team-members-tool
+
+Lists a team's members, by name, with their workspace role.
+
+Read-only · `teams:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `team_id` | string, required | The team id. |
+| `page` | integer | The page, from 1. |
+
+### create-team-tool
+
+Creates a team with a unique name and, optionally, its first members. Recorded in the audit log. Returns the team.
+
+`teams:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `name` | string, required | Up to 60 characters, unique in the workspace (ignoring case). |
+| `user_ids` | string[] | Member ids to put in the team. |
+
+### update-team-tool
+
+Renames a team (the name stays unique, ignoring case). Recorded in the audit log. Returns the team.
+
+`teams:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `team_id` | string, required | The team id. |
+| `name` | string, required | The new name, up to 60 characters. |
+
+### set-team-members-tool
+
+Replaces a team's members with the given workspace members (an empty list empties the team). People left out lose access to the collections restricted to it. Recorded in the audit log. Returns the team.
+
+`teams:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `team_id` | string, required | The team id. |
+| `user_ids` | string[], required | Every member id the team should have. |
+
+### delete-team-tool
+
+Deletes a team. Collections restricted only to it stay restricted and become visible to the admins only. Recorded in the audit log.
+
+Destructive · `teams:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `team_id` | string, required | The team id. |
+
+## Audit log
+
+### list-audit-logs-tool
+
+Lists the workspace audit log, newest first: who did what, on which resource, with what details and when. Needs an admin (or a workspace key).
+
+Read-only · `audit-logs:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `action` | string | Only entries of this action, for example `scene.created` or `member.removed`. The values are the `action` filter of the API's `GET /audit-logs`. |
+| `user_id` | string | Only entries made by this user. |
+| `from`, `to` | string | Only entries on or after / on or before this date (`YYYY-MM-DD`). |
+| `page` | integer | The page, from 1. |

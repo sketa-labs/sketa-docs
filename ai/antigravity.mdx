@@ -1,40 +1,40 @@
 ---
 title: "Antigravity"
-description: "Connect TryPost to Google Antigravity for AI-powered social media management"
+description: "Connect Sketa to Google Antigravity to draw diagrams and slides with AI"
 icon: "/images/ai/antigravity.svg"
 ---
 
-[Antigravity](https://antigravity.google) is Google's AI coding agent. You can connect it to TryPost's MCP server when the client can complete OAuth.
+[Antigravity](https://antigravity.google) is Google's AI coding agent. You can connect it to Sketa's MCP server when the client can complete OAuth.
 
 ## Prerequisites
 
 - Antigravity installed
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
 <Steps>
   <Step title="Open the MCP configuration file">
-    From Antigravity, open **MCP Servers → Manage → View raw config**, then add the TryPost server **without** an `Authorization` header so OAuth can run:
+    From Antigravity, open **MCP Servers → Manage → View raw config**, then add the Sketa server **without** an `Authorization` header so OAuth can run:
 
     ```json
     {
       "mcpServers": {
-        "trypost": {
-          "serverUrl": "https://app.trypost.it/mcp/trypost"
+        "sketa": {
+          "serverUrl": "https://sketa.app/mcp"
         }
       }
     }
     ```
   </Step>
   <Step title="Sign in through your browser">
-    Restart Antigravity if needed, then trigger a TryPost tool call. Complete the browser OAuth flow: pick the **Workspace** this connection may use and click **Authorize**. To use another workspace, connect again and pick it. Personal Access Tokens are not accepted on the MCP endpoint.
+    Restart Antigravity if needed, then trigger a Sketa tool call. Complete the browser OAuth flow: pick the **Workspace** this connection may use and click **Allow**. To use another workspace, connect again and pick it.
   </Step>
   <Step title="Verify the connection">
     Ask Antigravity:
 
     ```
-    List all my TryPost social accounts
+    List my Sketa collections
     ```
   </Step>
 </Steps>
@@ -44,19 +44,23 @@ icon: "/images/ai/antigravity.svg"
 </Tip>
 
 <Note>
-  If Antigravity cannot finish OAuth (no browser callback), use the [REST API](/api-reference/introduction) with an API key (workspace admins only) from **Settings → API Keys** instead of MCP.
+  If Antigravity cannot finish OAuth (no browser callback), add an `Authorization: Bearer sketa_...` header with an [API key](/knowledge-base/developers/api-keys) to the server config instead.
 </Note>
 
 ## Example prompts
 
 ```
-Create a new post scheduled for Friday at 2pm London time
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Show me all labels in my workspace
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-Create a signature called "Social Media" with #socialmedia #content #marketing
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
+```
+
+```
+Which scenes did I edit this week?
 ```

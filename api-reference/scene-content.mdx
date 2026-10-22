@@ -1,0 +1,129 @@
+---
+title: "Scene content"
+description: "Read, replace and merge the elements of a scene: the element format, versions and limits."
+icon: "shapes"
+---
+
+A scene's content is its list of **elements**: shapes, text, arrows, frames, images and so on. Three endpoints work on it:
+
+| Endpoint | Does |
+| --- | --- |
+| [`GET /scenes/{scene}/content`](#read) | Read every live element |
+| [`PUT /scenes/{scene}/content`](#replace) | Make the scene hold exactly the elements you send |
+| [`PATCH /scenes/{scene}/content`](#merge) | Change, add or delete only the elements you name |
+
+Writes are applied to the live scene: everyone with the scene open sees them at once, and they go into the [version history](/knowledge-base/scenes/version-history) like any edit.
+
+## The element format
+
+The full JSON Schema is published at [`https://sketa.app/schemas/scene-content.v1.json`](https://sketa.app/schemas/scene-content.v1.json). The main fields:
+
+| Field | Notes |
+| --- | --- |
+| `id` | 1 to 64 characters. Kept when you send one; Sketa makes one otherwise. |
+| `type` | `rectangle`, `diamond`, `ellipse`, `arrow`, `line`, `freedraw`, `text`, `image`, `frame`, `embed` or `sticky`. An element keeps its type for life. |
+| `x`, `y`, `width`, `height` | Scene pixels. `angle` is in radians, clockwise. |
+| `strokeColor`, `backgroundColor` | For example `#1e1e1e`, `#b8dcff` or `transparent`. |
+| `fillStyle` | `hachure`, `cross-hatch`, `solid` or `zigzag`. |
+| `strokeWidth` | `1`, `2` or `4`. |
+| `strokeStyle` | `solid`, `dashed` or `dotted`. |
+| `roughness` | `0` (Architect), `1` (Artist) or `2` (Cartoonist). |
+| `opacity` | 0 to 100. |
+| `text`, `fontSize`, `fontFamily`, `textAlign`, `verticalAlign` | Text elements. `fontFamily` is `hand`, `normal` or `code`. `containerId` puts the text inside a shape. |
+| `points`, `startBinding`, `endBinding`, `startArrowhead`, `endArrowhead`, `arrowType` | Arrows and lines. Points are relative to `x`, `y`. `arrowType` is `sharp`, `round` or `elbow`. |
+| `frameId` | The frame the element belongs to. `name` is a frame's name. |
+| `groupIds`, `boundElements`, `link`, `locked`, `customData` | Grouping, bindings, a link, locking and up to 64 KB of your own JSON. |
+
+Missing fields get the editor's defaults (for example `strokeColor: "#1e1e1e"`, `roughness: 1`, `fontFamily: "hand"`), and unknown fields are dropped. Sketa manages `seed`, `version`, `versionNonce`, `updated` and the z-order `index`.
+
+## Read
+
+```bash
+curl https://sketa.app/api/v1/scenes/SCENE_ID/content \
+  -H "Authorization: Bearer sketa_YOUR_API_KEY"
+```
+
+```json
+{
+  "contentVersion": 12,
+  "elements": [
+    { "id": "box-1", "type": "rectangle", "x": 0, "y": 0, "width": 160, "height": 80, "...": "..." }
+  ],
+  "files": [
+    { "id": "3f1c...", "url": "https://..." }
+  ]
+}
+```
+
+Elements come in z-order, bottom first, without deleted elements. `files` has a signed link, valid for one hour, for each image the elements use (by `fileId`).
+
+## Replace
+
+`PUT` makes the scene hold exactly the `elements` you send. Each element needs a `type`.
+
+- An element with the `id` of a live element replaces it.
+- A new element is added on top.
+- Live elements you leave out are deleted.
+
+```bash
+curl -X PUT https://sketa.app/api/v1/scenes/SCENE_ID/content \
+  -H "Authorization: Bearer sketa_YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "elements": [
+      { "id": "start", "type": "ellipse", "x": 0, "y": 0, "width": 160, "height": 80, "backgroundColor": "#b8dcff", "fillStyle": "solid" },
+      { "id": "label", "type": "text", "x": 0, "y": 100, "text": "Start here" }
+    ]
+  }'
+```
+
+```json
+{ "contentVersion": 13 }
+```
+
+## Merge
+
+`PATCH` applies patches and leaves every other element alone. Each patch needs an `id`:
+
+- **Change**: the `id` of a live element plus the fields to change. They are merged into the element.
+- **Delete**: `{"id": "...", "isDeleted": true}`.
+- **Add**: a new `id` with a `type`. An unknown `id` without a `type` is refused with `422`.
+
+```bash
+curl -X PATCH https://sketa.app/api/v1/scenes/SCENE_ID/content \
+  -H "Authorization: Bearer sketa_YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "elements": [
+      { "id": "start", "x": 200 },
+      { "id": "label", "isDeleted": true },
+      { "id": "note", "type": "sticky", "x": 400, "y": 0, "width": 200, "height": 200 }
+    ]
+  }'
+```
+
+## Create a scene with content
+
+`POST /scenes` accepts an optional `elements` list in the same format, placed in the order sent:
+
+```bash
+curl -X POST https://sketa.app/api/v1/scenes \
+  -H "Authorization: Bearer sketa_YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Login flow", "elements": [ { "type": "rectangle", "x": 0, "y": 0, "width": 160, "height": 80 } ] }'
+```
+
+Workspace keys must also send a shared `collection_id`; personal keys default to the member's private collection.
+
+## Versions
+
+Every write returns the scene's new `contentVersion`, which goes up with every change from anyone. Each written element gets a version above the live one, so your write wins over what was there and reaches every open editor.
+
+## Limits
+
+- Up to **5,000 elements** per request, and a body of up to **10 MB** (`413` above that).
+- Coordinates and sizes between -10,000,000 and 10,000,000; up to 10,000 points per line; text up to 100,000 characters; `customData` up to 64 KB of JSON.
+
+<Tip>
+  Building diagrams and slides from an AI assistant? The [MCP server](/ai/introduction) adds higher-level tools on top of this format: element skeletons with labels and bound arrows, diagrams with automatic layout, slides and screenshots.
+</Tip>

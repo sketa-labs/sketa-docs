@@ -1,115 +1,118 @@
 ---
 title: "Introduction"
-description: "Connect AI coding assistants to your TryPost account using the Model Context Protocol"
+description: "Connect AI assistants to your Sketa workspace with the Model Context Protocol"
 icon: "book-open"
 ---
 
-TryPost provides a built-in [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that lets AI assistants manage your social media scheduling directly. Your assistant can create, schedule, queue and publish posts, handle approvals, organize ideas, read analytics, and manage signatures, labels, posting times, webhooks, repurposes and API keys — all through natural language.
+Sketa has a built-in [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that lets AI assistants work in your workspace directly. Your assistant can draw diagrams with automatic layout, add shapes, arrows, sticky notes and images, build slide decks, take screenshots to check its work, and manage scenes, collections, members, invites and teams, all through natural language.
 
 ## What is MCP?
 
-MCP is an open protocol that connects AI assistants to external tools and data sources. Instead of copying and pasting API calls, your AI assistant can interact with TryPost directly.
+MCP is an open protocol that connects AI assistants to external tools and data. Instead of you copying JSON around, the assistant calls Sketa's tools itself.
 
 ## Available tools
 
-The server exposes 81 tools. See the [Tools reference](/ai/tools-reference) for every argument and the recommended workflow.
+The server exposes 42 tools. See the [Tools reference](/ai/tools-reference) for every input, and the [Format guides](/ai/format-guides) for how the assistant is told to lay out diagrams, slides and freeform boards.
 
 | Category | What your assistant can do |
 |----------|----------------------------|
-| **Posts** | List, get, create (one channel or several at once), update, preview, publish, delete; schedule at a time or in the channel queue; threads on X, Bluesky and Mastodon; attach media from a URL or a local upload; notes; approvals; recurrence; metrics |
-| **Ideas** | List, create, update, duplicate, move and delete ideas; manage the board's stages |
-| **Analytics** | Workspace report, a publication's metrics, channel insights and a channel's best posts |
-| **Social accounts and queue** | List channels; read and set posting times; list free queue slots, reorder the queue, move a post to a slot; Pinterest boards, Discord channels and TikTok creator info |
-| **Repurpose** | Watch Instagram or Facebook and republish new videos to other networks |
-| **Labels and signatures** | Manage color-coded labels and reusable text blocks |
-| **Webhooks** | Subscribe to post events, test, rotate secrets, read and replay deliveries |
-| **API keys** | List, create and revoke REST API keys |
-| **Workspace and platforms** | Read the workspace and your permissions in it; list content types and each network's rules |
+| **Drawing** | Search a scene, read its content, add, change and delete elements from simple skeletons, draw diagrams with automatic layout, add images from a URL or base64, take a PNG screenshot of the scene or one frame |
+| **Slides** | Add slides (frames) with a safe area and layout regions, list them, change titles, presenter notes, order and visibility |
+| **Scenes and collections** | List, search, create, rename, move, pin and delete scenes; list, create, edit and delete collections |
+| **Workspace and people** | Read and rename the workspace; list members, change roles, remove and block, unblock; list, send, change and cancel invites; manage teams and their members |
+| **Audit log** | Read the workspace's audit log with filters |
 
 ### What MCP cannot do
 
-- **Generate content with AI.** There is no MCP tool for generating or rewriting content. Your assistant writes the text itself and sends it to TryPost; the built-in AI writing assistant is available in the web app. Repurpose may shorten captions with AI in the background, including for rules created through MCP.
-- Connect, reconnect or disconnect channels, turn ideas into posts, manage templates, members, invites or billing. Use the [web app](https://app.trypost.it) for these.
+- Restore from the trash or from version history, manage public links, guests, comments, billing or API keys. Use the [web app](https://sketa.app/dashboard) for these.
+- Use Sketa's own AI features (text to diagram, wireframe to code). The assistant is the AI: it draws through the tools instead.
 
 ## How it works
 
 <Note>
-  MCP on **TryPost Cloud** needs an account with access to the app (an active subscription). See [Plans & billing](/knowledge-base/settings/plans-and-billing). Self-hosted instances skip this check.
+  MCP is part of **Sketa Plus**: the connection must be bound to a Plus workspace. See [Plans and billing](/knowledge-base/workspace/plans-and-billing).
 </Note>
 
 <Steps>
-  <Step title="Add the TryPost MCP server in your assistant">
-    Use your assistant's MCP configuration to add a remote HTTP server pointing to `https://app.trypost.it/mcp/trypost`. Each [client guide](#next-steps) below has the exact command or settings file.
+  <Step title="Add the Sketa MCP server in your assistant">
+    Use your assistant's MCP configuration to add a remote HTTP server pointing to `https://sketa.app/mcp`. Each [client guide](#next-steps) below has the exact command or settings file.
   </Step>
   <Step title="Sign in and pick a workspace">
-    The first time the assistant connects, TryPost opens a browser window. Sign in, choose the **Workspace** this connection may use, and click **Authorize**. The assistant holds the OAuth token from then on, with automatic refresh.
+    The first time the assistant connects, Sketa opens **Connect an app** in your browser. Sign in, choose the **Workspace** this connection may use ("The app only reaches the workspace you pick.") and click **Allow**. The assistant keeps the OAuth token from then on, with automatic refresh.
   </Step>
   <Step title="Start using natural language">
-    Ask your assistant to manage your TryPost account. For example: "Queue a LinkedIn post for my next free slot" or "List my posts waiting for approval."
+    Ask your assistant to work in Sketa. For example: "Draw the architecture of our checkout service in a new scene" or "Turn these notes into a five-slide deck."
   </Step>
 </Steps>
 
 ## Server URL
 
 ```
-https://app.trypost.it/mcp/trypost
+https://sketa.app/mcp
 ```
-
-<Note>
-  Self-hosting TryPost? The server lives at `{APP_URL}/mcp/trypost` on your instance.
-</Note>
 
 ## Authentication
 
-TryPost's MCP server uses **OAuth 2.1** with Dynamic Client Registration (DCR), PKCE, and the `mcp:use` scope. Modern MCP clients detect this automatically from the `.well-known` discovery endpoints — you only point them at the URL and the browser sign-in handles the rest.
+The server accepts two kinds of credentials. Both are bound to one Plus workspace.
 
-Each connection is bound to the workspace you chose on the consent screen ("This connection will only access the selected workspace."). To work in another workspace, connect again and pick it. Manage or disconnect connected assistants under workspace **Settings → MCP**.
+### OAuth (recommended)
 
-<Warning>
-  Personal Access Tokens from **Settings → API Keys** authenticate the [REST API](/api-reference/introduction) only. They are **not** accepted on `/mcp/trypost`. MCP requires an OAuth grant with the `mcp:use` scope (browser sign-in from a supported client).
-</Warning>
+Sketa's MCP server supports **OAuth 2.1** with Dynamic Client Registration, PKCE and the `mcp:use` scope. Modern MCP clients detect it from the `.well-known` discovery endpoints: you only give them the URL and the browser sign-in does the rest.
+
+An OAuth connection acts as **you**, with every ability, in the workspace you picked on the consent screen: it sees your private collection and can do what you can do in the app. To work in another workspace, connect again and pick it. Only Plus workspaces can be picked; if you have none, the consent screen tells you to upgrade one or join one first.
+
+### API key
+
+For clients that cannot complete OAuth, and for scripts, send an [API key](/knowledge-base/developers/api-keys) as a header:
+
+```
+Authorization: Bearer sketa_YOUR_API_KEY
+```
+
+The key's scope and abilities apply exactly as on the REST API: a personal key acts as its member, a workspace key acts as the workspace (shared collections only), and tools outside the key's abilities answer "This connection is missing the *ability* ability."
 
 ## Permissions
 
-Every member of the workspace can connect an assistant, not only admins (the REST API accepts admin API keys only). The assistant can do what you can do in the app:
+The MCP server resolves the same actor as the [REST API](/api-reference/introduction), so permissions are identical:
 
-- **Any member** can write posts, notes, ideas, labels and signatures and read analytics.
-- **Members who need approval**: posts they schedule, queue or publish wait as `pending_approval` until a member who publishes directly approves them. Ask the assistant to call `get-workspace-tool` to see which applies to you.
-- **Members who publish directly** can also approve and reject posts, manage the queue order, set recurrence and run repurposes.
-- **Admins** can also change posting times and manage webhooks and API keys.
+- **Members** can create, edit, move and delete scenes and collections they can see, and read members and invites.
+- **Admins** (and workspace keys) can also rename the workspace, change roles, remove and block members, send and cancel invites, manage teams and read the audit log.
+- Anything outside the workspace, or not visible to the connection (another member's private collection; a restricted collection for a workspace key), answers "Not found."
+- In a **read-only** workspace (Plus ended), every tool that changes something answers "Workspace is read-only."
 
-See [Members and permissions](/knowledge-base/settings/members-and-permissions) and [Approvals](/knowledge-base/publish/approvals).
+Every change made through MCP is recorded in the [audit log](/knowledge-base/workspace/audit-log) with the source **MCP**. Tool calls are limited to 120 per minute per connection.
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="HTTP 402 — Active subscription required">
-    Your OAuth grant is valid and the config is correct — the account behind it just doesn't have an active subscription. Open [app.trypost.it](https://app.trypost.it), pick a plan, then reconnect the MCP server. Self-hosted instances skip this check.
+  <Accordion title="HTTP 402 — Sketa Plus required">
+    The workspace the connection (or API key) is bound to does not have Sketa Plus. Subscribe in **Settings → Billing**, or reconnect and pick a Plus workspace.
   </Accordion>
   <Accordion title="HTTP 401 — Unauthenticated">
-    The OAuth session expired and refresh failed, the access token is missing, malformed or revoked (removing you from the workspace revokes it), or the workspace it was bound to was deleted (`No workspace selected.`). Re-run the assistant's connect flow to sign in again.
+    The OAuth session expired and refresh failed, or the token or API key is missing, malformed, revoked or expired (`API key expired.`). `API key revoked.` means you are no longer a member of the workspace the connection was bound to. Re-run the assistant's connect flow, or create a new key.
   </Accordion>
-  <Accordion title="HTTP 403 — MCP OAuth authorization required">
-    The request used a Personal Access Token (API key) or an OAuth token without the `mcp:use` scope. Remove any `Authorization: Bearer …` API key from the MCP config and connect with OAuth instead. For scripts and CI, call the [REST API](/api-reference/introduction) with an API key (workspace admins only) — not the MCP endpoint.
+  <Accordion title="HTTP 403 — Personal API keys are turned off in this workspace">
+    You connected with a personal API key and an admin turned personal keys off. Connect with OAuth instead, or ask an admin for a workspace key.
   </Accordion>
-  <Accordion title="HTTP 403 — Workspace access denied">
-    The connection is bound to a workspace you can no longer access. Reconnect and pick a workspace you belong to.
+  <Accordion title="A tool says “This connection is missing the … ability”">
+    The API key does not carry that ability. Create a key with the abilities you need, or connect with OAuth (which carries every ability).
   </Accordion>
-  <Accordion title="Server shows as “Failed to connect”">
-    Run the connection probe your assistant exposes (for example `claude mcp list` or `devin mcp list`). The HTTP status from the probe tells you which case you're in: `402` → see above; `401` → re-authenticate; `403` → see the two 403 entries above (use OAuth, not an API key; or reconnect to a workspace you belong to); anything else → open an issue on [GitHub](https://github.com/trypostit/trypost/issues).
+  <Accordion title="A tool says “Not found.”">
+    The id is from another workspace, or the connection cannot see it: another member's private collection, or a team-restricted collection for a workspace key. Ask the assistant to list the resources first instead of guessing ids.
   </Accordion>
   <Accordion title="Browser doesn't open during sign-in">
-    Some clients print the authorize URL to the terminal instead of launching the browser when running over SSH or inside a container. Copy the URL into a local browser, complete the flow, and the assistant will pick up the callback automatically. If the callback port is blocked, use a client that can finish OAuth locally, or drive TryPost through the [REST API](/api-reference/introduction) with an API key (workspace admins only).
+    Some clients print the authorize URL to the terminal instead of opening the browser when running over SSH or inside a container. Copy the URL into a local browser and finish the flow. If the callback cannot reach the client, connect with an API key header instead.
   </Accordion>
 </AccordionGroup>
 
 ## Next steps
 
-Every Build with AI page is linked here — the tools reference plus all 18 setup guides.
-
 <CardGroup cols={3}>
   <Card title="Tools reference" icon="wrench" href="/ai/tools-reference">
-    Every MCP tool, parameters, and the publish workflow.
+    Every MCP tool and its inputs.
+  </Card>
+  <Card title="Format guides" icon="ruler-combined" href="/ai/format-guides">
+    How the assistant lays out diagrams, slides and boards.
   </Card>
   <Card title="Claude web" icon="/images/ai/claude.svg" href="/ai/claude">
     Claude on the web (claude.ai).

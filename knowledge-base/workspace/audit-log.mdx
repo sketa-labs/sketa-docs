@@ -1,0 +1,34 @@
+---
+title: "Audit log"
+description: "Who changed what in the workspace, and whether it came from the app, the API or MCP."
+icon: "list-check"
+---
+
+**Settings → Audit log** (admins) lists changes to the workspace, newest first: "Who changed what in this workspace, and from where."
+
+Each entry shows the person (or the API key, or **Sketa** for automatic changes), the action, what it applied to, the source (**App**, **API** or **MCP**) and when.
+
+## Filters
+
+- **Person**, or **Everyone**.
+- **Action**, or **All actions**.
+- **From** and **To** dates.
+
+**Clear filters** resets them.
+
+## What is logged
+
+| Area | Actions |
+| --- | --- |
+| Workspace | Created, renamed, deleted, image changed or removed, AI settings and public link settings changed |
+| Members | Added, role changed, removed, blocked, e-mail unblocked |
+| Invites | Sent, accepted, changed, canceled |
+| Collections | Created, edited, deleted, restored, who sees it changed |
+| Teams | Created, renamed, deleted, members changed |
+| Scenes | Created, edited, moved, deleted, restored, version restored, settings changed |
+| Guests | Scene shared with a guest, guest access changed, guest removed |
+| Links | Created, changed, deleted |
+| Library | Item added, item deleted |
+| API keys | Created, regenerated, deleted, API key settings changed |
+
+Read the log over the [API](/api-reference/introduction) with `GET /audit-logs` or the `list-audit-logs-tool` MCP tool.

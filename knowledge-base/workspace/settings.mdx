@@ -1,0 +1,26 @@
+---
+title: "Workspace settings"
+description: "Name, image, AI, public links and personal API keys: the workspace policies admins control."
+icon: "gear"
+---
+
+Workspace settings live in **Settings → General** (and **Settings → API keys** for keys). Admins can change them.
+
+## Name and image
+
+- **Workspace name**.
+- **Image**, shown in the workspace switcher: PNG, JPEG or WebP up to 1 MB.
+
+## AI
+
+**Allow AI in this workspace**. When off, members cannot use AI features in this workspace (text to diagram, wireframe to code). See [AI](/knowledge-base/ai).
+
+## Public links
+
+**Allow public links**. When off, no new read-only, embed or slides links can be created and existing links stop opening. They are kept, and work again when you turn it back on. See [Sharing and public links](/knowledge-base/scenes/sharing-and-public-links).
+
+## Personal API keys
+
+**Allow personal keys**, in **Settings → API keys**: whether members can create keys that act as themselves. When off, existing personal keys are refused with `403 Personal API keys are turned off in this workspace.` Workspace keys keep working. See [API keys](/knowledge-base/developers/api-keys).
+
+Every change here is recorded in the [audit log](/knowledge-base/workspace/audit-log).

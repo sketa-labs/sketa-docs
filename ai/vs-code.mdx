@@ -1,16 +1,16 @@
 ---
 title: "VS Code"
-description: "Connect TryPost to VS Code's native MCP support in Copilot Chat"
+description: "Connect Sketa to VS Code's native MCP support in Copilot Chat"
 icon: "/images/ai/vscode.svg"
 ---
 
-Visual Studio Code supports MCP servers natively (Copilot Chat in agent mode, plus any MCP-compatible extension). You can connect TryPost in a few clicks.
+Visual Studio Code supports MCP servers natively (Copilot Chat in agent mode, plus any MCP-compatible extension). You can connect Sketa in a few clicks.
 
 ## Prerequisites
 
 - VS Code 1.101 or later (earlier versions don't support OAuth for remote MCP servers)
 - GitHub Copilot extension (or another MCP-compatible extension)
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
@@ -21,9 +21,9 @@ Visual Studio Code supports MCP servers natively (Copilot Chat in agent mode, pl
     ```json
     {
       "servers": {
-        "trypost": {
+        "sketa": {
           "type": "http",
-          "url": "https://app.trypost.it/mcp/trypost"
+          "url": "https://sketa.app/mcp"
         }
       }
     }
@@ -35,13 +35,13 @@ Visual Studio Code supports MCP servers natively (Copilot Chat in agent mode, pl
     Reload the window so VS Code picks up the new configuration.
   </Step>
   <Step title="Sign in through your browser">
-    Open the **Accounts** menu (bottom-left gear) or the Copilot Chat panel — VS Code prompts you to sign in to TryPost. In the browser, pick the **Workspace** this connection may use and click **Authorize**; the server flips to **Connected**. To use another workspace, connect again and pick it.
+    Open the **Accounts** menu (bottom-left gear) or the Copilot Chat panel — VS Code prompts you to sign in to Sketa. In the browser, pick the **Workspace** this connection may use and click **Allow**; the server flips to **Connected**. To use another workspace, connect again and pick it.
   </Step>
   <Step title="Verify the connection">
     Open Copilot Chat in agent mode and ask:
 
     ```
-    List all my TryPost social accounts
+    List my Sketa collections
     ```
   </Step>
 </Steps>
@@ -52,4 +52,4 @@ Visual Studio Code supports MCP servers natively (Copilot Chat in agent mode, pl
 
 ## Global configuration
 
-To make TryPost available across all projects, open the command palette and run **MCP: Open User Configuration** to add the server to your user-level settings.
+To make Sketa available across all projects, open the command palette and run **MCP: Open User Configuration** to add the server to your user-level settings.

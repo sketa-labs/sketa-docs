@@ -1,0 +1,38 @@
+---
+title: "Files and exports"
+description: "Save scenes as .sketa files, export PNG and SVG images, and export frames to PDF and PowerPoint."
+icon: "file-export"
+---
+
+## Sketa files
+
+A `.sketa` file holds a whole scene: its elements and the images it uses.
+
+- **Save to file** (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>S</kbd>) and **Save as...** download one.
+- **Open** (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>O</kbd>) loads a file and replaces the canvas; Sketa asks first and offers to save a copy.
+- Drop a file on the canvas to replace it, or hold <kbd>Shift</kbd> while dropping to add it to what is already there.
+- **Reset canvas** clears everything.
+
+## Images: PNG and SVG
+
+**Export image...** (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>Shift</kbd> <kbd>E</kbd>) opens a preview where you choose:
+
+- **Only selected** or the whole scene.
+- **Background** on or off (transparent).
+- **Dark mode**.
+- **Embed scene**: saves the scene inside the PNG or SVG so you can open the image in Sketa and keep editing. It makes the file larger.
+- **Scale** and **File name**.
+
+Then download a **PNG** or **SVG**, or **Copy** it to the clipboard. **Copy as PNG** (<kbd>Shift</kbd> <kbd>Alt</kbd> <kbd>C</kbd>) and **Copy as SVG** skip the dialog.
+
+PNG, SVG and `.sketa` exports are free for everyone.
+
+## Frames: PDF and PowerPoint
+
+<Note>
+  Frame exports need Sketa Plus. They keep working while a workspace is read-only.
+</Note>
+
+In the export dialog, the **Frames (PDF, PPTX)** tab exports one page or slide per [frame](/knowledge-base/editor/basics#frames), in slide order. Pick the frames (**Select all** / **Select none**), then **PDF** or **PPTX** and **Download**. Sketa renders the frames on its servers; the dialog shows the progress and the download starts when the file is ready. Hidden slides are left out.
+
+People who open a [slides link](/knowledge-base/scenes/slides#share-a-slides-link) can download PDF or PowerPoint too, unless the link turns downloads off.

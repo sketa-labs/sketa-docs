@@ -1,43 +1,43 @@
 ---
 title: "Codex"
-description: "Connect TryPost to OpenAI Codex CLI for AI-powered social media management"
+description: "Connect Sketa to OpenAI Codex CLI to draw diagrams and slides with AI"
 icon: "/images/ai/codex.svg"
 ---
 
-[OpenAI Codex](https://github.com/openai/codex) is OpenAI's CLI agent for software development. You can connect it to TryPost's MCP server to manage your social media scheduling with natural language.
+[OpenAI Codex](https://github.com/openai/codex) is OpenAI's CLI agent for software development. You can connect it to Sketa's MCP server to draw and organize your scenes with natural language.
 
 ## Prerequisites
 
 - Codex CLI installed (`npm install -g @openai/codex`)
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
 <Steps>
   <Step title="Open the configuration file">
-    Edit `~/.codex/config.toml` and add the TryPost server:
+    Edit `~/.codex/config.toml` and add the Sketa server:
 
     ```toml
-    [mcp_servers.trypost]
-    url = "https://app.trypost.it/mcp/trypost"
+    [mcp_servers.sketa]
+    url = "https://sketa.app/mcp"
     ```
 
-    No `Authorization` header — Codex discovers OAuth from the URL. Or add it in one line: `codex mcp add trypost --url https://app.trypost.it/mcp/trypost`.
+    No `Authorization` header — Codex discovers OAuth from the URL. Or add it in one line: `codex mcp add sketa --url https://sketa.app/mcp`.
   </Step>
   <Step title="Sign in via codex mcp login">
     Run the OAuth flow so Codex caches the token:
 
     ```bash
-    codex mcp login trypost
+    codex mcp login sketa
     ```
 
-    Codex opens your browser to TryPost. Sign in, pick the **Workspace** this connection may use and click **Authorize**, then return to the terminal. To use another workspace, connect again and pick it.
+    Codex opens your browser to Sketa. Sign in, pick the **Workspace** this connection may use and click **Allow**, then return to the terminal. To use another workspace, connect again and pick it.
   </Step>
   <Step title="Verify the connection">
     Start Codex and ask:
 
     ```
-    List all my TryPost posts
+    List my Sketa scenes
     ```
   </Step>
 </Steps>
@@ -48,13 +48,17 @@ icon: "/images/ai/codex.svg"
 ## Example prompts
 
 ```
-Create a new draft post for all my social accounts
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Show me all my signatures
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-Create a label called "Campaign" with color #f59e0b
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
+```
+
+```
+Which scenes did I edit this week?
 ```

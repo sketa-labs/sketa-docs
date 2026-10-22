@@ -1,15 +1,15 @@
 ---
 title: "OpenCode"
-description: "Connect TryPost to OpenCode for AI-powered social media management from the terminal"
+description: "Connect Sketa to OpenCode to draw diagrams and slides from the terminal"
 icon: "/images/ai/opencode.svg"
 ---
 
-[OpenCode](https://opencode.ai) is an open-source AI coding assistant that runs in your terminal. You can connect it to TryPost's MCP server to manage your social media scheduling with natural language.
+[OpenCode](https://opencode.ai) is an open-source AI coding assistant that runs in your terminal. You can connect it to Sketa's MCP server to draw and organize your scenes with natural language.
 
 ## Prerequisites
 
 - OpenCode installed
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
@@ -20,9 +20,9 @@ icon: "/images/ai/opencode.svg"
     ```json
     {
       "mcp": {
-        "trypost": {
+        "sketa": {
           "type": "remote",
-          "url": "https://app.trypost.it/mcp/trypost",
+          "url": "https://sketa.app/mcp",
           "enabled": true
         }
       }
@@ -35,35 +35,39 @@ icon: "/images/ai/opencode.svg"
     Run the OAuth flow explicitly so OpenCode caches the token:
 
     ```bash
-    opencode mcp auth trypost
+    opencode mcp auth sketa
     ```
 
-    OpenCode opens your browser to TryPost. Sign in, pick the **Workspace** this connection may use and click **Authorize**, then return to the terminal. To use another workspace, connect again and pick it.
+    OpenCode opens your browser to Sketa. Sign in, pick the **Workspace** this connection may use and click **Allow**, then return to the terminal. To use another workspace, connect again and pick it.
   </Step>
   <Step title="Verify the connection">
     Inside OpenCode, ask:
 
     ```
-    List all my TryPost social accounts
+    List my Sketa collections
     ```
 
-    If anything looks off, `opencode mcp debug trypost` prints the current token state.
+    If anything looks off, `opencode mcp debug sketa` prints the current token state.
   </Step>
 </Steps>
 
 <Tip>
-  OpenCode also supports `opencode mcp logout trypost` to revoke the cached token if you need to switch accounts.
+  OpenCode also supports `opencode mcp logout sketa` to revoke the cached token if you need to switch accounts.
 </Tip>
 ## Example prompts
 
 ```
-Create a post for tomorrow at 9am São Paulo time
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Show me all my signatures
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-Create a label called "Newsletter" with color #8b5cf6
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
+```
+
+```
+Which scenes did I edit this week?
 ```

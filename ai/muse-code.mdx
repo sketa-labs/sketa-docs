@@ -1,10 +1,10 @@
 ---
 title: "Muse Code"
-description: "Connect TryPost to Muse Code for AI-powered social media management from the terminal"
+description: "Connect Sketa to Muse Code to draw diagrams and slides from the terminal"
 icon: "/images/ai/muse.svg"
 ---
 
-[Muse Code](https://dev.meta.ai/docs/muse-code) is Meta's terminal coding agent. You can connect it to TryPost's MCP server and manage scheduling in natural language — this is the path we verified.
+[Muse Code](https://dev.meta.ai/docs/muse-code) is Meta's terminal coding agent. You can connect it to Sketa's MCP server and draw and organize your scenes in natural language.
 
 The personal agent (the character on [muse.ai](https://muse.ai)) is [Muse AI Agent](/ai/muse).
 
@@ -16,7 +16,7 @@ The personal agent (the character on [muse.ai](https://muse.ai)) is [Muse AI Age
   curl -fsSL https://dev.meta.ai/install.sh | bash
   ```
 
-- A TryPost Cloud account with an active subscription ([plans and billing](/knowledge-base/settings/plans-and-billing))
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 
 ## Setup
 
@@ -26,35 +26,35 @@ The personal agent (the character on [muse.ai](https://muse.ai)) is [Muse AI Age
     muse
     ```
   </Step>
-  <Step title="Ask it to add the TryPost MCP server">
+  <Step title="Ask it to add the Sketa MCP server">
     Paste the URL and let Muse write the config. For example:
 
     ```
-    Add the TryPost MCP server at https://app.trypost.it/mcp/trypost
+    Add the Sketa MCP server at https://sketa.app/mcp
     ```
 
-    Muse names the server `trypost` and tells you to authorize it with:
+    Muse names the server `sketa` and tells you to authorize it with:
 
     ```bash
-    muse mcp login trypost
+    muse mcp login sketa
     ```
   </Step>
   <Step title="Authorize in the browser">
-    Run that command in your terminal (outside the Muse session if it printed it as a next step). Muse opens a browser to TryPost. Sign in, pick the **Workspace** this connection may use and click **Authorize**. To use another workspace, connect again and pick it.
+    Run that command in your terminal (outside the Muse session if it printed it as a next step). Muse opens a browser to Sketa. Sign in, pick the **Workspace** this connection may use and click **Allow**. To use another workspace, connect again and pick it.
 
-    The login argument must match the server key in settings — `trypost` if that's the name Muse chose.
+    The login argument must match the server key in settings — `sketa` if that's the name Muse chose.
   </Step>
-  <Step title="Use TryPost in Muse Code">
+  <Step title="Use Sketa in Muse Code">
     Back in the session, ask:
 
     ```
-    List all my scheduled posts
+    List my Sketa scenes
     ```
   </Step>
 </Steps>
 
 <Note>
-  TryPost MCP accepts **OAuth** with the `mcp:use` scope. Personal Access Tokens from **Settings → API Keys** are rejected (`403`). After `muse mcp login trypost`, Muse stores and refreshes the grant. To disconnect: `muse mcp logout trypost`.
+  Sketa MCP uses **OAuth** with the `mcp:use` scope here (it also accepts an API key sent as an `Authorization: Bearer` header). After `muse mcp login sketa`, Muse stores and refreshes the grant. To disconnect: `muse mcp logout sketa`.
 </Note>
 
 <Note>
@@ -69,10 +69,10 @@ If you prefer to edit the file yourself, put this in `~/.config/muse/settings.js
 {
   "schema_version": 1,
   "mcpServers": {
-    "trypost": {
+    "sketa": {
       "mode": "optional",
       "transport": "streamable_http",
-      "url": "https://app.trypost.it/mcp/trypost"
+      "url": "https://sketa.app/mcp"
     }
   }
 }
@@ -81,7 +81,7 @@ If you prefer to edit the file yourself, put this in `~/.config/muse/settings.js
 Merge into an existing file. Do not add a second `mcp_servers` block alongside `mcpServers` — that faults the config and `muse mcp login` refuses to run. Then:
 
 ```bash
-muse mcp login trypost
+muse mcp login sketa
 ```
 
 No `Authorization` header. OAuth is discovered from the URL.
@@ -89,19 +89,19 @@ No `Authorization` header. OAuth is discovered from the URL.
 ## Example prompts
 
 ```
-Show me all my connected social media accounts
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Create a draft LinkedIn post for tomorrow at 9am New York time
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-What posts do I have scheduled for this week?
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
 ```
 
 ```
-Create a label called "Campaign" with color #f59e0b
+Which scenes did I edit this week?
 ```
 
 ## Related guides

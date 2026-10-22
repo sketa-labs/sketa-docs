@@ -1,0 +1,54 @@
+---
+title: "Plans and billing"
+description: "Free and Sketa Plus, per-seat pricing, subscribing, invoices, cancellation and failed payments."
+icon: "credit-card"
+---
+
+## Plans
+
+**Free** is for one person: the full editor, 1 cloud scene, a library in your browser and 10 AI requests a day. You can also be a guest on scenes of Plus workspaces.
+
+**Sketa Plus** is per workspace, billed per seat:
+
+- **US$3 per seat/month**, or
+- **US$30 per seat/year** (2 months free).
+
+"Each member is a seat. Guests are free." Plus gives everyone in the workspace unlimited scenes and collections, members, guests, teams, live collaboration between members, public links and embeds, slides, comments, version history and trash, PDF and PPTX exports, images up to 16 MB, the server library, 100 AI requests a day per member, the audit log, the REST API and MCP.
+
+## Subscribe
+
+<Steps>
+  <Step title="Open Billing">
+    Admins open **Settings → Billing** for the current workspace (or **Upgrade** anywhere in the app).
+  </Step>
+  <Step title="Pick monthly or yearly">
+    The page shows the total: seats × price.
+  </Step>
+  <Step title="Subscribe">
+    **Subscribe** opens Stripe Checkout. Pay by credit card; promotion codes are accepted. There is no free trial.
+  </Step>
+</Steps>
+
+After paying, Sketa waits for Stripe to confirm ("Confirming your subscription") and shows "Welcome to Sketa Plus!"
+
+## Seats
+
+The number of seats is the number of workspace members. Adding a member adds a seat and removing one takes it away, with prorated charges. Guests never count.
+
+## Manage your subscription
+
+**Manage billing** opens the Stripe portal to update your card or cancel. **Invoices** lists past invoices to download.
+
+## Status
+
+| Status | What it means |
+| --- | --- |
+| **Free** | No subscription. 1 cloud scene, no members. |
+| **Plus** | Active; renews automatically. |
+| **Payment failed** | A payment failed. Update your card within 7 days to keep editing. |
+| **Cancel scheduled** | Plus ends on the date shown. Nothing is deleted. |
+| **Read-only** | Plus ended, or the 7 days passed without payment. |
+
+## Read-only workspaces
+
+When Plus ends, the workspace becomes **read-only**: everyone can still open, view and export everything (including PDF and PPTX), but nothing can be edited or created. **Nothing is deleted.** Public links keep opening. API keys and MCP connections can read but not write. Subscribe again to edit.

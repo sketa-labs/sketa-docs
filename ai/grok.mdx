@@ -1,21 +1,21 @@
 ---
 title: "Grok"
-description: "Connect TryPost to Grok as a custom MCP connector"
+description: "Connect Sketa to Grok as a custom MCP connector"
 icon: "/images/ai/grok.svg"
 ---
 
-[Grok](https://grok.com) is xAI's assistant. Add TryPost as a [custom MCP connector](https://docs.x.ai/grok/connectors) and you can schedule, publish, and manage social posts from a normal Grok chat — on the web, iOS, or Android.
+[Grok](https://grok.com) is xAI's assistant. Add Sketa as a [custom MCP connector](https://docs.x.ai/grok/connectors) and Grok can draw diagrams and slides in your Sketa workspace from a normal Grok chat — on the web, iOS, or Android.
 
 This page is for **Grok chat connectors**. It is not the [Grok Build CLI](https://docs.x.ai/build/features/mcp-servers) (`grok mcp add`) and not the [xAI API Remote MCP](https://docs.x.ai/developers/tools/remote-mcp) tools. Those are separate products.
 
 <Note>
-  TryPost is not in Grok's built-in or catalog connectors. You add it yourself: **New Connector → Custom**, then paste the TryPost MCP URL.
+  Sketa is not in Grok's built-in or catalog connectors. You add it yourself: **New Connector → Custom**, then paste the Sketa MCP URL.
 </Note>
 
 ## Prerequisites
 
 - A [Grok](https://grok.com) account. [xAI documents connectors as available to all Grok users](https://docs.x.ai/grok/connectors).
-- An active TryPost Cloud account
+- A Sketa account in a Plus workspace ([plans and billing](/knowledge-base/workspace/plans-and-billing))
 - On **Grok Business or Enterprise**, a team admin must provision the connector first — see [Grok Business and Enterprise](#grok-business-and-enterprise)
 
 ## Server URL
@@ -23,7 +23,7 @@ This page is for **Grok chat connectors**. It is not the [Grok Build CLI](https:
 Use this exact URL. Do not add a trailing slash. Do not paste an OAuth authorize URL.
 
 ```
-https://app.trypost.it/mcp/trypost
+https://sketa.app/mcp
 ```
 
 ## Setup
@@ -42,44 +42,42 @@ https://app.trypost.it/mcp/trypost
     Paste the MCP server URL:
 
     ```
-    https://app.trypost.it/mcp/trypost
+    https://sketa.app/mcp
     ```
 
-    Name it `TryPost` if Grok asks for a name.
+    Name it `Sketa` if Grok asks for a name.
 
-    If Grok shows OAuth client fields (Client ID, Client Secret, authorize/token URLs), leave them empty. TryPost uses OAuth 2.1 with Dynamic Client Registration. Grok discovers the endpoints from the MCP URL and registers itself.
+    If Grok shows OAuth client fields (Client ID, Client Secret, authorize/token URLs), leave them empty. Sketa uses OAuth 2.1 with Dynamic Client Registration. Grok discovers the endpoints from the MCP URL and registers itself.
   </Step>
-  <Step title="Sign in to TryPost">
+  <Step title="Sign in to Sketa">
     Grok then asks you to authenticate. Complete the browser sign-in.
 
-    1. Sign in to your TryPost account
+    1. Sign in to your Sketa account
     2. Review the permissions
-    3. Pick the **Workspace** this connection may use and click **Authorize** (to use another workspace, connect again and pick it)
+    3. Pick the **Workspace** this connection may use and click **Allow** (to use another workspace, connect again and pick it)
 
-    After that, Grok discovers the TryPost tools and makes them available in conversations — the same way it uses built-in and catalog connectors. You do not need to paste an API key.
+    After that, Grok discovers the Sketa tools and makes them available in conversations — the same way it uses built-in and catalog connectors. You do not need to paste an API key.
   </Step>
-  <Step title="Ask Grok to use TryPost">
+  <Step title="Ask Grok to use Sketa">
     Open a new chat and ask in plain language. For example:
 
     ```
-    List all my scheduled posts
+    List my Sketa scenes
     ```
 
-    Grok should call TryPost tools instead of guessing. If it answers without tools, say you want it to use the **TryPost** connector.
+    Grok should call Sketa tools instead of guessing. If it answers without tools, say you want it to use the **Sketa** connector.
 
-    See the [Tools reference](/ai/tools-reference) for every tool and the recommended workflow (pick channel and content type, create with media, preview, publish).
+    See the [Tools reference](/ai/tools-reference) for every tool and the recommended drawing workflow.
   </Step>
 </Steps>
 
 ## Authentication
 
-TryPost MCP accepts **OAuth only** — a browser sign-in with the `mcp:use` scope. Personal Access Tokens from **Settings → API Keys** work on the [REST API](/api-reference/introduction), not on `/mcp/trypost`.
+Use **OAuth**: a browser sign-in that binds the connection to one Plus workspace you pick. Leave OAuth client ID and secret empty: Sketa supports Dynamic Client Registration.
 
-<Warning>
-  If Grok offers an API key or bearer-token field, leave it blank and finish the OAuth prompt instead. A pasted API key returns `403 MCP OAuth authorization required`.
-</Warning>
+Sketa's MCP server also accepts an [API key](/knowledge-base/developers/api-keys) sent as an `Authorization: Bearer sketa_...` header, if you prefer a key to a browser sign-in. A key carries only its abilities, and a workspace key sees shared collections only.
 
-Manage connected assistants later under workspace **Settings → MCP** in TryPost.
+To disconnect, remove the server from Grok. Leaving the workspace also ends the connection.
 
 ## What you can do
 
@@ -87,96 +85,74 @@ Once the connector is authorized, Grok can:
 
 | Task | Examples |
 |------|----------|
-| **Posts** | List, create, update, schedule, queue, publish, preview, delete, approve, fetch metrics |
-| **Media** | Attach from a public URL, upload a local file (you run the upload command; CLI agents can run it themselves; not possible from the Grok mobile app), reuse a file already on another post |
-| **Accounts** | List connected social accounts, set posting times, manage the queue, resolve Pinterest boards and Discord channels |
-| **Workspace** | Read the current workspace, manage ideas, signatures, labels, webhooks, repurposes, and API keys; read analytics |
+| **Drawing** | Draw diagrams with automatic layout; add shapes, arrows, sticky notes and images; search and edit scenes; take screenshots to check the result |
+| **Slides** | Add slides, write speaker notes, reorder and hide slides |
+| **Scenes and collections** | List, search, create, rename, move, pin and delete |
+| **Workspace** | Read the workspace; manage members, invites and teams; read the audit log |
 
-Some of these depend on your permissions in the workspace (approving needs direct publishing; posting times, webhooks and API keys need an admin). See [Permissions](/ai/introduction#permissions).
-
-Pinterest needs a `board_id`, Discord needs a `channel_id`, and TikTok needs a `privacy_level` before you publish. Ask Grok to list boards or channels first. Details and tool names: [Tools reference](/ai/tools-reference).
-
-## Self-hosted
-
-Grok reaches the MCP server from xAI's cloud, not from your phone or browser. `localhost`, `127.0.0.1`, and private LAN addresses are [rejected](https://docs.x.ai/grok/connectors/custom-mcp-tunneling).
-
-<Accordion title="Use a public HTTPS URL">
-  Point the custom connector at your instance:
-
-  ```
-  {APP_URL}/mcp/trypost
-  ```
-
-  Example: `https://trypost.yourdomain.com/mcp/trypost`.
-
-  The URL must be reachable on the public internet over HTTPS. If the app only runs on your machine, expose it with a tunnel first — xAI's [custom MCP tunneling](https://docs.x.ai/grok/connectors/custom-mcp-tunneling) guide covers ngrok and Cloudflare Tunnel. After you authorize, Grok still opens the TryPost OAuth screen on your instance. Do not put a Personal Access Token in the connector.
-</Accordion>
+Members, invites, teams and the audit log need an admin. See [Permissions](/ai/introduction#permissions).
 
 ## Grok Business and Enterprise
 
 On these plans, members cannot add a custom connector until a team admin provisions it.
 
-<Accordion title="Admin: provision TryPost for the team">
+<Accordion title="Admin: provision Sketa for the team">
   1. Sign in to [console.x.ai](https://console.x.ai), select your team, and open **Grok Business → Connectors**
   2. Click **+ Add Connector** → **Other**
-  3. Paste `https://app.trypost.it/mcp/trypost` (or your self-hosted `{APP_URL}/mcp/trypost`)
-  4. Finish the TryPost sign-in if Grok asks
+  3. Paste `https://sketa.app/mcp`
+  4. Finish the Sketa sign-in if Grok asks
 
   Adding and removing connectors requires **Team Read-Write** permissions. xAI's [connector management](https://docs.x.ai/grok/connector-management) page has the full admin flow.
 
-  After the admin adds it, each member still opens **[grok.com/connectors](https://grok.com/connectors)** and signs in to **their own** TryPost account. The admin step only makes the connector available; it does not share one TryPost login across the team.
+  After the admin adds it, each member still opens **[grok.com/connectors](https://grok.com/connectors)** and signs in to **their own** Sketa account. The admin step only makes the connector available; it does not share one Sketa login across the team.
 </Accordion>
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Grok never asks me to sign in to TryPost">
-    You may have pasted the wrong URL. Use `https://app.trypost.it/mcp/trypost` — not `/oauth/authorize`, not `/api`, and not a trailing slash. Remove the connector and add it again, then allow pop-ups so the OAuth window can open.
+  <Accordion title="Grok never asks me to sign in to Sketa">
+    You may have pasted the wrong URL. Use `https://sketa.app/mcp` — not `/oauth/authorize`, not `/api`, and not a trailing slash. Remove the connector and add it again, then allow pop-ups so the OAuth window can open.
   </Accordion>
-  <Accordion title="The connector is added but Grok does not call TryPost tools">
-    Finish OAuth. Grok can list a custom server before you have authorized it. Open **[grok.com/connectors](https://grok.com/connectors)**, connect TryPost, then pick the workspace and click **Authorize** on the TryPost screen. Then start a **new** chat and ask it to use the TryPost connector.
+  <Accordion title="The connector is added but Grok does not call Sketa tools">
+    Finish OAuth. Grok can list a custom server before you have authorized it. Open **[grok.com/connectors](https://grok.com/connectors)**, connect Sketa, then pick the workspace and click **Allow** on the Sketa screen. Then start a **new** chat and ask it to use the Sketa connector.
   </Accordion>
   <Accordion title="Grok says it cannot reach the server">
-    Cloud TryPost is already public. If you self-host, Grok must reach the URL from the internet. `localhost` and private IPs fail. Use a public HTTPS URL or a tunnel.
+    Check the URL is exactly `https://sketa.app/mcp`, then remove the connector and add it again.
   </Accordion>
-  <Accordion title="HTTP 402 — Active subscription required">
-    The OAuth grant worked; the TryPost account is not active. Open [app.trypost.it](https://app.trypost.it), activate the account, then reconnect the connector. Self-hosted instances skip this check. See [Introduction](/ai/introduction#troubleshooting).
+  <Accordion title="HTTP 402 — Sketa Plus required">
+    The connection works, but the workspace it is bound to does not have Sketa Plus. Subscribe in **Settings → Billing**, or reconnect and pick a Plus workspace. See [Introduction](/ai/introduction#troubleshooting).
   </Accordion>
   <Accordion title="HTTP 401 or I need to sign in again">
     The OAuth session expired or was revoked. Open the connector and complete sign-in again.
   </Accordion>
-  <Accordion title="HTTP 403 — MCP OAuth authorization required">
-    The request used an API key (Personal Access Token) or an OAuth token without `mcp:use`. Remove any bearer token from the connector and sign in with OAuth.
+  <Accordion title="A tool says “Not found.”">
+    The resource is outside the workspace the connection is bound to, or you cannot see it (another member's private collection; a team-restricted collection for a workspace key). Ask the assistant to list scenes or collections first instead of guessing ids.
   </Accordion>
   <Accordion title="Custom is missing, or I cannot add a connector">
-    On Grok Business / Enterprise, only an admin can provision custom MCP. Ask someone with **Team Read-Write** to add TryPost in [console.x.ai](https://console.x.ai) first. On personal Grok, open **[grok.com/connectors](https://grok.com/connectors)** and choose **Custom**, not a catalog app.
+    On Grok Business / Enterprise, only an admin can provision custom MCP. Ask someone with **Team Read-Write** to add Sketa in [console.x.ai](https://console.x.ai) first. On personal Grok, open **[grok.com/connectors](https://grok.com/connectors)** and choose **Custom**, not a catalog app.
   </Accordion>
 </AccordionGroup>
 
 ## Example prompts
 
 ```
-Show me all my connected social media accounts
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
 ```
 
 ```
-Create a draft LinkedIn post for tomorrow at 9am New York time
+Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
 ```
 
 ```
-What posts do I have scheduled for this week?
+Turn these notes into a four-slide deck with speaker notes, then screenshot each slide
 ```
 
 ```
-Attach the image at <a public image URL> to my draft, then show me the exact text each network will get
-```
-
-```
-Create a label called "Campaign" with color #f59e0b
+Which scenes did I edit this week?
 ```
 
 ## Related
 
 - [Introduction](/ai/introduction) — MCP overview, auth, and shared troubleshooting
-- [Tools reference](/ai/tools-reference) — every tool, parameters, and the publish workflow
+- [Tools reference](/ai/tools-reference) — every tool and its inputs
 - [xAI: Grok connectors](https://docs.x.ai/grok/connectors) — official custom MCP steps

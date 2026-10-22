@@ -1,42 +1,36 @@
-# TryPost Docs
+# Sketa Docs
 
-Documentation for [TryPost](https://github.com/trypostit/trypost) — open source social media scheduling.
+Documentation for [Sketa](https://sketa.app), the hand-drawn whiteboard, published at [docs.sketa.app](https://docs.sketa.app). Built with [Mintlify](https://mintlify.com).
 
 ## Development
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview changes locally:
+Preview changes locally with the [Mintlify CLI](https://www.npmjs.com/package/mint):
 
 ```bash
-npm i -g mint
+npx mint dev
 ```
 
-Run at the root of the project:
+Preview at `http://localhost:3000`. Before opening a pull request, run:
 
 ```bash
-mint dev
+npx mint validate
+npx mint broken-links
 ```
-
-Preview at `http://localhost:3000`.
 
 ## Publishing
 
-Changes pushed to the `main` branch are deployed automatically via the [Mintlify GitHub app](https://dashboard.mintlify.com/settings/organization/github-app).
+Changes pushed to the `main` branch are deployed automatically by the Mintlify GitHub app.
 
 ## Structure
 
 ```
-├── index.mdx, getting-started/   # Home and quickstart
-├── knowledge-base/               # How the app works (mirrors the app sidebar)
-├── platforms/                    # One page per network (13)
+├── index.mdx, getting-started/   # Home, quickstart, no-account drawing, workspaces
+├── knowledge-base/               # How the app works (editor, scenes, AI, workspace, account, API keys)
 ├── api-reference/ + openapi.json # REST API (operation pages generated from openapi.json)
-├── ai/                           # MCP server and client setup
-├── self-hosting/                 # Requirements, install, Docker, production, upgrading
-├── contributing.mdx, support.mdx
-└── docs.json                     # Navigation, OpenAPI, redirects
+├── ai/                           # MCP server, tools reference, format guides, client setup
+├── support.mdx
+├── logo/, favicon.svg, images/   # Brand assets and client icons
+└── docs.json                     # Navigation, OpenAPI, branding
 ```
 
-## Links
-
-- [TryPost](https://github.com/trypostit/trypost)
-- [Issues](https://github.com/trypostit/trypost/issues)
-- [Discussions](https://github.com/trypostit/trypost/discussions)
+See `AGENTS.md` for the writing rules and where each fact comes from, and `CONTRIBUTING.md` to contribute.

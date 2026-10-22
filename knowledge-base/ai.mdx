@@ -1,0 +1,45 @@
+---
+title: "AI"
+description: "Text to diagram, Mermaid to diagram, wireframe to code and automatic scene names, with daily limits."
+icon: "sparkles"
+---
+
+Sketa's AI runs on Sketa's own account with Anthropic's Claude. There is nothing to configure and no key to bring.
+
+## Text to diagram
+
+**More tools** → **Text to diagram** opens **Create a diagram**. Describe what to draw ("the checkout flow of an online store") and Sketa draws an editable diagram in the preview. Keep chatting to ask for changes until it looks right, then **Insert** it on the canvas. Every shape and arrow is a normal element you can edit.
+
+## Mermaid to diagram
+
+**More tools** → **Mermaid to diagram** opens the **Mermaid** tab: paste a Mermaid flowchart, check the **Preview** and **Insert** it. Mermaid is converted in your browser; it does not use AI requests. Only flowcharts are supported.
+
+## Wireframe to code
+
+Draw a wireframe inside a frame, select the frame and choose **Wireframe to code** from its context menu. Sketa turns it into an interactive HTML page shown next to the frame. Select the result to **View code** (and **Copy code**) or **Regenerate code**.
+
+## Automatic scene names
+
+Untitled cloud scenes get a name from their content. This does not count against your limit.
+
+## Daily limits
+
+Limits are counted in requests per UTC day and reset at midnight UTC.
+
+| Who | Requests a day |
+| --- | --- |
+| Without an account | 10 per device, and 30 per network address |
+| Free account | 10 |
+| Member of a Plus workspace | 100 |
+
+Each text-to-diagram message costs 1 request; each wireframe-to-code generation costs 5. When you run out you see "You have used your *N* AI requests for today. Try again tomorrow." The editor shows how many you have **left today**.
+
+Guests use their own plan's limit, not the limit of the workspace that shared the scene.
+
+## Turning AI off
+
+Admins can turn AI off for a workspace with **Allow AI in this workspace** in [workspace settings](/knowledge-base/workspace/settings). Members then see "AI is turned off in this workspace."
+
+## AI assistants
+
+To let Claude, ChatGPT, Cursor and other assistants draw in your workspace, connect them to Sketa's [MCP server](/ai/introduction).
