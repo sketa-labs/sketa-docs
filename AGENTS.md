@@ -4,7 +4,7 @@
 
 `AGENTS.md` is the single source of repository instructions for all coding agents. Read and follow this file before working on the documentation.
 
-- Mintlify site (docs.sketa.app): pages are MDX with YAML frontmatter; navigation, `openapi` and `redirects` live in `docs.json`.
+- Mintlify site (served at sketa.app/docs through a Cloudflare Worker; Mintlify custom domain "Host at" /docs): pages are MDX with YAML frontmatter; navigation, `openapi` and `redirects` live in `docs.json`.
 - Preview with `npx mint dev`; check with `npx mint validate` and `npx mint broken-links`.
 - Every moved or removed slug gets a `docs.json` redirect.
 - Every factual claim must trace to the app at `~/Herd/sketa` (cite `file:line` in the PR).
