@@ -188,6 +188,13 @@
             ]
           },
           {
+            "group": "Public libraries",
+            "pages": [
+              "GET /public-libraries",
+              "GET /public-libraries/{publicLibrary}"
+            ]
+          },
+          {
             "group": "Audit logs",
             "pages": [
               "GET /audit-logs"

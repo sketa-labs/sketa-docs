@@ -40,6 +40,9 @@
     },
     {
       "name": "Teams"
+    },
+    {
+      "name": "Public libraries"
     }
   ],
   "paths": {
@@ -2553,6 +2556,148 @@
           }
         }
       }
+    },
+    "/public-libraries": {
+      "get": {
+        "tags": [
+          "Public libraries"
+        ],
+        "summary": "List public libraries",
+        "operationId": "listPublicLibraries",
+        "description": "The public library catalog: free shape libraries shared by the community and approved by the Sketa team, newest first. Only approved libraries are listed. The search matches every word in the name, description, author and tags, ignoring case and accents.\n\n**Ability:** `libraries:read`.",
+        "x-abilities": [
+          "libraries:read"
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of libraries.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PublicLibrary"
+                      }
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/PaginationLinks"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Only libraries whose name, description, author or tags match these words.",
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "The page to read, from 1. Each page holds `meta.per_page` items.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          }
+        ]
+      }
+    },
+    "/public-libraries/{publicLibrary}": {
+      "get": {
+        "tags": [
+          "Public libraries"
+        ],
+        "summary": "Get a public library",
+        "operationId": "getPublicLibrary",
+        "description": "One approved library of the catalog with its items and their elements. A library that is pending, rejected or removed answers 404.\n\n**Ability:** `libraries:read`.",
+        "x-abilities": [
+          "libraries:read"
+        ],
+        "responses": {
+          "200": {
+            "description": "The library with its items.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PublicLibraryWithItems"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "parameters": [
+          {
+            "name": "publicLibrary",
+            "in": "path",
+            "required": true,
+            "description": "The library id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -3893,6 +4038,93 @@
                 ],
                 "minItems": 2,
                 "maxItems": 2
+              }
+            }
+          }
+        ]
+      },
+      "PublicLibrary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Cloud icons"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "author": {
+            "type": "string",
+            "description": "The author name shown in the catalog."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "aws",
+              "cloud"
+            ]
+          },
+          "itemCount": {
+            "type": "integer"
+          },
+          "publishedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "PublicLibraryItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The item id, used by the MCP `add-library-item-tool`."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "Server"
+          },
+          "elements": {
+            "type": "array",
+            "description": "The elements the item draws, in the scene content element format.",
+            "items": {
+              "$ref": "#/components/schemas/Element"
+            }
+          }
+        }
+      },
+      "PublicLibraryWithItems": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PublicLibrary"
+          },
+          {
+            "type": "object",
+            "required": [
+              "items"
+            ],
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PublicLibraryItem"
+                }
               }
             }
           }

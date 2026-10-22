@@ -4,7 +4,7 @@ description: "Every tool of the Sketa MCP server, what it does and its inputs."
 icon: "wrench"
 ---
 
-The Sketa MCP server (`https://sketa.app/mcp`) exposes 42 tools. Each one needs an [ability](/knowledge-base/developers/api-keys#abilities) (OAuth connections carry them all) and follows the same permissions as the [REST API](/api-reference/introduction).
+The Sketa MCP server (`https://sketa.app/mcp`) exposes 45 tools. Each one needs an [ability](/knowledge-base/developers/api-keys#abilities) (OAuth connections carry them all) and follows the same permissions as the [REST API](/api-reference/introduction).
 
 Conventions for every tool:
 
@@ -26,7 +26,7 @@ Conventions for every tool:
     `get-format-guide-tool` with `diagrams`, `presentations` or `freeform`. See [Format guides](/ai/format-guides).
   </Step>
   <Step title="Draw">
-    `create-diagram-tool` for boxes and arrows with automatic layout, `edit-scene-content-tool` for anything else, `add-image-tool` for pictures, and the slides tools for decks.
+    `create-diagram-tool` for boxes and arrows with automatic layout, `edit-scene-content-tool` for anything else, `add-image-tool` for pictures, `add-library-item-tool` for ready-made shapes from the public library catalog, and the slides tools for decks.
   </Step>
   <Step title="Check the result">
     `take-screenshot-tool` returns a PNG of the scene or one frame.
@@ -118,6 +118,19 @@ Open-world · `scenes:write`
 | `base64` | string | The image bytes in base64 (a `data:` URL is accepted). |
 | `x`, `y` | number | Top-left corner (default: beside the existing content). |
 | `width` | number | Width in scene pixels (default: the image's own width, at most 800). |
+
+### add-library-item-tool
+
+Places a copy of an item of the [public library catalog](#public-library-catalog) on a scene, live for everyone editing it, like inserting it from the editor's library: its elements get fresh ids and keep their groups, labels and arrow bindings. Returns `contentVersion`, the new `elementIds` and their `bounds`.
+
+`scenes:write` and `libraries:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `scene_id` | string, required | The scene id. |
+| `library_id` | string, required | The catalog library id, from `search-public-libraries-tool`. |
+| `item_id` | string, required | The id of one of the library's items, from `get-public-library-tool`. |
+| `x`, `y` | number | Top-left corner of the item (default: beside the existing content). |
 
 ### take-screenshot-tool
 
@@ -523,6 +536,31 @@ Destructive · `teams:write`
 | Input | Type | Description |
 | --- | --- | --- |
 | `team_id` | string, required | The team id. |
+
+## Public library catalog
+
+The free shape libraries shared by the community and approved by the Sketa team, the same ones as **Browse libraries** in the editor. See [Library](/knowledge-base/editor/library#public-libraries).
+
+### search-public-libraries-tool
+
+Searches the catalog, newest first. The search matches every word in the name, description, author and tags, ignoring case and accents; leave it out to browse. Returns metadata only (`id`, `name`, `description`, `author`, `tags`, `itemCount`, `publishedAt`).
+
+Read-only · `libraries:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `search` | string | Words to look for (up to 100 characters). |
+| `page` | integer | The page, from 1. |
+
+### get-public-library-tool
+
+Gets one library of the catalog with its `items`, each with an `id`, a `name` and the `elements` it draws. Place an item with `add-library-item-tool`.
+
+Read-only · `libraries:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `library_id` | string, required | The library id. |
 
 ## Audit log
 

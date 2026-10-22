@@ -42,6 +42,7 @@ Each key carries abilities, and every endpoint needs one (shown on each endpoint
 | `scenes:read`, `scenes:write` | `/scenes`, `/scenes/{scene}/content` |
 | `audit-logs:read` | `/audit-logs` |
 | `teams:read`, `teams:write` | `/teams` |
+| `libraries:read` | `/public-libraries` |
 
 `GET /collections/{collection}/scenes` needs both `collections:read` and `scenes:read`. A key without the ability gets `403 This API key is missing the <ability> ability.` Abilities never widen what the key's user may do: a member's personal key cannot change roles even with `users:write`.
 

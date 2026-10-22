@@ -61,7 +61,7 @@ There is no `api.sketa.app`, `mcp.sketa.app` or `app.sketa.app`.
 
 ## API reference
 
-- `openapi.json` is the source of truth for every operation, field and error. Public API = the `/api/v1` routes (`php artisan route:list --path=api/v1`), 35 operations today. The anonymous `api/snapshots` and `api/rooms` routes are internal to the editor; never document them.
+- `openapi.json` is the source of truth for every operation, field and error. Public API = the `/api/v1` routes (`php artisan route:list --path=api/v1`), 37 operations today. The anonymous `api/snapshots` and `api/rooms` routes are internal to the editor; never document them.
 - Auth: `Authorization: Bearer sketa_...`. Keys are Passport personal-access tokens bound to one workspace (`App\Models\AccessToken`), **personal** (act as the member) or **workspace** (act as the workspace, shared collections only, admin-equivalent). Abilities come from `App\Enums\Api\Ability`; each route declares one with `abilities:` middleware.
 - `ResolveApiActor` errors: `401 Unauthenticated.` / `API key expired.` / `API key revoked.`, `402 Sketa Plus required.`, `403 Personal API keys are turned off in this workspace.`, `403 Workspace is read-only.` (writes only).
 - Error shape is always `{statusCode, error, message}` plus `errors` on 422 (`App\Support\Api\ApiErrorResponse`).
@@ -72,7 +72,7 @@ There is no `api.sketa.app`, `mcp.sketa.app` or `app.sketa.app`.
 
 ## MCP server
 
-- The tool list is exactly `SketaServer::$tools` (`app/Mcp/Servers/SketaServer.php`), 42 tools today; `ai/tools-reference.mdx` documents every one with its inputs (from each tool's `schema()`), its ability (`asActor(...)`) and its annotations (`#[IsReadOnly]`, `#[IsDestructive]`, `#[IsOpenWorld]`).
+- The tool list is exactly `SketaServer::$tools` (`app/Mcp/Servers/SketaServer.php`), 45 tools today; `ai/tools-reference.mdx` documents every one with its inputs (from each tool's `schema()`), its ability (`asActor(...)`) and its annotations (`#[IsReadOnly]`, `#[IsDestructive]`, `#[IsOpenWorld]`).
 - Route: `Mcp::web('/mcp', SketaServer::class)` behind `api.key`, `auth:api`, `LoadMcpActor` and `throttle:mcp` (120/min per token). It accepts an OAuth grant (`mcp:use`, consent screen picks one Plus workspace, acts as the user with every ability) **or** an API key in the `Authorization` header.
 - `ai/format-guides.mdx` summarizes `resources/views/prompts/mcp/guides/*.blade.php`; keep it in sync.
 
