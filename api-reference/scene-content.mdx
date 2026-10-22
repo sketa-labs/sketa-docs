@@ -29,7 +29,7 @@ The full JSON Schema is published at [`https://sketa.app/schemas/scene-content.v
 | `strokeStyle` | `solid`, `dashed` or `dotted`. |
 | `roughness` | `0` (Architect), `1` (Artist) or `2` (Cartoonist). |
 | `opacity` | 0 to 100. |
-| `text`, `fontSize`, `fontFamily`, `textAlign`, `verticalAlign` | Text elements. `fontFamily` is `hand`, `normal` or `code`. `containerId` puts the text inside a shape. |
+| `text`, `fontSize`, `fontFamily`, `textAlign`, `verticalAlign` | Text elements. `fontFamily` is a font role: `hand` (the default), `normal` or `code`, or one of the extra fonts `display`, `rounded`, `script`, `classic` and `mono`. Any other value reads as `hand`. `containerId` puts the text inside a shape. |
 | `points`, `startBinding`, `endBinding`, `startArrowhead`, `endArrowhead`, `arrowType` | Arrows and lines. Points are relative to `x`, `y`. `arrowType` is `sharp`, `round` or `elbow`. |
 | `frameId` | The frame the element belongs to. `name` is a frame's name. |
 | `groupIds`, `boundElements`, `link`, `locked`, `customData` | Grouping, bindings, a link, locking and up to 64 KB of your own JSON. |

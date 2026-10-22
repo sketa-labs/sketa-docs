@@ -34,12 +34,13 @@ A presentation is a scene whose frames are the slides.
 - **Slides** are 1920 × 1080 frames created with `create-slide-tool`, which places each one after the last and returns its safe area and regions.
 - **Safe area**: 5 % in from every edge (96 px left and right, 54 px top and bottom). The title takes the top 15 %; the body is the rest, split into left and right halves for two columns.
 - Every element of a slide belongs to its frame, so it moves and exports with the slide.
-- **Text**: titles on one line at font size 64 to 80; body at 32 to 40, at most six lines; the `normal` font for long text. One idea per slide.
+- **Text**: titles on one line at font size 64 to 80; body at 32 to 40, at most six lines; the `normal` font for long text and `display` (a bold headline font) only for short titles. One idea per slide.
 - **Notes and order**: `list-slides-tool` and `update-slide-tool` manage titles, speaker notes (up to 10,000 characters, never shown on the slide or public links), the hidden flag and position.
 - **Look**: one or two hues, the same on every slide, titles aligned on the same line.
 
 ## Freeform
 
+- **Fonts**: `fontFamily` takes a role: `hand` (hand-drawn, the default), `normal` (sans) and `code` (monospace), plus `display` (bold headline), `rounded` (rounded sans), `script` (handwriting), `classic` (Helvetica-like sans) and `mono` (a second monospace). One or two fonts per board; mix only for contrast, such as a `display` heading over `normal` text.
 - **Notes and brainstorms**: one idea per sticky note (200 × 200), up to about 20 words, on a grid with 40 px gaps, themes grouped under named frames, one sticky color per theme or author.
 - **Moodboards**: images from `add-image-tool`, 400 to 600 px wide, in rows with 40 px gaps, small captions underneath, framed so the board exports as one picture.
 - **Wireframes**: clean lines (`roughness: 0`, stroke `#3d414a`, `normal` font); screens as 390 × 844 (phone) or 1440 × 900 (desktop) frames; buttons 120 × 40, inputs 280 × 40; arrows from the control that leads to the next screen.

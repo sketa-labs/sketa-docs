@@ -3359,10 +3359,16 @@
             "exclusiveMinimum": 0
           },
           "fontFamily": {
+            "description": "Font role. Top picks: hand (default), normal, code. More fonts: display, rounded, script, classic, mono. Readers treat any other value as hand.",
             "enum": [
               "hand",
               "normal",
-              "code"
+              "code",
+              "display",
+              "rounded",
+              "script",
+              "classic",
+              "mono"
             ]
           },
           "textAlign": {
@@ -3701,10 +3707,16 @@
             "exclusiveMinimum": 0
           },
           "fontFamily": {
+            "description": "Font role. Top picks: hand (default), normal, code. More fonts: display, rounded, script, classic, mono. Readers treat any other value as hand.",
             "enum": [
               "hand",
               "normal",
-              "code"
+              "code",
+              "display",
+              "rounded",
+              "script",
+              "classic",
+              "mono"
             ]
           },
           "textAlign": {
