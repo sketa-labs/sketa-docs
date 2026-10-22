@@ -1,23 +1,37 @@
 ---
 title: "Workspace settings"
-description: "Name, image, AI, public links and personal API keys: the workspace policies admins control."
+description: "General (name, image, leave, delete), Preferences (AI, public links) and personal API keys."
 icon: "gear"
 ---
 
-Workspace settings live in **Settings → Workspace → General** (and **Settings → Workspace → API keys** for keys). They always apply to the current workspace: switch workspace from the workspace menu in the sidebar. Admins can change them.
+Workspace settings always apply to the current workspace: switch workspace from the workspace menu in the sidebar.
 
-## Name and image
+- **Settings → Workspace → General**: the workspace's name and image, leaving and deleting it.
+- **Settings → Workspace → Preferences**: the policies (AI, public links). Admins only: members don't see this page.
+- **Settings → Workspace → API keys**: personal API keys.
 
-- **Workspace name**.
+The plan and seats are on **Settings → Workspace → Billing** (see [Plans and billing](/knowledge-base/workspace/plans-and-billing)).
+
+## General
+
 - **Image**, shown in the workspace switcher: PNG, JPEG or WebP up to 1 MB.
+- **Name**: how the workspace appears to its members.
+- **Leave workspace**: members (not the owner) of a shared workspace can leave it and lose access to its scenes.
+- **Delete workspace**: admins type the workspace name to confirm. Scenes, collections and members are removed, and an active Plus subscription is canceled right away. Your personal workspace can't be deleted.
 
-## AI
+Only admins change the name and image; members see them read-only.
 
-**Allow AI in this workspace**. When off, members cannot use AI features in this workspace (text to diagram, wireframe to code). See [AI](/knowledge-base/ai).
+## Preferences
 
-## Public links
+Each switch saves as soon as you change it.
 
-**Allow public links**. When off, no new read-only, embed or slides links can be created and existing links stop opening. They are kept, and work again when you turn it back on. See [Sharing and public links](/knowledge-base/scenes/sharing-and-public-links).
+### AI
+
+**AI**. When off, members cannot use AI features in this workspace (text to diagram, wireframe to code). See [AI](/knowledge-base/ai).
+
+### Public links
+
+**Public links**. When off, no new read-only, embed or slides links can be created and existing links stop opening. They are kept, and work again when you turn it back on. See [Sharing and public links](/knowledge-base/scenes/sharing-and-public-links).
 
 ## Personal API keys
 
