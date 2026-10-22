@@ -45,6 +45,15 @@ The server exposes 45 tools. See the [Tools reference](/ai/tools-reference) for 
   </Step>
 </Steps>
 
+## Manage connections in Sketa
+
+Open **Settings → Workspace → MCP** (`/settings/workspace/mcp`) for the workspace you are in:
+
+- **Connected apps** lists the assistants you signed in with for this workspace (only yours), with when each was last used. Use **Disconnect** to sign one out: it has to connect again before it can use Sketa. The list updates by itself as soon as a new connection is approved.
+- **Connect an app** has the server URL, the command or config to paste and the steps for Claude, ChatGPT, Claude Code, Cursor, VS Code, Codex, Gemini CLI and any other MCP app, each with a link to its guide below.
+
+On a Free workspace the page shows **MCP is part of Plus** instead, with **Upgrade to Plus** for admins.
+
 ## Server URL
 
 ```
@@ -86,7 +95,7 @@ Every change made through MCP is recorded in the [audit log](/knowledge-base/wor
 
 <AccordionGroup>
   <Accordion title="HTTP 402 — Sketa Plus required">
-    The workspace the connection (or API key) is bound to does not have Sketa Plus. Subscribe in **Settings → Billing**, or reconnect and pick a Plus workspace.
+    The workspace the connection (or API key) is bound to does not have Sketa Plus. Subscribe in **Settings → Workspace → Billing**, or reconnect and pick a Plus workspace.
   </Accordion>
   <Accordion title="HTTP 401 — Unauthenticated">
     The OAuth session expired and refresh failed, or the token or API key is missing, malformed, revoked or expired (`API key expired.`). `API key revoked.` means you are no longer a member of the workspace the connection was bound to. Re-run the assistant's connect flow, or create a new key.

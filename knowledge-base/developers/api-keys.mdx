@@ -4,11 +4,13 @@ description: "Create personal and workspace keys for the Sketa REST API and MCP 
 icon: "key"
 ---
 
-An API key gives a script, an integration or an AI assistant access to **one workspace** through the [REST API](/api-reference/introduction) and the [MCP server](/ai/introduction). Find them in **Settings → API keys**.
+An API key gives a script, an integration or an AI assistant access to **one workspace** through the [REST API](/api-reference/introduction) and the [MCP server](/ai/introduction). Find them in **Settings → Workspace → API keys** (`/settings/workspace/api-keys`), for the workspace you are in; switch workspaces to manage another one's keys.
 
 <Note>
-  API keys need Sketa Plus. If the workspace loses Plus, its keys are refused with `402 Sketa Plus required.`
+  API keys need Sketa Plus. On a Free workspace the page shows **API keys are part of Plus** with an **Upgrade to Plus** button for admins (members are asked to contact an admin). If the workspace loses Plus, its keys are refused with `402 Sketa Plus required.`
 </Note>
+
+If an admin turned **Allow personal keys** off, members without a key see **Personal keys are off** and can ask an admin for a workspace key.
 
 ## Personal and workspace keys
 
@@ -25,7 +27,7 @@ Workspace keys can do what an admin can over shared resources: manage members, i
 
 <Steps>
   <Step title="Create key">
-    In **Settings → API keys**, click **Create key**.
+    In **Settings → Workspace → API keys**, click **Create key** (on an empty page, the button sits under **No API keys yet**).
   </Step>
   <Step title="Name, scope, abilities and expiry">
     - **Name**, for example "Zapier".
