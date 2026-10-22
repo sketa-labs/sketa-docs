@@ -251,7 +251,7 @@ The legacy **Cascade** agent still uses a separate file and `"serverUrl"`. Enter
     The OAuth session expired or was revoked. Cloud: start a new session and approve again. CLI: `devin mcp logout sketa` then `devin mcp login sketa`. Cascade: trigger a tool call and complete the browser flow.
   </Accordion>
   <Accordion title="A tool says “Not found.”">
-    The resource is outside the workspace the connection is bound to, or you cannot see it (another member's private collection; a team-restricted collection for a workspace key). Ask the assistant to list scenes or collections first instead of guessing ids.
+    The resource is outside the workspace the connection is bound to, or you cannot see it (another member's private collection; a team-restricted collection you cannot open). Ask the assistant to list scenes or collections first instead of guessing ids.
   </Accordion>
   <Accordion title="Browser does not open during CLI sign-in">
     Over SSH or inside a container, `devin mcp login` prints the authorize URL instead of opening a browser. Copy it into a local browser, pick the workspace, click **Allow**, and the CLI picks up the callback. If the loopback port is blocked, finish OAuth on a machine that can receive the callback, or connect with an [API key](/knowledge-base/developers/api-keys) header instead.

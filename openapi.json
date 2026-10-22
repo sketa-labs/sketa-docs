@@ -96,7 +96,7 @@
         ],
         "summary": "Rename the workspace",
         "operationId": "updateWorkspace",
-        "description": "Renames the workspace. Needs an admin's personal key or a workspace key. Recorded in the audit log.\n\n**Ability:** `workspace:write`.",
+        "description": "Renames the workspace. Needs an admin's key. Recorded in the audit log.\n\n**Ability:** `workspace:write`.",
         "x-abilities": [
           "workspace:write"
         ],
@@ -292,7 +292,7 @@
         ],
         "summary": "Change a member's role",
         "operationId": "updateUser",
-        "description": "Changes a member's role. The owner always stays an admin. Needs an admin's personal key or a workspace key. Recorded in the audit log.\n\n**Ability:** `users:write`.",
+        "description": "Changes a member's role. The owner always stays an admin. Needs an admin's key. Recorded in the audit log.\n\n**Ability:** `users:write`.",
         "x-abilities": [
           "users:write"
         ],
@@ -377,7 +377,7 @@
         ],
         "summary": "Remove a member",
         "operationId": "removeUser",
-        "description": "Removes a member from the workspace. Their personal API keys are deleted and they leave every team. With `block`, their e-mail also cannot be invited again until it is unblocked. The owner cannot be removed. Needs an admin's personal key or a workspace key. Recorded in the audit log.\n\n**Ability:** `users:write`.",
+        "description": "Removes a member from the workspace. Their API keys and MCP connections stop working and they leave every team. With `block`, their e-mail also cannot be invited again until it is unblocked. The owner cannot be removed. Needs an admin's key. Recorded in the audit log.\n\n**Ability:** `users:write`.",
         "x-abilities": [
           "users:write"
         ],
@@ -435,7 +435,7 @@
         ],
         "summary": "List blocked e-mails",
         "operationId": "listBlocks",
-        "description": "The e-mails blocked from the workspace, newest first. A blocked e-mail cannot be invited nor accept an invite. Needs an admin's personal key or a workspace key.\n\n**Ability:** `users:read`.",
+        "description": "The e-mails blocked from the workspace, newest first. A blocked e-mail cannot be invited nor accept an invite. Needs an admin's key.\n\n**Ability:** `users:read`.",
         "x-abilities": [
           "users:read"
         ],
@@ -504,7 +504,7 @@
         ],
         "summary": "Unblock an e-mail",
         "operationId": "unblockEmail",
-        "description": "Lifts a block: the e-mail can be invited again. It does not rejoin by itself. Needs an admin's personal key or a workspace key. Recorded in the audit log.\n\n**Ability:** `users:write`.",
+        "description": "Lifts a block: the e-mail can be invited again. It does not rejoin by itself. Needs an admin's key. Recorded in the audit log.\n\n**Ability:** `users:write`.",
         "x-abilities": [
           "users:write"
         ],
@@ -616,7 +616,7 @@
         ],
         "summary": "Invite someone",
         "operationId": "createInvite",
-        "description": "Invites someone by e-mail with a role and sends them an invitation e-mail that expires in 3 days. Fails when the person is already a member, already has a pending invite, or their e-mail is blocked. Each member is a paid seat. Needs an admin's personal key or a workspace key.\n\n**Ability:** `invites:write`.",
+        "description": "Invites someone by e-mail with a role and sends them an invitation e-mail that expires in 3 days. Fails when the person is already a member, already has a pending invite, or their e-mail is blocked. Each member is a paid seat. Needs an admin's key.\n\n**Ability:** `invites:write`.",
         "x-abilities": [
           "invites:write"
         ],
@@ -882,7 +882,7 @@
         ],
         "summary": "List collections",
         "operationId": "listCollections",
-        "description": "The collections the key can see, the private collection first, then in the manual order. Workspace keys never see private collections or collections restricted to teams.\n\n**Ability:** `collections:read`.",
+        "description": "The collections the key's member can see, their private collection first, then in the manual order.\n\n**Ability:** `collections:read`.",
         "x-abilities": [
           "collections:read"
         ],
@@ -949,7 +949,7 @@
         ],
         "summary": "Create a collection",
         "operationId": "createCollection",
-        "description": "Creates a shared collection, last in the manual order. It is visible to every member unless `team_ids` restricts it (admins only; workspace keys cannot restrict). Recorded in the audit log.\n\n**Ability:** `collections:write`.",
+        "description": "Creates a shared collection, last in the manual order. It is visible to every member unless `team_ids` restricts it (admins only). Recorded in the audit log.\n\n**Ability:** `collections:write`.",
         "x-abilities": [
           "collections:write"
         ],
@@ -1419,7 +1419,7 @@
         ],
         "summary": "Create a scene",
         "operationId": "createScene",
-        "description": "Creates a scene, optionally with elements. Workspace keys must give a shared `collection_id`; personal keys default to the member's private collection. Untitled scenes get a name automatically.\n\n**Ability:** `scenes:write`.",
+        "description": "Creates a scene, optionally with elements. Without a `collection_id` it goes to the private collection of the key's member. Untitled scenes get a name automatically.\n\n**Ability:** `scenes:write`.",
         "x-abilities": [
           "scenes:write"
         ],
@@ -1911,7 +1911,7 @@
         ],
         "summary": "List audit logs",
         "operationId": "listAuditLogs",
-        "description": "The workspace's audit log, newest first. Needs an admin's personal key or a workspace key.\n\n**Ability:** `audit-logs:read`.",
+        "description": "The workspace's audit log, newest first. Needs an admin's key.\n\n**Ability:** `audit-logs:read`.",
         "x-abilities": [
           "audit-logs:read"
         ],
@@ -2068,7 +2068,7 @@
         ],
         "summary": "List teams",
         "operationId": "listTeams",
-        "description": "The workspace's teams, by name, with their member count. Needs an admin's personal key or a workspace key.\n\n**Ability:** `teams:read`.",
+        "description": "The workspace's teams, by name, with their member count. Needs an admin's key.\n\n**Ability:** `teams:read`.",
         "x-abilities": [
           "teams:read"
         ],
@@ -2135,7 +2135,7 @@
         ],
         "summary": "Create a team",
         "operationId": "createTeam",
-        "description": "Creates a team, optionally with its first members. Needs an admin's personal key or a workspace key. Recorded in the audit log.\n\n**Ability:** `teams:write`.",
+        "description": "Creates a team, optionally with its first members. Needs an admin's key. Recorded in the audit log.\n\n**Ability:** `teams:write`.",
         "x-abilities": [
           "teams:write"
         ],
@@ -2213,7 +2213,7 @@
         ],
         "summary": "Get a team",
         "operationId": "getTeam",
-        "description": "One team. Needs an admin's personal key or a workspace key.\n\n**Ability:** `teams:read`.",
+        "description": "One team. Needs an admin's key.\n\n**Ability:** `teams:read`.",
         "x-abilities": [
           "teams:read"
         ],
@@ -3052,7 +3052,7 @@
           },
           "isPrivate": {
             "type": "boolean",
-            "description": "A member's private collection. Only that member sees it; workspace keys never do."
+            "description": "A member's private collection. Only that member sees it."
           },
           "isRestricted": {
             "type": "boolean",
@@ -3126,7 +3126,7 @@
               "null"
             ],
             "format": "uuid",
-            "description": "`null` when a workspace key created it."
+            "description": "`null` once its creator's account is deleted."
           },
           "updatedBy": {
             "type": [
@@ -3231,7 +3231,7 @@
               "null"
             ],
             "format": "uuid",
-            "description": "`null` for workspace keys and Sketa itself."
+            "description": "`null` for Sketa itself."
           },
           "subjectType": {
             "type": [
@@ -4178,7 +4178,7 @@
         }
       },
       "Forbidden": {
-        "description": "The key lacks the route's ability, the acting user is not allowed to do this, personal keys are turned off in the workspace, or the workspace is read-only (writes only).",
+        "description": "The key lacks the route's ability, the acting user is not allowed to do this, or the workspace is read-only (writes only).",
         "content": {
           "application/json": {
             "schema": {

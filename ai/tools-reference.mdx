@@ -222,7 +222,7 @@ Read-only · `scenes:read`
 
 ### create-scene-tool
 
-Creates an empty scene. Workspace keys must give a shared `collection_id`; personal keys and OAuth connections default to the member's private collection. Returns the scene.
+Creates an empty scene. Without a `collection_id` it goes to the member's private collection. Returns the scene.
 
 `scenes:write`
 
@@ -258,7 +258,7 @@ Destructive · `scenes:write`
 
 ### list-collections-tool
 
-Lists the collections the connection can see, private collection first, then in the manual order. Workspace keys never see private collections.
+Lists the collections the connection can see, private collection first, then in the manual order.
 
 Read-only · `collections:read`
 
@@ -289,7 +289,7 @@ Read-only · `collections:read` and `scenes:read`
 
 ### create-collection-tool
 
-Creates a shared collection, last in the manual order. It is visible to every member unless `team_ids` restricts it (admins only; workspace keys cannot restrict). Returns the collection.
+Creates a shared collection, last in the manual order. It is visible to every member unless `team_ids` restricts it (admins only). Returns the collection.
 
 `collections:write`
 
@@ -365,7 +365,7 @@ Read-only · `users:read`
 
 ### update-user-tool
 
-Changes a member's role. The owner always stays an admin. Needs an admin (or a workspace key); recorded in the audit log. Returns the updated member.
+Changes a member's role. The owner always stays an admin. Needs an admin; recorded in the audit log. Returns the updated member.
 
 `users:write`
 
@@ -376,7 +376,7 @@ Changes a member's role. The owner always stays an admin. Needs an admin (or a w
 
 ### remove-user-tool
 
-Removes a member. Their personal API keys are deleted, they leave every team and their private collection stays with the workspace. With `block`, their e-mail also cannot be invited again (nor accept an old invite) until the block is lifted. The owner cannot be removed. Needs an admin (or a workspace key); recorded in the audit log.
+Removes a member. Their API keys and MCP connections stop working, they leave every team and their private collection stays with the workspace. With `block`, their e-mail also cannot be invited again (nor accept an old invite) until the block is lifted. The owner cannot be removed. Needs an admin; recorded in the audit log.
 
 Destructive · `users:write`
 
@@ -387,7 +387,7 @@ Destructive · `users:write`
 
 ### list-blocks-tool
 
-Lists the blocked e-mails, newest first: the e-mail, who blocked it and when. Needs an admin (or a workspace key).
+Lists the blocked e-mails, newest first: the e-mail, who blocked it and when. Needs an admin.
 
 Read-only · `users:read`
 
@@ -397,7 +397,7 @@ Read-only · `users:read`
 
 ### unblock-member-tool
 
-Unblocks an e-mail: it can be invited again, but it does not rejoin by itself. Needs an admin (or a workspace key); recorded in the audit log.
+Unblocks an e-mail: it can be invited again, but it does not rejoin by itself. Needs an admin; recorded in the audit log.
 
 `users:write`
 
@@ -461,7 +461,7 @@ Destructive · `invites:write`
 
 ## Teams
 
-Team tools need an admin (or a workspace key).
+Team tools need an admin.
 
 ### list-teams-tool
 
@@ -566,7 +566,7 @@ Read-only · `libraries:read`
 
 ### list-audit-logs-tool
 
-Lists the workspace audit log, newest first: who did what, on which resource, with what details and when. Needs an admin (or a workspace key).
+Lists the workspace audit log, newest first: who did what, on which resource, with what details and when. Needs an admin.
 
 Read-only · `audit-logs:read`
 

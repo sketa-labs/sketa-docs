@@ -22,10 +22,7 @@ curl https://sketa.app/api/v1/workspace \
   -H "Accept: application/json"
 ```
 
-Every key is bound to one workspace, the one it was created in. There are two kinds:
-
-- **Personal keys** act as the member who created them, with the same permissions as in the app, including their private collection. They stop working if the member leaves the workspace or an admin turns personal keys off.
-- **Workspace keys** act as the workspace. They can do what an admin can over shared resources (members, invites, teams, audit log, shared collections and their scenes), but never see private collections or collections restricted to teams. Scenes they create have `createdBy: null`.
+Every key is bound to one workspace, the one it was created in, and acts as the member who created it, with the same permissions as in the app: their private collection and the team-restricted collections they can open included, and admin actions only for an admin's key. A key stops working when its member leaves or is removed from the workspace. Members manage their own keys; admins see and can revoke every member's keys.
 
 Only API keys work here; a signed-in browser session does not.
 
@@ -91,10 +88,10 @@ Validation errors (`422`) add the messages per field:
 
 | Status | When |
 | --- | --- |
-| `401` | No key, an invalid or revoked key, `API key expired.`, or `API key revoked.` (a personal key whose member left the workspace) |
+| `401` | No key, an invalid or revoked key, `API key expired.`, or `API key revoked.` (a key whose member left the workspace) |
 | `402` | `Sketa Plus required.` The key's workspace does not have Plus. |
-| `403` | The key lacks the ability; the acting user may not do this; `Personal API keys are turned off in this workspace.`; or `Workspace is read-only.` on a write |
-| `404` | `Not found.` The resource does not exist, is in another workspace, or is not visible to the key (another member's private collection, a restricted collection for a workspace key) |
+| `403` | The key lacks the ability; the acting user may not do this; or `Workspace is read-only.` on a write |
+| `404` | `Not found.` The resource does not exist, is in another workspace, or is not visible to the key's member (another member's private collection, a team-restricted collection they cannot open) |
 | `413` | The body is over 10 MB (scene content and scene creation) |
 | `422` | Invalid input |
 | `429` | Too many requests |

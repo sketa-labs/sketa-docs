@@ -1,6 +1,6 @@
 ---
 title: "Workspace settings"
-description: "General (name, image, leave, delete), Preferences (AI, public links) and personal API keys."
+description: "General (name, image, leave, delete), Preferences (AI, public links) and API keys."
 icon: "gear"
 ---
 
@@ -8,7 +8,7 @@ Workspace settings always apply to the current workspace: switch workspace from 
 
 - **Settings → Workspace → General**: the workspace's name and image, leaving and deleting it.
 - **Settings → Workspace → Preferences**: the policies (AI, public links). Admins only: members don't see this page.
-- **Settings → Workspace → API keys**: personal API keys.
+- **Settings → Workspace → API keys**: API keys (your own; admins see every member's).
 
 The plan and seats are on **Settings → Workspace → Billing** (see [Plans and billing](/knowledge-base/workspace/plans-and-billing)).
 
@@ -32,9 +32,5 @@ Each switch saves as soon as you change it.
 ### Public links
 
 **Public links**. When off, no new read-only, embed or slides links can be created and existing links stop opening. They are kept, and work again when you turn it back on. See [Sharing and public links](/knowledge-base/scenes/sharing-and-public-links).
-
-## Personal API keys
-
-**Allow personal keys**, in **Settings → Workspace → API keys**: whether members can create keys that act as themselves. When off, existing personal keys are refused with `403 Personal API keys are turned off in this workspace.` Workspace keys keep working. See [API keys](/knowledge-base/developers/api-keys).
 
 Every change here is recorded in the [audit log](/knowledge-base/workspace/audit-log).

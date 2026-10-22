@@ -113,7 +113,7 @@ curl -X POST https://sketa.app/api/v1/scenes \
   -d '{ "name": "Login flow", "elements": [ { "type": "rectangle", "x": 0, "y": 0, "width": 160, "height": 80 } ] }'
 ```
 
-Workspace keys must also send a shared `collection_id`; personal keys default to the member's private collection.
+Without a `collection_id`, the scene goes to the private collection of the key's member.
 
 ## Versions
 

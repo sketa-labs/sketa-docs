@@ -1,6 +1,6 @@
 ---
 title: "API keys"
-description: "Create personal and workspace keys for the Sketa REST API and MCP server, with abilities and expiry."
+description: "Create keys for the Sketa REST API and MCP server, with abilities and expiry."
 icon: "key"
 ---
 
@@ -10,18 +10,13 @@ An API key gives a script, an integration or an AI assistant access to **one wor
   API keys need Sketa Plus. On a Free workspace the page shows **API keys are part of Plus** with an **Upgrade to Plus** button for admins (members are asked to contact an admin). If the workspace loses Plus, its keys are refused with `402 Sketa Plus required.`
 </Note>
 
-If an admin turned **Allow personal keys** off, members without a key see **Personal keys are off** and can ask an admin for a workspace key.
+## How keys work
 
-## Personal and workspace keys
+Every key belongs to the workspace it was created in **and** to the member who created it, and acts as that member:
 
-| | **Personal** | **Workspace** |
-| --- | --- | --- |
-| Acts as | You, with your permissions | The workspace |
-| Sees | What you see, including your private collection | Shared collections only, never private or team-restricted ones |
-| Who can create | Any member, if **Allow personal keys** is on | Admins |
-| Stops working when | You leave the workspace, or personal keys are turned off | It is deleted, regenerated or expires |
-
-Workspace keys can do what an admin can over shared resources: manage members, invites and teams, and read the audit log.
+- It has your permissions, exactly as in the app: it sees your private collection and the team-restricted collections you can open, and an admin's key can do what an admin can (manage members, invites and teams, read the audit log).
+- Any member of a Plus workspace can create their own keys.
+- It stops working when you leave the workspace or are removed from it, or when it is deleted, regenerated or expires.
 
 ## Create a key
 
@@ -29,9 +24,8 @@ Workspace keys can do what an admin can over shared resources: manage members, i
   <Step title="Create key">
     In **Settings → Workspace → API keys**, click **Create key** (on an empty page, the button sits under **No API keys yet**).
   </Step>
-  <Step title="Name, scope, abilities and expiry">
+  <Step title="Name, abilities and expiry">
     - **Name**, for example "Zapier".
-    - **Acts as**: **Personal** or **Workspace** (admins).
     - **Abilities**: what the key may do. Leave them all for **All abilities**.
     - **Expires**: **Never**, or in 30, 90 or 365 days.
   </Step>
@@ -53,7 +47,7 @@ Workspace keys can do what an admin can over shared resources: manage members, i
 | `teams:read` / `teams:write` | Read / manage teams |
 | `libraries:read` | Read the public library catalog |
 
-Abilities limit the key on top of the permissions of whoever it acts as: a personal key of a member with `users:write` still cannot remove members.
+Abilities limit the key on top of the permissions of whoever it acts as: the key of a member with `users:write` still cannot remove members.
 
 ## Use a key
 
@@ -68,7 +62,9 @@ Treat a key like a password: never commit it or put it in client-side code.
 
 ## The key list
 
-You see your own personal keys; admins also see the workspace keys. Each shows its abilities, who created it, when it was last used and when it expires (**Never expires**, **Expires** or **Expired**).
+Members see only their own keys. Admins see the keys of every member of the workspace, with the name and photo of who created each one. Each key shows its abilities, when it was last used and when it expires (**Never expires**, **Expires** or **Expired**).
+
+You can regenerate or delete your own keys; admins can regenerate or delete anyone's (a regenerated key still acts as the member who created it).
 
 - **Regenerate** replaces the key's token: the current one stops working at once. Type `REGENERATE` to confirm.
 - **Delete** removes the key: apps using it stop working at once. Type `DELETE` to confirm.

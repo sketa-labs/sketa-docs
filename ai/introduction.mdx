@@ -49,7 +49,7 @@ The server exposes 45 tools. See the [Tools reference](/ai/tools-reference) for 
 
 Open **Settings → Workspace → MCP** (`/settings/workspace/mcp`) for the workspace you are in:
 
-- **Connected apps** lists the assistants you signed in with for this workspace (only yours), with when each was last used. Use **Disconnect** to sign one out: it has to connect again before it can use Sketa. The list updates by itself as soon as a new connection is approved.
+- **Connected apps** lists the assistants you signed in with for this workspace, with when each was last used. Members see only their own; admins see every member's connections, with the name and photo of who connected each one, and can disconnect any of them. Use **Disconnect** to sign one out: it has to connect again before it can use Sketa. The list updates by itself as soon as a new connection is approved.
 - **Connect an app** has the server URL, the command or config to paste and the steps for Claude, ChatGPT, Claude Code, Cursor, VS Code, Codex, Gemini CLI and any other MCP app, each with a link to its guide below.
 
 On a Free workspace the page shows **MCP is part of Plus** instead, with **Upgrade to Plus** for admins.
@@ -78,15 +78,15 @@ For clients that cannot complete OAuth, and for scripts, send an [API key](/know
 Authorization: Bearer sketa_YOUR_API_KEY
 ```
 
-The key's scope and abilities apply exactly as on the REST API: a personal key acts as its member, a workspace key acts as the workspace (shared collections only), and tools outside the key's abilities answer "This connection is missing the *ability* ability."
+The key acts as the member who created it and its abilities apply exactly as on the REST API: tools outside the key's abilities answer "This connection is missing the *ability* ability."
 
 ## Permissions
 
 The MCP server resolves the same actor as the [REST API](/api-reference/introduction), so permissions are identical:
 
 - **Members** can create, edit, move and delete scenes and collections they can see, and read members and invites.
-- **Admins** (and workspace keys) can also rename the workspace, change roles, remove and block members, send and cancel invites, manage teams and read the audit log.
-- Anything outside the workspace, or not visible to the connection (another member's private collection; a restricted collection for a workspace key), answers "Not found."
+- **Admins** can also rename the workspace, change roles, remove and block members, send and cancel invites, manage teams and read the audit log.
+- Anything outside the workspace, or not visible to the connection (another member's private collection; a team-restricted collection you cannot open), answers "Not found."
 - In a **read-only** workspace (Plus ended), every tool that changes something answers "Workspace is read-only."
 
 Every change made through MCP is recorded in the [audit log](/knowledge-base/workspace/audit-log) with the source **MCP**. Tool calls are limited to 120 per minute per connection.
@@ -100,14 +100,11 @@ Every change made through MCP is recorded in the [audit log](/knowledge-base/wor
   <Accordion title="HTTP 401 — Unauthenticated">
     The OAuth session expired and refresh failed, or the token or API key is missing, malformed, revoked or expired (`API key expired.`). `API key revoked.` means you are no longer a member of the workspace the connection was bound to. Re-run the assistant's connect flow, or create a new key.
   </Accordion>
-  <Accordion title="HTTP 403 — Personal API keys are turned off in this workspace">
-    You connected with a personal API key and an admin turned personal keys off. Connect with OAuth instead, or ask an admin for a workspace key.
-  </Accordion>
   <Accordion title="A tool says “This connection is missing the … ability”">
     The API key does not carry that ability. Create a key with the abilities you need, or connect with OAuth (which carries every ability).
   </Accordion>
   <Accordion title="A tool says “Not found.”">
-    The id is from another workspace, or the connection cannot see it: another member's private collection, or a team-restricted collection for a workspace key. Ask the assistant to list the resources first instead of guessing ids.
+    The id is from another workspace, or the connection cannot see it: another member's private collection, or a team-restricted collection you cannot open. Ask the assistant to list the resources first instead of guessing ids.
   </Accordion>
   <Accordion title="Browser doesn't open during sign-in">
     Some clients print the authorize URL to the terminal instead of opening the browser when running over SSH or inside a container. Copy the URL into a local browser and finish the flow. If the callback cannot reach the client, connect with an API key header instead.
