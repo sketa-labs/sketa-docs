@@ -1,6 +1,6 @@
 # Sketa Docs
 
-Documentation for [Sketa](https://sketa.app), the hand-drawn whiteboard, published at [sketa.app/docs](https://sketa.app/docs). Built with [Mintlify](https://mintlify.com).
+Documentation for [Sketa](https://sketa.app), the online whiteboard for teams (clean or hand-drawn), published at [sketa.app/docs](https://sketa.app/docs). Built with [Mintlify](https://mintlify.com).
 
 ## Development
 

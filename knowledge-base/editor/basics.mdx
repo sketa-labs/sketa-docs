@@ -1,6 +1,6 @@
 ---
 title: "Editor basics"
-description: "The canvas, the hand-drawn look, styles, text, arrows, frames and editing."
+description: "The canvas, clean or hand-drawn styles, text, arrows, frames and editing."
 icon: "pen-nib"
 ---
 
@@ -15,11 +15,11 @@ The editor is the same everywhere: on [sketa.app](https://sketa.app) without an 
 - **Zen mode** hides the interface; **View mode** lets you look around without editing.
 - **Canvas background** sets the color behind the drawing.
 
-## The hand-drawn look
+## Clean or hand-drawn
 
-Every shape is drawn with a sketchy outline. **Sloppiness** sets how loose it is: **Architect** (clean), **Artist** (the default) and **Cartoonist** (very loose). Small shapes get proportionally less wobble.
+New shapes are clean by default: straight lines and a sans-serif font, like a FigJam board. The hand-drawn style is one setting away. **Sloppiness** sets how loose the outline is: **Architect** (clean, the default), **Artist** (hand-drawn) and **Cartoonist** (very loose). Every hand-drawn shape keeps its own random seed, so its wobble looks the same every time and for everyone; small shapes get proportionally less wobble.
 
-Text uses one of eight fonts. The properties panel shows the top three as buttons: **Hand-drawn** (the default), **Normal** and **Code**. **More fonts** opens the font picker with five more: **Display**, **Rounded**, **Handwriting**, **Classic** and **Monospace**.
+Text uses one of eight fonts. The **Text** menu shows the top three as buttons: **Hand-drawn**, **Normal** (the default) and **Code**. **More fonts** opens the font picker with five more: **Display**, **Rounded**, **Handwriting**, **Classic** and **Monospace**.
 
 | Font | Typeface |
 | --- | --- |
@@ -36,24 +36,24 @@ The picker has **Search fonts** and lists the fonts **In this scene** above **Al
 
 ## Styles
 
-Select one or more elements and set, in the properties panel:
+Select one or more elements and set their style in the [selection toolbar](/knowledge-base/editor/selection-toolbar), the dark bar above them:
 
-- **Stroke** and **Background** colors (palette, shades, hex code or the eyedropper).
-- **Fill**: **Hachure**, **Cross-hatch**, **Solid** or **Zigzag**.
-- **Stroke width** and **Stroke style** (solid, dashed, dotted).
-- **Sloppiness**, **Edges** (sharp or round) and **Opacity**.
+- **Color**: the stroke color, or the fill (**Filled**, **Transparent** or **No fill**) with its **Pattern** (**Hachure**, **Cross-hatch** or **Solid**) and **Opacity**. Two rows of quick colors, plus the full palette, shades, a hex code and the eyedropper.
+- **Line**: **Stroke style** (solid, dashed, dotted or none), **Stroke width**, **Sloppiness** and **Edges** (sharp or round).
+- **Text**: **Font**, **Font size** and alignment, plus [formatting](/knowledge-base/editor/text-formatting) (bold, strikethrough, links and bulleted lists).
 
-The last style you used becomes the default for the next element. **Copy styles** and **Paste styles** move a style between elements.
+With nothing selected, the same bar above the toolbar sets the **Style for new elements**. The last style you used becomes the default for the next element. **Copy styles** and **Paste styles** move a style between elements.
 
 ## Text
 
-Type free text with the **Text** tool, or double-click a rectangle, diamond, ellipse or sticky note to write inside it: the text wraps and stays centered as the shape changes. Arrows take a label too. Set **Font**, **Font size**, **Text align** and **Vertical align** in the properties panel.
+Type free text with the **Text** tool, or double-click a rectangle, diamond, ellipse or sticky note to write inside it: the text wraps and stays centered as the shape changes. Arrows take a label too. Set **Font**, **Font size**, **Text align** and **Vertical align** in the selection toolbar's **Text** menu.
 
 ## Arrows and lines
 
 - Arrows **bind** to shapes: move or resize the shape and the arrow follows. Hold <kbd>Ctrl</kbd>/<kbd>⌘</kbd> to draw without binding.
 - Three arrow types: **Sharp**, **Curved** and **Elbow** (right-angle routing).
 - **Arrowheads** at either end: arrow, bar, circle, triangle, diamond (filled or outline) and crow's foot for ER diagrams.
+- [Quick connect](/knowledge-base/editor/shapes-and-quick-connect#quick-connect): select a shape and click or drag one of the dots beside it to add a connected shape or draw a bound arrow.
 - Lines can have many points, edited one by one with **Edit points**; **Close or open shape** turns a line into a fillable polygon.
 - Flowchart shortcuts: with a shape selected, <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + an arrow key adds the next node already connected; <kbd>Alt</kbd> + an arrow key moves between nodes.
 
@@ -76,5 +76,9 @@ A frame is a named area that holds elements: they move with it and are clipped a
 ## Embeds
 
 The **Web embed** tool shows a live web page on the canvas: paste a link from YouTube, Vimeo, Figma or any website. Links to X posts show as a post card.
+
+## Brainstorming
+
+[Sticky notes](/knowledge-base/editor/sticky-notes), [tables](/knowledge-base/editor/tables), the [marker, highlighter and washi tape](/knowledge-base/editor/markers-and-tape), and [stamps, reactions and cursor chat](/knowledge-base/editor/stamps-reactions-and-chat) have their own pages.
 
 See [Tools and shortcuts](/knowledge-base/editor/tools-and-shortcuts) for every key.

@@ -3,7 +3,7 @@
   "info": {
     "title": "Sketa API",
     "version": "1.0.0",
-    "description": "The REST API of Sketa, the hand-drawn whiteboard. It needs Sketa Plus. Authenticate with an API key from **Settings → API keys** in the `Authorization: Bearer sketa_...` header."
+    "description": "The REST API of Sketa, the online whiteboard for teams. It needs Sketa Plus. Authenticate with an API key from **Settings → API keys** in the `Authorization: Bearer sketa_...` header."
   },
   "servers": [
     {

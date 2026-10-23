@@ -11,10 +11,10 @@ Before drawing, an assistant reads a guide with [`get-format-guide-tool`](/ai/to
 For flowcharts, architecture and other boxes-and-arrows content, assistants prefer `create-diagram-tool` (automatic layout) and check the result with `take-screenshot-tool`. `edit-scene-content-tool` is for small diagrams or precise placement.
 
 - **Layout**: a 20 px grid; shapes 160 × 80 by default, same size for the same role; 80 px between shapes in a row and 100 px between rows; one flow direction per diagram; new content goes beside what is already there.
-- **Shapes**: rectangles for steps, services and screens; ellipses for start and end; diamonds for decisions (short labels); frames to group a part under a name; sticky notes for side comments.
+- **Shapes**: rectangles for steps, services and screens; ellipses for start and end; diamonds for decisions (short labels); the shape library (`type: "shape"` with a `shape` kind such as `cylinder` for databases, `document`, `parallelogram`, `cloud` or the block arrows); frames to group a part under a name; sticky notes for side comments; tables (`cells` and `header: true`) for comparisons, schedules and entity fields.
 - **Labels**: text goes inside shapes as their `label`, under about four words per line; arrows get labels only when the relation is not obvious.
 - **Arrows**: both ends bound to shapes so they follow them; `line` for connections without direction; dashed for optional or asynchronous flows.
-- **Colors**: at most three hues per diagram, chosen by meaning. Fills use shade 2, strokes shade 5:
+- **Colors**: at most three hues per diagram, chosen by meaning. Fills use shade 2, strokes shade 5. `fillStyle: "solid"` reads best; `hachure` with `roughness: 1` gives a hand-drawn look:
 
 | Hue | Fill | Stroke |
 | --- | --- | --- |
@@ -40,8 +40,11 @@ A presentation is a scene whose frames are the slides.
 
 ## Freeform
 
-- **Fonts**: `fontFamily` takes a role: `hand` (hand-drawn, the default), `normal` (sans) and `code` (monospace), plus `display` (bold headline), `rounded` (rounded sans), `script` (handwriting), `classic` (Helvetica-like sans) and `mono` (a second monospace). One or two fonts per board; mix only for contrast, such as a `display` heading over `normal` text.
-- **Notes and brainstorms**: one idea per sticky note (200 × 200), up to about 20 words, on a grid with 40 px gaps, themes grouped under named frames, one sticky color per theme or author.
+- **Fonts**: `fontFamily` takes a role: `normal` (sans, the default), `hand` (hand-drawn) and `code` (monospace), plus `display` (bold headline), `rounded` (rounded sans), `script` (handwriting), `classic` (Helvetica-like sans) and `mono` (a second monospace). One or two fonts per board; mix only for contrast, such as a `display` heading over `normal` text.
+- **Formatted text**: a text, label or sticky may carry `richText` (`marks` for bold, strikethrough and links as UTF-16 ranges of `originalText`, `bullets` for the lines drawn as a bulleted list); plain text leaves it out, and search and summaries always read `originalText`.
+- **Notes and brainstorms**: one idea per sticky note (200 × 200), up to about 20 words, on a grid with 40 px gaps, themes grouped under named frames, one sticky color per theme or author. A note's text shrinks to fit, so split long ideas instead of enlarging the note. `author` names the person who wrote the idea (left out for notes the assistant writes) and stays private to the scene.
+- **Tables**: a `table` skeleton takes `cells` (rows of cell texts, at most 50 × 50) and `header: true` for a bold first row; prefer a table over a grid of rectangles for anything with rows and columns.
+- **Stamps and pens**: `stamp` elements are people's votes and reactions (count them next to each sticky when asked what the team prefers); `freedraw` strokes drawn with the marker, highlighter or washi tape pens are read only. Assistants create neither.
 - **Moodboards**: images from `add-image-tool`, 400 to 600 px wide, in rows with 40 px gaps, small captions underneath, framed so the board exports as one picture.
 - **Wireframes**: clean lines (`roughness: 0`, stroke `#3d414a`, `normal` font); screens as 390 × 844 (phone) or 1440 × 900 (desktop) frames; buttons 120 × 40, inputs 280 × 40; arrows from the control that leads to the next screen; icons and ready-made UI pieces placed from the public library catalog (`add-library-item-tool`) instead of drawn by hand.
 - **Charts**: bars on a shared baseline with equal widths and gaps, values above and categories below, two lines for the axes, one hue with a stronger shade for the bar that matters.

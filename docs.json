@@ -60,6 +60,13 @@
             "group": "Editor",
             "pages": [
               "knowledge-base/editor/basics",
+              "knowledge-base/editor/selection-toolbar",
+              "knowledge-base/editor/shapes-and-quick-connect",
+              "knowledge-base/editor/sticky-notes",
+              "knowledge-base/editor/text-formatting",
+              "knowledge-base/editor/tables",
+              "knowledge-base/editor/markers-and-tape",
+              "knowledge-base/editor/stamps-reactions-and-chat",
               "knowledge-base/editor/tools-and-shortcuts",
               "knowledge-base/editor/files-and-exports",
               "knowledge-base/editor/library"
