@@ -12,7 +12,7 @@
 
 ## Project context
 
-Sketa is a hand-drawn infinite whiteboard (an Excalidraw / Excalidraw+ alternative). Anyone can draw at `https://sketa.app` without an account; signing in saves scenes to the cloud; **Sketa Plus** workspaces (US$3 per seat/month, or US$24 per seat/year shown as US$2/month) add collections, members, guests, teams, public links and embeds, slides, comments, version history, PDF/PPTX exports, the server library, the REST API and the MCP server.
+Sketa is a hand-drawn infinite whiteboard (an Excalidraw / Excalidraw+ alternative). Anyone can draw at `https://sketa.app` without an account; signing in saves scenes to the cloud; **Sketa Plus** workspaces ($3 per seat/month, or $24 per seat/year shown as $2/month) add collections, members, guests, teams, public links and embeds, slides, comments, version history, PDF/PPTX exports, the server library, the REST API and the MCP server.
 
 Sketa is a hosted product only: it is **not open source and not self-hostable**. Never write self-hosting instructions, environment variables, install steps or "open-source" claims, and never link to the app's source code.
 
