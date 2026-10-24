@@ -41,7 +41,9 @@
           {
             "group": "Help",
             "pages": [
-              "support"
+              "support",
+              "feedback",
+              "changelog"
             ]
           }
         ]
@@ -60,13 +62,21 @@
             "group": "Editor",
             "pages": [
               "knowledge-base/editor/basics",
+              "knowledge-base/editor/actions-and-menus",
               "knowledge-base/editor/selection-toolbar",
               "knowledge-base/editor/shapes-and-quick-connect",
               "knowledge-base/editor/sticky-notes",
               "knowledge-base/editor/text-formatting",
+              "knowledge-base/editor/sections",
+              "knowledge-base/editor/pages",
+              "knowledge-base/editor/insert-panel",
+              "knowledge-base/editor/templates",
+              "knowledge-base/editor/mind-maps",
+              "knowledge-base/editor/code-blocks",
               "knowledge-base/editor/tables",
               "knowledge-base/editor/markers-and-tape",
               "knowledge-base/editor/stamps-reactions-and-chat",
+              "knowledge-base/editor/find-and-replace",
               "knowledge-base/editor/tools-and-shortcuts",
               "knowledge-base/editor/files-and-exports",
               "knowledge-base/editor/library"

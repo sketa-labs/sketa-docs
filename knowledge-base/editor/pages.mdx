@@ -1,0 +1,33 @@
+---
+title: "Pages"
+description: "Split one scene into pages: add, rename, reorder and move elements between them."
+icon: "files"
+---
+
+A scene can have several pages, each its own canvas. A scene starts with one page; add more when a board gets crowded or you want separate stages of the same work in one place.
+
+## The pages panel
+
+Open **Pages** with the button next to the scene name, top left.
+
+- **Add page** adds a page at the end and takes you there.
+- Click a page to show it. **Previous page** and **Next page** (<kbd>Page Up</kbd> / <kbd>Page Down</kbd>, or **View** in the main menu) step through them.
+- **Page options** (the `⋯` beside a page) has **Rename**, **Duplicate** and **Delete**. Deleting a page deletes everything on it, after you confirm; the last page cannot be deleted.
+- Drag a page to reorder it, or press <kbd>Alt</kbd> <kbd>↑</kbd> / <kbd>Alt</kbd> <kbd>↓</kbd> with it focused.
+
+The panel also shows who is on each page in a live session.
+
+## Move elements to another page
+
+Select elements, right-click them and pick **Move to page**, then the page. Labels and everything inside a section go with them. Arrows never connect elements of two different pages: an arrow left behind lets go of what moved.
+
+## What is per page
+
+Selection, **Find on canvas**, comments and the slides panel work on the page you are on. Your collaborators' cursors show only when they are on the same page; following someone or [Spotlight](/knowledge-base/scenes/voice-and-spotlight) takes you to their page. Undo takes you back to the page where the change happened.
+
+## Outside the editor
+
+- [Read-only links and embeds](/knowledge-base/scenes/sharing-and-public-links) open on the first page and let viewers switch pages.
+- [Slides links](/knowledge-base/scenes/slides) play the slides of every page, page by page.
+- Previews and link images show the first page.
+- The [API](/api-reference/introduction) and the [MCP server](/ai/introduction) read and write pages, and every element names its page in `pageId`.

@@ -186,7 +186,7 @@ Read-only · `scenes:read`
 
 ### create-slide-tool
 
-Adds a slide: a frame (1920 × 1080 by default) placed 200 px to the right of the last slide and played after it. Returns its `frameId`, position, bounds, the safe area (5 % in from every edge) and the regions to lay content in: `title` (top 15 % of the safe area), `body` (the rest), `left` and `right` (the halves of the body). Then draw into it with `edit-scene-content-tool`, giving each element `frame: {id: frameId}`.
+Adds a slide: a frame (1920 × 1080 by default) placed 200 px to the right of the last slide of its page and played after it. Returns its `frameId`, position, `pageId`, bounds, the safe area (5 % in from every edge) and the regions to lay content in: `title` (top 15 % of the safe area), `body` (the rest), `left` and `right` (the halves of the body). Then draw into it with `edit-scene-content-tool`, giving each element `frame: {id: frameId}`.
 
 `scenes:write`
 
@@ -195,6 +195,7 @@ Adds a slide: a frame (1920 × 1080 by default) placed 200 px to the right of th
 | `scene_id` | string, required | The scene id. |
 | `title` | string | The slide title, shown as the frame name (up to 200 characters). |
 | `width`, `height` | number | Frame size in scene pixels (default 1920 × 1080, between 100 and 10000). |
+| `page_id` | string | The page to add it to (an id from `list-scene-pages-tool`); the first page when left out. |
 
 ### update-slide-tool
 

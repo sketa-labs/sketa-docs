@@ -1,6 +1,6 @@
 ---
 title: "AI"
-description: "Text to diagram, Mermaid to diagram, wireframe to code and automatic scene names, with daily limits."
+description: "Text to diagram, Mermaid to diagram, summarize, sort and rewrite on the board, wireframe to code and automatic scene names, with daily limits."
 icon: "sparkles"
 ---
 
@@ -8,15 +8,25 @@ Sketa's AI runs on Sketa's own account with Anthropic's Claude. There is nothing
 
 ## Text to diagram
 
-**More tools** → **Text to diagram** opens **Create a diagram**. Describe what to draw ("the checkout flow of an online store") and Sketa draws an editable diagram in the preview. Keep chatting to ask for changes until it looks right, then **Insert** it on the canvas. Every shape and arrow is a normal element you can edit.
+**AI diagram** (in the **Actions** palette, <kbd>Ctrl</kbd> <kbd>K</kbd>, or **More** in the [+ panel](/knowledge-base/editor/insert-panel)) opens **Create a diagram**. Describe what to draw ("the checkout flow of an online store") and Sketa draws an editable diagram in the preview. Keep chatting to ask for changes until it looks right, then **Insert** it on the canvas. Every shape and arrow is a normal element you can edit.
 
 ## Mermaid to diagram
 
-**More tools** → **Mermaid to diagram** opens the **Mermaid** tab: paste a Mermaid flowchart, check the **Preview** and **Insert** it. Mermaid is converted in your browser; it does not use AI credits. Only flowcharts are supported.
+**Mermaid** (in **Actions** or the + panel's **More**) opens the **Mermaid** tab: paste a Mermaid flowchart, check the **Preview** and **Insert** it. Mermaid is converted in your browser; it does not use AI credits. Only flowcharts are supported.
+
+## Summarize, sort and rewrite
+
+Select elements and open **AI** in the [selection toolbar](/knowledge-base/editor/selection-toolbar), or right-click them:
+
+- **Summarize** (two or more sticky notes): a new note appears to the right with a bold title and the main points as a bulleted list.
+- **Sort into sections** (two or more sticky notes): the notes are grouped by theme into labeled [sections](/knowledge-base/editor/sections), laid out in a grid inside each one.
+- **Rewrite** (texts and labels): **Improve writing**, **Make shorter**, **Make longer**, **Fix spelling and grammar**, **More formal** or **More casual**. The words are replaced in place.
+
+Each result is one step you can undo. The answers come in your interface language. These work in the editor only, not through the API or the MCP server.
 
 ## Wireframe to code
 
-Draw a wireframe inside a frame, select the frame and choose **Wireframe to code** from its context menu. Sketa turns it into an interactive HTML page shown next to the frame. Select the result to **View code** (and **Copy code**) or **Regenerate code**.
+Draw a wireframe inside a section, select the section and choose **Wireframe to code** from its context menu. Sketa turns it into an interactive HTML page shown next to the frame. Select the result to **View code** (and **Copy code**) or **Regenerate code**.
 
 ## Automatic scene names
 
@@ -32,7 +42,7 @@ Limits are counted in AI credits per UTC day and reset at midnight UTC.
 | Free account | 10 |
 | Member of a Plus workspace | 100 |
 
-Each text-to-diagram message costs 1 credit; each wireframe-to-code generation costs 5. When you run out you see "You have used your *N* AI credits for today. Try again tomorrow." The editor shows how many credits you have **left today**.
+Each text-to-diagram message, summary, sort or rewrite costs 1 credit; each wireframe-to-code generation costs 5. **AI balance** (main menu → **Help and account**) shows what you have left. When you run out you see "You have used your *N* AI credits for today. Try again tomorrow." The editor shows how many credits you have **left today**.
 
 Guests use their own plan's limit, not the limit of the workspace that shared the scene.
 

@@ -1,34 +1,55 @@
 ---
 title: "Text formatting"
-description: "Bold, strikethrough, links and bulleted lists in texts, labels, sticky notes and table cells."
+description: "Bold, italic, underline, strikethrough, links, lists, sizes and alignment in texts, labels, sticky notes and table cells."
 icon: "bold"
 ---
 
-Any text can carry formatting: free texts, labels inside shapes, sticky notes and table cells.
+Any text can carry formatting: free texts, labels inside shapes, sticky notes and table cells. The keys are FigJam's.
 
 | Format | Shortcut | In the selection toolbar |
 | --- | --- | --- |
 | **Bold** | <kbd>Ctrl</kbd> <kbd>B</kbd> | **Bold** |
+| **Italic** | <kbd>Ctrl</kbd> <kbd>I</kbd> | **Italic** |
+| **Underline** | <kbd>Ctrl</kbd> <kbd>U</kbd> | **Underline** |
 | **Strikethrough** | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>X</kbd> | **Strikethrough** |
+| **Link** | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>U</kbd> | **Link** |
 | **Bulleted list** | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>8</kbd> | **Bulleted list** |
-| **Link** | <kbd>Ctrl</kbd> <kbd>K</kbd> while typing | **Link** |
+| **Numbered list** | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>7</kbd> | **Numbered list** |
 
 On macOS, use <kbd>⌘</kbd> instead of <kbd>Ctrl</kbd>.
 
 ## While typing or on the whole text
 
-- **While you type**, a format applies to the selected words, or to what you type next. A bulleted list applies to the selected lines.
+- **While you type**, a format applies to the selected words, or to what you type next. A list applies to the selected lines.
 - **With elements selected** (not typing), the same keys and buttons format their whole text: select three sticky notes and press <kbd>Ctrl</kbd> <kbd>B</kbd> to make all three bold.
 
 Press the same key again to remove the format.
 
+## Size
+
+The size menu has FigJam's sizes, the same on texts and sticky notes, plus a field for any number:
+
+| Size | Pixels | Shortcut |
+| --- | --- | --- |
+| **Small** | 16 | <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>0</kbd> |
+| **Medium** | 24 | <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>4</kbd> |
+| **Large** | 40 | <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>3</kbd> |
+| **Extra large** | 64 | <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>2</kbd> |
+| **Huge** | 96 | <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>1</kbd> |
+
+<kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>&gt;</kbd> and <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>&lt;</kbd> step the size up and down.
+
+## Font and alignment
+
+The **Font** button ("Aa", drawn in the current font) picks the font; see [Editor basics](/knowledge-base/editor/basics#clean-or-hand-drawn). **Text align** sets left, center or right (<kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>L</kbd>, <kbd>T</kbd>, <kbd>R</kbd>) and the vertical alignment of labels. **Spell check** in the main menu's **Preferences** underlines misspelled words while you type.
+
 ## Links
 
-A link takes a web address (`http` or `https`) or an e-mail address (`mailto:`); anything else is refused. To open a linked word on the canvas, <kbd>Ctrl</kbd> + click it (<kbd>⌘</kbd> + click on macOS); in **View mode** a plain click opens it. Outside text, <kbd>Ctrl</kbd> <kbd>K</kbd> is **Edit link**, a link on the whole element.
+A link takes a web address (`http` or `https`) or an e-mail address (`mailto:`); anything else is refused. To open a linked word on the canvas, <kbd>Ctrl</kbd> + click it (<kbd>⌘</kbd> + click on macOS); in **View mode** a plain click opens it. A link on a whole element is **Edit link** in the selection toolbar's **More actions**.
 
-## Bulleted lists
+## Lists
 
-Each line of the list gets a bullet and a hanging indent, so wrapped lines stay aligned.
+Each line of a list gets a bullet or a number and a hanging indent, so wrapped lines stay aligned. While typing in a list, <kbd>Tab</kbd> and <kbd>Shift</kbd> <kbd>Tab</kbd> (or <kbd>Ctrl</kbd> <kbd>]</kbd> and <kbd>Ctrl</kbd> <kbd>[</kbd>) nest an item or bring it back out; typing `- ` or `1. ` at the start of a line starts a list, and <kbd>Enter</kbd> on an empty item ends it.
 
 ## What stays plain
 

@@ -10,9 +10,11 @@ The editor is the same everywhere: on [sketa.app](https://sketa.app) without an 
 
 - **Pan**: the **Hand** tool (<kbd>H</kbd>), <kbd>Space</kbd> + drag, a middle or right drag, or scroll.
 - **Zoom**: <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + scroll or pinch, **Zoom in** / **Zoom out**, **Zoom to fit** (<kbd>Shift</kbd> <kbd>1</kbd>) and **Zoom to selection** (<kbd>Shift</kbd> <kbd>2</kbd>).
-- **Grid** and **Snap to objects** (edges, centers and equal spacing) from the menu.
+- **Dot grid**, **Grid** and **Snap to objects** (edges, centers and equal spacing) from the main menu's **View**.
 - **Theme**: light or dark. Dark mode inverts the drawing's colors on screen without changing the scene.
-- **Zen mode** hides the interface; **View mode** lets you look around without editing.
+- **Minimize UI** (<kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>{'\\'}</kbd>) keeps only the essentials, **Hide UI** (<kbd>Ctrl</kbd> <kbd>{'\\'}</kbd>) hides the interface; **View mode** lets you look around without editing.
+
+The toolbar at the bottom follows FigJam's: selection and hand, the marker (its tray has the highlighter, washi tape, eraser and laser pointer), sticky notes, shapes and connectors, then text, section, table, stamp, comment, **Actions** and the [+ panel](/knowledge-base/editor/insert-panel). The other tools are in [Actions](/knowledge-base/editor/actions-and-menus) (<kbd>Ctrl</kbd> <kbd>K</kbd>).
 - **Canvas background** sets the color behind the drawing.
 
 ## Clean or hand-drawn
@@ -63,15 +65,16 @@ Type free text with the **Text** tool, or double-click a rectangle, diamond, ell
 - Move, resize, rotate, **Flip horizontal** / **Flip vertical**.
 - **Group** / **Ungroup** (nested groups work), **Align** and **Distribute**, and the layer order (**Bring forward**, **Send to back**…).
 - **Duplicate**, **Lock or unlock**, **Delete**, **Edit link** (a web, e-mail or object link on any element).
-- **Switch shape type** with <kbd>Tab</kbd> keeps everything else.
+- **Select inverse**, **Paste to replace** (the copied element takes the place and size of each selected one), **Paste over selection**, **Tidy up** and **Rotate 90° left / right** or **180°**.
+- <kbd>Tab</kbd> and <kbd>Shift</kbd> <kbd>Tab</kbd> select the next or previous element, <kbd>{'\\'}</kbd> the section around the selection and <kbd>Enter</kbd> on a section its contents.
 - **Crop image**, and paste images, text, SVG or spreadsheet data. Pasted data can become a **Bar chart**, **Line chart** or **Radar chart**.
 - **Undo** and **Redo** only revert your own changes, never a collaborator's.
-- **Find on canvas** (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>F</kbd>) searches texts and frames.
-- The **Command palette** (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>/</kbd>) runs any command or tool by name, and **Stats** shows the exact position and size of the selection.
+- **Find on canvas** (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>F</kbd>) searches texts and sections, and replaces words: see [Find and replace](/knowledge-base/editor/find-and-replace).
+- [Actions](/knowledge-base/editor/actions-and-menus) (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>K</kbd>) runs any command or tool by name, and **Stats** shows the exact position and size of the selection.
 
-## Frames
+## Sections
 
-A frame is a named area that holds elements: they move with it and are clipped at its edge. Use frames to organize a scene, to export one area, and as [slides](/knowledge-base/scenes/slides). Select elements and use **Wrap in frame**, or draw one with the **Frame** tool (<kbd>F</kbd>).
+A section is a named area that holds elements: they move with it and stay inside its edge. Use sections to organize a scene, to export one area, and as [slides](/knowledge-base/scenes/slides). Select elements and use **Wrap in section** (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>S</kbd>), or draw one with the **Section** tool (<kbd>Shift</kbd> <kbd>S</kbd>). See [Sections](/knowledge-base/editor/sections). A scene can also have several [pages](/knowledge-base/editor/pages).
 
 ## Embeds
 
