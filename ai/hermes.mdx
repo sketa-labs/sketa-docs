@@ -89,10 +89,10 @@ Pick **one** way to add the server. Do not run `login` after a successful `add` 
     You should see Sketa tools. Then:
 
     ```
-    List my Sketa scenes
+    List my Sketa boards
     ```
 
-    Hermes registers each tool as `mcp__<server>__<tool>` ([config reference](https://hermes-agent.nousresearch.com/docs/reference/mcp-config-reference)). Hyphens become underscores, so `list-scenes-tool` is `mcp__sketa__list_scenes_tool`. You do not type that name — ask in plain language. If Hermes answers without tools, tell it to use the **sketa** MCP server.
+    Hermes registers each tool as `mcp__<server>__<tool>` ([config reference](https://hermes-agent.nousresearch.com/docs/reference/mcp-config-reference)). Hyphens become underscores, so `list-boards-tool` is `mcp__sketa__list_boards_tool`. You do not type that name — ask in plain language. If Hermes answers without tools, tell it to use the **sketa** MCP server.
 
     See the [Tools reference](/ai/tools-reference) for every tool and the recommended drawing workflow.
   </Step>
@@ -112,9 +112,9 @@ Once the server is authorized, Hermes can:
 
 | Task | Examples |
 |------|----------|
-| **Drawing** | Draw diagrams with automatic layout; add shapes, arrows, sticky notes and images; search and edit scenes; take screenshots to check the result |
+| **Drawing** | Draw diagrams with automatic layout; add shapes, arrows, sticky notes and images; search and edit boards; take screenshots to check the result |
 | **Slides** | Add slides, write speaker notes, reorder and hide slides |
-| **Scenes and collections** | List, search, create, rename, move, pin and delete |
+| **Boards and collections** | List, search, create, rename, move, pin and delete |
 | **Workspace** | Read the workspace; manage members, invites and teams; read the audit log |
 
 Members, invites, teams and the audit log need an admin. See [Permissions](/ai/introduction#permissions).
@@ -247,7 +247,7 @@ Escalation from [OAuth over SSH](https://hermes-agent.nousresearch.com/docs/guid
     The token expired or was revoked. Run `hermes mcp login sketa` again.
   </Accordion>
   <Accordion title="A tool says “Not found.”">
-    The resource is outside the workspace the connection is bound to, or you cannot see it (another member's private collection; a team-restricted collection you cannot open). Ask the assistant to list scenes or collections first instead of guessing ids.
+    The resource is outside the workspace the connection is bound to, or you cannot see it (another member's private collection; a team-restricted collection you cannot open). Ask the assistant to list boards or collections first instead of guessing ids.
   </Accordion>
   <Accordion title="I used hermes mcp install sketa and nothing happened">
     `install` only accepts [catalog](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp) names. Sketa is not in that catalog. Use `hermes mcp add` with `--url` and `--auth oauth`.
@@ -257,11 +257,11 @@ Escalation from [OAuth over SSH](https://hermes-agent.nousresearch.com/docs/guid
 ## Example prompts
 
 ```
-Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new board
 ```
 
 ```
-Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
+Find the "Payments" box in my "Checkout flow" board and add a fraud-check step after it
 ```
 
 ```
@@ -269,7 +269,7 @@ Turn these notes into a four-slide deck with speaker notes, then screenshot each
 ```
 
 ```
-Which scenes did I edit this week?
+Which boards did I edit this week?
 ```
 
 ## Related

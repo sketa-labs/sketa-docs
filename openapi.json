@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://sketa.app/api/v1",
+      "url": "https://sketa.app/api",
       "description": "Sketa"
     }
   ],
@@ -30,10 +30,10 @@
       "name": "Collections"
     },
     {
-      "name": "Scenes"
+      "name": "Boards"
     },
     {
-      "name": "Scene content"
+      "name": "Board content"
     },
     {
       "name": "Audit logs"
@@ -1192,7 +1192,7 @@
         ],
         "summary": "Delete a collection",
         "operationId": "deleteCollection",
-        "description": "Moves a shared collection and its scenes to the trash, where they stay restorable from the app for 30 days. Private collections cannot be deleted.\n\n**Ability:** `collections:write`.",
+        "description": "Moves a shared collection and its boards to the trash, where they stay restorable from the app for 30 days. Private collections cannot be deleted.\n\n**Ability:** `collections:write`.",
         "x-abilities": [
           "collections:write"
         ],
@@ -1230,21 +1230,21 @@
         ]
       }
     },
-    "/collections/{collection}/scenes": {
+    "/collections/{collection}/boards": {
       "get": {
         "tags": [
           "Collections"
         ],
-        "summary": "List a collection's scenes",
-        "operationId": "listCollectionScenes",
-        "description": "The scenes of a collection, most recently edited first.\n\n**Ability:** `collections:read` and `scenes:read`.",
+        "summary": "List a collection's boards",
+        "operationId": "listCollectionBoards",
+        "description": "The boards of a collection, most recently edited first.\n\n**Ability:** `collections:read` and `boards:read`.",
         "x-abilities": [
           "collections:read",
-          "scenes:read"
+          "boards:read"
         ],
         "responses": {
           "200": {
-            "description": "A page of scenes.",
+            "description": "A page of boards.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1258,7 +1258,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/Scene"
+                        "$ref": "#/components/schemas/Board"
                       }
                     },
                     "links": {
@@ -1313,20 +1313,20 @@
         ]
       }
     },
-    "/scenes": {
+    "/boards": {
       "get": {
         "tags": [
-          "Scenes"
+          "Boards"
         ],
-        "summary": "List scenes",
-        "operationId": "listScenes",
-        "description": "The scenes the key can see, most recently edited first.\n\n**Ability:** `scenes:read`.",
+        "summary": "List boards",
+        "operationId": "listBoards",
+        "description": "The boards the key can see, most recently edited first.\n\n**Ability:** `boards:read`.",
         "x-abilities": [
-          "scenes:read"
+          "boards:read"
         ],
         "responses": {
           "200": {
-            "description": "A page of scenes.",
+            "description": "A page of boards.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1340,7 +1340,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/Scene"
+                        "$ref": "#/components/schemas/Board"
                       }
                     },
                     "links": {
@@ -1375,7 +1375,7 @@
             "name": "collection_id",
             "in": "query",
             "required": false,
-            "description": "Only scenes of this collection.",
+            "description": "Only boards of this collection.",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1385,7 +1385,7 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "description": "Only scenes whose name or canvas text matches these words.",
+            "description": "Only boards whose name or canvas text matches these words.",
             "schema": {
               "type": "string",
               "maxLength": 200
@@ -1395,7 +1395,7 @@
             "name": "pinned",
             "in": "query",
             "required": false,
-            "description": "`true` for pinned scenes only, `false` for the others.",
+            "description": "`true` for pinned boards only, `false` for the others.",
             "schema": {
               "type": "boolean"
             }
@@ -1415,17 +1415,17 @@
       },
       "post": {
         "tags": [
-          "Scenes"
+          "Boards"
         ],
-        "summary": "Create a scene",
-        "operationId": "createScene",
-        "description": "Creates a scene, optionally with elements. Without a `collection_id` it goes to the private collection of the key's member. Untitled scenes get a name automatically.\n\n**Ability:** `scenes:write`.",
+        "summary": "Create a board",
+        "operationId": "createBoard",
+        "description": "Creates a board, optionally with elements. Without a `collection_id` it goes to the private collection of the key's member. Untitled boards get a name automatically.\n\n**Ability:** `boards:write`.",
         "x-abilities": [
-          "scenes:write"
+          "boards:write"
         ],
         "responses": {
           "201": {
-            "description": "The scene.",
+            "description": "The board.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1435,7 +1435,7 @@
                   ],
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/Scene"
+                      "$ref": "#/components/schemas/Board"
                     }
                   }
                 }
@@ -1492,7 +1492,7 @@
                     "items": {
                       "$ref": "#/components/schemas/Element"
                     },
-                    "description": "The first elements of the scene, bottom first."
+                    "description": "The first elements of the board, bottom first."
                   }
                 },
                 "additionalProperties": false
@@ -1502,20 +1502,20 @@
         }
       }
     },
-    "/scenes/{scene}": {
+    "/boards/{board}": {
       "get": {
         "tags": [
-          "Scenes"
+          "Boards"
         ],
-        "summary": "Get a scene",
-        "operationId": "getScene",
-        "description": "One scene's metadata and links.\n\n**Ability:** `scenes:read`.",
+        "summary": "Get a board",
+        "operationId": "getBoard",
+        "description": "One board's metadata and links.\n\n**Ability:** `boards:read`.",
         "x-abilities": [
-          "scenes:read"
+          "boards:read"
         ],
         "responses": {
           "200": {
-            "description": "The scene.",
+            "description": "The board.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1525,7 +1525,7 @@
                   ],
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/Scene"
+                      "$ref": "#/components/schemas/Board"
                     }
                   }
                 }
@@ -1550,10 +1550,10 @@
         },
         "parameters": [
           {
-            "name": "scene",
+            "name": "board",
             "in": "path",
             "required": true,
-            "description": "The scene id.",
+            "description": "The board id.",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1563,17 +1563,17 @@
       },
       "patch": {
         "tags": [
-          "Scenes"
+          "Boards"
         ],
-        "summary": "Update a scene",
-        "operationId": "updateScene",
-        "description": "Renames a scene, moves it to another collection (`collection_id`) or pins it. Send only the fields to change.\n\n**Ability:** `scenes:write`.",
+        "summary": "Update a board",
+        "operationId": "updateBoard",
+        "description": "Renames a board, moves it to another collection (`collection_id`) or pins it. Send only the fields to change.\n\n**Ability:** `boards:write`.",
         "x-abilities": [
-          "scenes:write"
+          "boards:write"
         ],
         "responses": {
           "200": {
-            "description": "The updated scene.",
+            "description": "The updated board.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1583,7 +1583,7 @@
                   ],
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/Scene"
+                      "$ref": "#/components/schemas/Board"
                     }
                   }
                 }
@@ -1611,10 +1611,10 @@
         },
         "parameters": [
           {
-            "name": "scene",
+            "name": "board",
             "in": "path",
             "required": true,
-            "description": "The scene id.",
+            "description": "The board id.",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1638,7 +1638,7 @@
                   "collection_id": {
                     "type": "string",
                     "format": "uuid",
-                    "description": "Moves the scene to this collection."
+                    "description": "Moves the board to this collection."
                   },
                   "pinned": {
                     "type": "boolean"
@@ -1652,13 +1652,13 @@
       },
       "delete": {
         "tags": [
-          "Scenes"
+          "Boards"
         ],
-        "summary": "Delete a scene",
-        "operationId": "deleteScene",
-        "description": "Moves a scene to the trash, where it stays restorable from the app for 30 days.\n\n**Ability:** `scenes:write`.",
+        "summary": "Delete a board",
+        "operationId": "deleteBoard",
+        "description": "Moves a board to the trash, where it stays restorable from the app for 30 days.\n\n**Ability:** `boards:write`.",
         "x-abilities": [
-          "scenes:write"
+          "boards:write"
         ],
         "responses": {
           "204": {
@@ -1682,10 +1682,10 @@
         },
         "parameters": [
           {
-            "name": "scene",
+            "name": "board",
             "in": "path",
             "required": true,
-            "description": "The scene id.",
+            "description": "The board id.",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1694,24 +1694,24 @@
         ]
       }
     },
-    "/scenes/{scene}/content": {
+    "/boards/{board}/content": {
       "get": {
         "tags": [
-          "Scene content"
+          "Board content"
         ],
-        "summary": "Read scene content",
-        "operationId": "getSceneContent",
-        "description": "The scene's live elements (no deleted ones) in z-order, its content version and signed links to its image files. This response is not wrapped in `data`.\n\n**Ability:** `scenes:read`.",
+        "summary": "Read board content",
+        "operationId": "getBoardContent",
+        "description": "The board's live elements (no deleted ones) in z-order, its content version and signed links to its image assets. This response is not wrapped in `data`.\n\n**Ability:** `boards:read`.",
         "x-abilities": [
-          "scenes:read"
+          "boards:read"
         ],
         "responses": {
           "200": {
-            "description": "The scene content.",
+            "description": "The board content.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SceneContent"
+                  "$ref": "#/components/schemas/BoardContent"
                 }
               }
             }
@@ -1734,10 +1734,10 @@
         },
         "parameters": [
           {
-            "name": "scene",
+            "name": "board",
             "in": "path",
             "required": true,
-            "description": "The scene id.",
+            "description": "The board id.",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1747,13 +1747,13 @@
       },
       "put": {
         "tags": [
-          "Scene content"
+          "Board content"
         ],
-        "summary": "Replace scene content",
-        "operationId": "replaceSceneContent",
-        "description": "Makes the scene hold exactly these elements. Each needs a `type`. Elements with the id of a live element replace it (the type cannot change); live elements left out are deleted; new elements go on top. Open editors see the change at once.\n\n**Ability:** `scenes:write`.",
+        "summary": "Replace board content",
+        "operationId": "replaceBoardContent",
+        "description": "Makes the board hold exactly these elements. Each needs a `type`. Elements with the id of a live element replace it (the type cannot change); live elements left out are deleted; new elements go on top. Open editors see the change at once.\n\n**Ability:** `boards:write`.",
         "x-abilities": [
-          "scenes:write"
+          "boards:write"
         ],
         "responses": {
           "200": {
@@ -1790,10 +1790,10 @@
         },
         "parameters": [
           {
-            "name": "scene",
+            "name": "board",
             "in": "path",
             "required": true,
-            "description": "The scene id.",
+            "description": "The board id.",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1826,13 +1826,13 @@
       },
       "patch": {
         "tags": [
-          "Scene content"
+          "Board content"
         ],
-        "summary": "Merge scene content",
-        "operationId": "mergeSceneContent",
-        "description": "Applies patches to the scene. Each patch needs an `id`: a live id merges the patch's fields into that element (the type cannot change), `{\"id\": \"...\", \"isDeleted\": true}` deletes it, and an unknown id with a `type` creates an element. Elements not named are left as they are. Open editors see the change at once.\n\n**Ability:** `scenes:write`.",
+        "summary": "Merge board content",
+        "operationId": "mergeBoardContent",
+        "description": "Applies patches to the board. Each patch needs an `id`: a live id merges the patch's fields into that element (the type cannot change), `{\"id\": \"...\", \"isDeleted\": true}` deletes it, and an unknown id with a `type` creates an element. Elements not named are left as they are. Open editors see the change at once.\n\n**Ability:** `boards:write`.",
         "x-abilities": [
-          "scenes:write"
+          "boards:write"
         ],
         "responses": {
           "200": {
@@ -1869,10 +1869,10 @@
         },
         "parameters": [
           {
-            "name": "scene",
+            "name": "board",
             "in": "path",
             "required": true,
-            "description": "The scene id.",
+            "description": "The board id.",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1993,16 +1993,16 @@
                 "team.updated",
                 "team.deleted",
                 "team.members_updated",
-                "scene.created",
-                "scene.updated",
-                "scene.moved",
-                "scene.deleted",
-                "scene.restored",
-                "scene.revision_restored",
-                "scene.settings_updated",
-                "scene_access.granted",
-                "scene_access.updated",
-                "scene_access.revoked",
+                "board.created",
+                "board.updated",
+                "board.moved",
+                "board.deleted",
+                "board.restored",
+                "board.revision_restored",
+                "board.settings_updated",
+                "file_access.granted",
+                "file_access.updated",
+                "file_access.revoked",
                 "share_link.created",
                 "share_link.updated",
                 "share_link.deleted",
@@ -3101,7 +3101,7 @@
           }
         }
       },
-      "Scene": {
+      "Board": {
         "type": "object",
         "properties": {
           "id": {
@@ -3170,14 +3170,14 @@
           "appUrl": {
             "type": "string",
             "format": "uri",
-            "description": "Opens the scene in the app."
+            "description": "Opens the board in the app."
           },
           "shareLinks": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ShareLinkSummary"
             },
-            "description": "The scene's public links."
+            "description": "The board's public links."
           }
         }
       },
@@ -3214,7 +3214,7 @@
           "action": {
             "type": "string",
             "description": "See the `action` filter for every value.",
-            "example": "scene.created"
+            "example": "board.created"
           },
           "source": {
             "type": "string",
@@ -3237,7 +3237,7 @@
               "string",
               "null"
             ],
-            "example": "scene"
+            "example": "file"
           },
           "subjectId": {
             "type": [
@@ -3261,7 +3261,7 @@
           }
         }
       },
-      "SceneContent": {
+      "BoardContent": {
         "type": "object",
         "properties": {
           "contentVersion": {
@@ -3274,9 +3274,9 @@
             },
             "description": "Live elements in z-order, bottom first. Deleted elements are left out."
           },
-          "files": {
+          "assets": {
             "type": "array",
-            "description": "The image files the elements use (`fileId`), with signed links valid for one hour.",
+            "description": "The image assets the elements use (`id` is the image element's `fileId`), with signed links valid for one hour.",
             "items": {
               "type": "object",
               "properties": {
@@ -3300,7 +3300,7 @@
         "properties": {
           "contentVersion": {
             "type": "integer",
-            "description": "The scene's new content version."
+            "description": "The board's new content version."
           }
         }
       },
@@ -3653,7 +3653,7 @@
             ]
           }
         },
-        "description": "A scene element. Missing fields get the editor's defaults and unknown fields are dropped. Every element keeps its `type` for life. The full JSON Schema is published at https://sketa.app/schemas/scene-content.v1.json."
+        "description": "A board element. Missing fields get the editor's defaults and unknown fields are dropped. Every element keeps its `type` for life. The full JSON Schema is published at https://sketa.app/schemas/scene-content.v1.json."
       },
       "ElementPatch": {
         "type": "object",
@@ -4101,7 +4101,7 @@
           },
           "elements": {
             "type": "array",
-            "description": "The elements the item draws, in the scene content element format.",
+            "description": "The elements the item draws, in the board content element format.",
             "items": {
               "$ref": "#/components/schemas/Element"
             }
@@ -4186,7 +4186,7 @@
             "example": {
               "statusCode": 403,
               "error": "Forbidden",
-              "message": "This API key is missing the scenes:write ability."
+              "message": "This API key is missing the boards:write ability."
             }
           }
         }
@@ -4216,7 +4216,7 @@
             "example": {
               "statusCode": 413,
               "error": "Content Too Large",
-              "message": "Scene content is limited to 10485760 bytes."
+              "message": "Board content is limited to 10485760 bytes."
             }
           }
         }

@@ -4,12 +4,12 @@ description: "Authentication, abilities, responses, pagination, errors and rate 
 icon: "book-open"
 ---
 
-The Sketa REST API reads and writes the scenes, scene content, collections, members, invites, teams and audit log of one workspace. It is part of **Sketa Plus**.
+The Sketa REST API reads and writes the boards, board content, collections, members, invites, teams and audit log of one workspace. It is part of **Sketa Plus**.
 
 ## Base URL
 
 ```
-https://sketa.app/api/v1
+https://sketa.app/api
 ```
 
 ## Authentication
@@ -17,7 +17,7 @@ https://sketa.app/api/v1
 Create an API key in **Settings → API keys** (see [API keys](/knowledge-base/developers/api-keys)) and send it as a Bearer token:
 
 ```bash
-curl https://sketa.app/api/v1/workspace \
+curl https://sketa.app/api/workspace \
   -H "Authorization: Bearer sketa_YOUR_API_KEY" \
   -H "Accept: application/json"
 ```
@@ -36,20 +36,20 @@ Each key carries abilities, and every endpoint needs one (shown on each endpoint
 | `users:read`, `users:write` | `/users`, `/blocks` |
 | `invites:read`, `invites:write` | `/invites` |
 | `collections:read`, `collections:write` | `/collections` |
-| `scenes:read`, `scenes:write` | `/scenes`, `/scenes/{scene}/content` |
+| `boards:read`, `boards:write` | `/boards`, `/boards/{board}/content` |
 | `audit-logs:read` | `/audit-logs` |
 | `teams:read`, `teams:write` | `/teams` |
 | `libraries:read` | `/public-libraries` |
 
-`GET /collections/{collection}/scenes` needs both `collections:read` and `scenes:read`. A key without the ability gets `403 This API key is missing the <ability> ability.` Abilities never widen what the key's user may do: a member's personal key cannot change roles even with `users:write`.
+`GET /collections/{collection}/boards` needs both `collections:read` and `boards:read`. A key without the ability gets `403 This API key is missing the <ability> ability.` Abilities never widen what the key's user may do: a member's personal key cannot change roles even with `users:write`.
 
 ## Responses
 
 - Single resources are wrapped in `data`: `{"data": {"id": "...", "name": "..."}}`.
 - Field names are camelCase; ids are UUIDs; timestamps are ISO 8601.
 - Creating returns `201`; deleting returns `204` with no body.
-- Scene content (`/scenes/{scene}/content`) is not wrapped: reads return `{contentVersion, elements, files}` and writes return `{contentVersion}`. See [Scene content](/api-reference/scene-content).
-- Deleting a scene or a collection moves it to the trash, restorable from the app for 30 days.
+- Board content (`/boards/{board}/content`) is not wrapped: reads return `{contentVersion, elements, assets}` and writes return `{contentVersion}`. See [Board content](/api-reference/board-content).
+- Deleting a board or a collection moves it to the trash, restorable from the app for 30 days.
 
 ## Pagination
 
@@ -92,7 +92,7 @@ Validation errors (`422`) add the messages per field:
 | `402` | `Sketa Plus required.` The key's workspace does not have Plus. |
 | `403` | The key lacks the ability; the acting user may not do this; or `Workspace is read-only.` on a write |
 | `404` | `Not found.` The resource does not exist, is in another workspace, or is not visible to the key's member (another member's private collection, a team-restricted collection they cannot open) |
-| `413` | The body is over 10 MB (scene content and scene creation) |
+| `413` | The body is over 10 MB (board content and board creation) |
 | `422` | Invalid input |
 | `429` | Too many requests |
 

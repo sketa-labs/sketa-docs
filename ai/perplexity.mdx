@@ -4,7 +4,7 @@ description: "Connect Sketa to Perplexity to draw diagrams and slides with AI"
 icon: "/images/ai/perplexity.svg"
 ---
 
-[Perplexity](https://www.perplexity.ai) supports custom remote MCP connectors on paid plans, so you can connect Sketa and draw and organize your scenes from Perplexity chat and [Computer](https://www.perplexity.ai/changelog/what-we-shipped---march-13-2026) workflows.
+[Perplexity](https://www.perplexity.ai) supports custom remote MCP connectors on paid plans, so you can connect Sketa and draw and organize your boards from Perplexity chat and [Computer](https://www.perplexity.ai/changelog/what-we-shipped---march-13-2026) workflows.
 
 <Note>
   This guide connects **Sketa into Perplexity** as a custom remote connector. Perplexity also ships its own search MCP for use *inside* other clients (Claude, Cursor, etc.) — that is a different product: [Perplexity MCP Server](https://docs.perplexity.ai/docs/getting-started/integrations/mcp-server).
@@ -40,10 +40,10 @@ icon: "/images/ai/perplexity.svg"
     Start a new conversation or Computer task, enable the **Sketa** connector for that thread if it is not already on, and ask:
 
     ```
-    List my Sketa scenes
+    List my Sketa boards
     ```
 
-    Perplexity will call the Sketa tools to list your scenes.
+    Perplexity will call the Sketa tools to list your boards.
   </Step>
 </Steps>
 
@@ -62,11 +62,11 @@ icon: "/images/ai/perplexity.svg"
 ## Example prompts
 
 ```
-Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new board
 ```
 
 ```
-Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
+Find the "Payments" box in my "Checkout flow" board and add a fraud-check step after it
 ```
 
 ```
@@ -74,5 +74,5 @@ Turn these notes into a four-slide deck with speaker notes, then screenshot each
 ```
 
 ```
-Which scenes did I edit this week?
+Which boards did I edit this week?
 ```

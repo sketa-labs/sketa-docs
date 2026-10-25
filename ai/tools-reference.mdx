@@ -16,58 +16,58 @@ Conventions for every tool:
 ## Recommended workflow for drawing
 
 <Steps>
-  <Step title="Find or create the scene">
-    `list-scenes-tool` (with `search`) or `create-scene-tool`.
+  <Step title="Find or create the board">
+    `list-boards-tool` (with `search`) or `create-board-tool`.
   </Step>
   <Step title="Look at what is there">
-    `search-scene-tool` to find elements by their words, or `get-scene-content-tool` for everything.
+    `search-board-tool` to find elements by their words, or `get-board-content-tool` for everything.
   </Step>
   <Step title="Read the format guide">
     `get-format-guide-tool` with `diagrams`, `presentations` or `freeform`. See [Format guides](/ai/format-guides).
   </Step>
   <Step title="Draw">
-    `create-diagram-tool` for boxes and arrows with automatic layout, `edit-scene-content-tool` for anything else, `add-image-tool` for pictures, `add-library-item-tool` for ready-made shapes from the public library catalog, and the slides tools for decks.
+    `create-diagram-tool` for boxes and arrows with automatic layout, `edit-board-content-tool` for anything else, `add-image-tool` for pictures, `add-library-item-tool` for ready-made shapes from the public library catalog, and the slides tools for decks.
   </Step>
   <Step title="Check the result">
-    `take-screenshot-tool` returns a PNG of the scene or one frame. A slow render answers `status: pending` with a `render_id`: read it later with `get-render-result-tool`.
+    `take-screenshot-tool` returns a PNG of the board or one frame. A slow render answers `status: pending` with a `render_id`: read it later with `get-render-result-tool`.
   </Step>
 </Steps>
 
 ## Drawing
 
-### search-scene-tool
+### search-board-tool
 
-Finds elements on a scene's canvas by their words: every word of `query` must appear in the element's text, frame name or link, ignoring case and accents. A label inside a shape or arrow is reported with that shape's id as `containerId`. Returns each match's `id`, `type`, `text`, `containerId`, `frameId` and bounds (`x`, `y`, `width`, `height`).
+Finds elements on a board's canvas by their words: every word of `query` must appear in the element's text, frame name or link, ignoring case and accents. A label inside a shape or arrow is reported with that shape's id as `containerId`. Returns each match's `id`, `type`, `text`, `containerId`, `frameId` and bounds (`x`, `y`, `width`, `height`).
 
-Read-only · `scenes:read`
+Read-only · `boards:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
+| `board_id` | string, required | The board id. |
 | `query` | string | The words to find. Empty lists every element (of the given types). |
 | `types` | string[] | Only elements of these types: `rectangle`, `diamond`, `ellipse`, `arrow`, `line`, `freedraw`, `text`, `image`, `frame`, `embed`, `sticky`. A label also matches its container's type. |
 
-### get-scene-content-tool
+### get-board-content-tool
 
-Reads everything on a scene's canvas: its live elements in z-order (bottom first) with every field, the `contentVersion`, and signed links (valid one hour) to the image files the elements use. Large scenes are big: prefer `search-scene-tool` to find specific elements. The element format is described in [Scene content](/api-reference/scene-content#the-element-format).
+Reads everything on a board's canvas: its live elements in z-order (bottom first) with every field, the `contentVersion`, and signed links (valid one hour) to the image assets the elements use (`assets`, keyed by the fileId of each image element). Large boards are big: prefer `search-board-tool` to find specific elements. The element format is described in [Board content](/api-reference/board-content#the-element-format).
 
-Read-only · `scenes:read`
-
-| Input | Type | Description |
-| --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
-
-### edit-scene-content-tool
-
-Changes a scene's canvas in one step, live for everyone editing it. Returns the `contentVersion` and the ids added (by `ref`), updated and removed.
-
-Destructive · `scenes:write`
+Read-only · `boards:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
+| `board_id` | string, required | The board id. |
+
+### edit-board-content-tool
+
+Changes a board's canvas in one step, live for everyone editing it. Returns the `contentVersion` and the ids added (by `ref`), updated and removed.
+
+Destructive · `boards:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
 | `add` | object[] | Skeletons of elements to add (below). |
-| `update` | object[] | Patches `{id, ...fields}` merged into existing elements, with the same fields `get-scene-content-tool` returns. The type cannot change. |
+| `update` | object[] | Patches `{id, ...fields}` merged into existing elements, with the same fields `get-board-content-tool` returns. The type cannot change. |
 | `remove` | string[] | Ids of elements to delete. |
 
 Each skeleton in `add`:
@@ -75,12 +75,12 @@ Each skeleton in `add`:
 | Field | Type | Description |
 | --- | --- | --- |
 | `type` | string, required | `rectangle`, `ellipse`, `diamond`, `text`, `arrow`, `line`, `frame` or `sticky`. |
-| `x`, `y` | number, required | Left and top edge (start point for arrows and lines), in scene pixels. |
+| `x`, `y` | number, required | Left and top edge (start point for arrows and lines), in board pixels. |
 | `ref` | string | A name for this skeleton, so arrows and frames of the same call can point at it. |
 | `width`, `height` | number | Shapes default to 160 × 80, stickies to 200 × 200, frames to 800 × 450. Text is sized from its content. |
 | `label` | string | Text centered inside a shape, sticky or arrow; the name of a frame. |
 | `text` | string | The content of a text element (new lines with `\n`). |
-| `start`, `end` | object | Where an arrow or line starts and ends: `{ref}` (a skeleton of this call), `{id}` (an element on the scene) or `{x, y}`. Ends that name a shape bind to it. |
+| `start`, `end` | object | Where an arrow or line starts and ends: `{ref}` (a skeleton of this call), `{id}` (an element on the board) or `{x, y}`. Ends that name a shape bind to it. |
 | `frame` | object | `{ref}` or `{id}` of the frame this element belongs to. |
 | `strokeColor`, `backgroundColor` | string | For example `#1e1e1e`, `#b8dcff` or `transparent`. |
 | `fillStyle` | string | `hachure`, `cross-hatch`, `solid` or `zigzag`. |
@@ -92,13 +92,13 @@ Each skeleton in `add`:
 
 ### create-diagram-tool
 
-Draws a flowchart-style diagram with automatic layout, exactly as the editor's AI diagram insert does. Give nodes, edges between node ids and optional nested groups; Sketa sizes the shapes to their labels, arranges them top to bottom or left to right, and binds the arrows. It goes at `x`, `y` or 200 px to the right of the existing content. Returns the `contentVersion`, the ids of every element created and the diagram bounds. Prefer it over `edit-scene-content-tool` for any boxes-and-arrows chart. The layout runs in the background: if it takes longer than about 20 seconds, the tool answers with a [pending render](#get-render-result-tool) instead, and the diagram is still added to the scene when it finishes, so do not call the tool again for it.
+Draws a flowchart-style diagram with automatic layout, exactly as the editor's AI diagram insert does. Give nodes, edges between node ids and optional nested groups; Sketa sizes the shapes to their labels, arranges them top to bottom or left to right, and binds the arrows. It goes at `x`, `y` or 200 px to the right of the existing content. Returns the `contentVersion`, the ids of every element created and the diagram bounds. Prefer it over `edit-board-content-tool` for any boxes-and-arrows chart. The layout runs in the background: if it takes longer than about 20 seconds, the tool answers with a [pending render](#get-render-result-tool) instead, and the diagram is still added to the board when it finishes, so do not call the tool again for it.
 
-`scenes:write`
+`boards:write`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
+| `board_id` | string, required | The board id. |
 | `nodes` | object[], required | The boxes, at least one and up to 150: `id` (required, up to 100 characters), `label` (required, up to 200 characters), `shape` (`rectangle` default, `ellipse`, `diamond` or `text`), `group` (a group id) and `color` (fill, `#rgb` or `#rrggbb`). |
 | `edges` | object[] | Up to 300 arrows: `from` and `to` (required node ids), `label`, `style` (`solid` default or `dashed`) and `arrow` (`end` default, `both` or `none`). |
 | `groups` | object[] | Up to 30 dashed boxes around related nodes: `id` and `label` (required) and `parent` (up to 3 levels). |
@@ -107,27 +107,27 @@ Draws a flowchart-style diagram with automatic layout, exactly as the editor's A
 
 ### add-image-tool
 
-Puts an image on a scene, from a public http(s) URL (downloaded by Sketa, up to 3 redirects) or from base64 bytes. PNG, JPEG, GIF, WebP and SVG are accepted, up to the workspace's file size (16 MB on Plus). It keeps its proportions. Returns the new image element id and its file id.
+Puts an image on a board, from a public http(s) URL (downloaded by Sketa, up to 3 redirects) or from base64 bytes. PNG, JPEG, GIF, WebP and SVG are accepted, up to the workspace's file size (16 MB on Plus). It keeps its proportions. Returns the new image element id and its file id.
 
-Open-world · `scenes:write`
+Open-world · `boards:write`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
+| `board_id` | string, required | The board id. |
 | `url` | string | A public http(s) URL of the image. Give `url` or `base64`. |
 | `base64` | string | The image bytes in base64 (a `data:` URL is accepted). |
 | `x`, `y` | number | Top-left corner (default: beside the existing content). |
-| `width` | number | Width in scene pixels (default: the image's own width, at most 800). |
+| `width` | number | Width in board pixels (default: the image's own width, at most 800). |
 
 ### add-library-item-tool
 
-Places a copy of an item of the [public library catalog](#public-library-catalog) on a scene, live for everyone editing it, like inserting it from the editor's library: its elements get fresh ids and keep their groups, labels and arrow bindings. Returns `contentVersion`, the new `elementIds` and their `bounds`.
+Places a copy of an item of the [public library catalog](#public-library-catalog) on a board, live for everyone editing it, like inserting it from the editor's library: its elements get fresh ids and keep their groups, labels and arrow bindings. Returns `contentVersion`, the new `elementIds` and their `bounds`.
 
-`scenes:write` and `libraries:read`
+`boards:write` and `libraries:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
+| `board_id` | string, required | The board id. |
 | `library_id` | string, required | The catalog library id, from `search-public-libraries-tool`. |
 | `item_id` | string, required | The id of one of the library's items, from `get-public-library-tool`. |
 | `x`, `y` | number | Top-left corner of the item (default: beside the existing content). |
@@ -136,12 +136,12 @@ Places a copy of an item of the [public library catalog](#public-library-catalog
 
 Returns a PNG image of the whole canvas, or of one frame (slide) when `frame_id` is given, drawn exactly as the editor draws it, at most 1600 px on the long side. Use it to check a layout after editing. The screenshot renders in the background: if it takes longer than about 20 seconds, the tool answers with a [pending render](#get-render-result-tool) instead of the image.
 
-Read-only · `scenes:read`
+Read-only · `boards:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
-| `frame_id` | string | A frame on the scene, to capture only that frame. |
+| `board_id` | string, required | The board id. |
+| `frame_id` | string | A frame on the board, to capture only that frame. |
 | `theme` | string | `light` (default) or `dark`. |
 
 ### get-render-result-tool
@@ -154,7 +154,7 @@ Returns the result of a render that `take-screenshot-tool` or `create-diagram-to
 
 Call `get-render-result-tool` with that `render_id` a few seconds later. It waits up to the same 20 seconds and returns exactly what the original tool returns when it finishes in time (the PNG for a screenshot; `contentVersion`, `elementIds` and `bounds` for a diagram), a tool error if the render failed, or `status: pending` again while it is still running. Results are kept for 15 minutes, and only the member and workspace that started the render can read it: any other connection gets `Not found.`.
 
-Read-only · `scenes:read`
+Read-only · `boards:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
@@ -172,104 +172,104 @@ Read-only · no ability needed
 
 ## Slides
 
-Every frame of a scene is a slide. See [Slides](/knowledge-base/scenes/slides).
+Every frame of a board is a slide. See [Slides](/knowledge-base/boards/slides).
 
 ### list-slides-tool
 
-Lists the slides of a scene in play order: `frameId`, `title` (the frame name), speaker `notes`, `hidden`, `position` (1-based, hidden slides included) and bounds.
+Lists the slides of a board in play order: `frameId`, `title` (the frame name), speaker `notes`, `hidden`, `position` (1-based, hidden slides included) and bounds.
 
-Read-only · `scenes:read`
+Read-only · `boards:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
+| `board_id` | string, required | The board id. |
 
 ### create-slide-tool
 
-Adds a slide: a frame (1920 × 1080 by default) placed 200 px to the right of the last slide of its page and played after it. Returns its `frameId`, position, `pageId`, bounds, the safe area (5 % in from every edge) and the regions to lay content in: `title` (top 15 % of the safe area), `body` (the rest), `left` and `right` (the halves of the body). Then draw into it with `edit-scene-content-tool`, giving each element `frame: {id: frameId}`.
+Adds a slide: a frame (1920 × 1080 by default) placed 200 px to the right of the last slide of its page and played after it. Returns its `frameId`, position, `pageId`, bounds, the safe area (5 % in from every edge) and the regions to lay content in: `title` (top 15 % of the safe area), `body` (the rest), `left` and `right` (the halves of the body). Then draw into it with `edit-board-content-tool`, giving each element `frame: {id: frameId}`.
 
-`scenes:write`
+`boards:write`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
+| `board_id` | string, required | The board id. |
 | `title` | string | The slide title, shown as the frame name (up to 200 characters). |
-| `width`, `height` | number | Frame size in scene pixels (default 1920 × 1080, between 100 and 10000). |
-| `page_id` | string | The page to add it to (an id from `list-scene-pages-tool`); the first page when left out. |
+| `width`, `height` | number | Frame size in board pixels (default 1920 × 1080, between 100 and 10000). |
+| `page_id` | string | The page to add it to (an id from `list-board-pages-tool`); the first page when left out. |
 
 ### update-slide-tool
 
 Changes a slide's title, speaker notes, hidden flag and position. Only the fields you send change. Returns the updated slide and the `contentVersion`.
 
-`scenes:write`
+`boards:write`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
+| `board_id` | string, required | The board id. |
 | `frame_id` | string, required | The slide's `frameId`. |
 | `title` | string | The new title (an empty string removes it; up to 200 characters). |
 | `notes` | string | Speaker notes, shown to the presenter only and never on public links (up to 10,000 characters; an empty string removes them). |
 | `hidden` | boolean | `true` leaves the slide out of the presentation and exports. |
 | `position` | integer | The new 1-based position (a number past the end moves it last). |
 
-## Scenes
+## Boards
 
-### list-scenes-tool
+### list-boards-tool
 
-Lists the scenes the connection can see, most recently edited first: id, name, collection, pinned, content version, element count, preview and app links.
+Lists the boards the connection can see, most recently edited first: id, name, collection, pinned, content version, element count, preview and app links.
 
-Read-only · `scenes:read`
+Read-only · `boards:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `collection_id` | string | Only scenes of this collection. |
-| `search` | string | Only scenes whose name or canvas text matches these words. |
-| `pinned` | boolean | `true` for pinned scenes only, `false` for the others. |
+| `collection_id` | string | Only boards of this collection. |
+| `search` | string | Only boards whose name or canvas text matches these words. |
+| `pinned` | boolean | `true` for pinned boards only, `false` for the others. |
 | `page` | integer | The page, from 1. |
 
-### get-scene-tool
+### get-board-tool
 
-Gets one scene's metadata: name, collection, pinned, who created and last edited it, content version, element count, preview and app links and its share links.
+Gets one board's metadata: name, collection, pinned, who created and last edited it, content version, element count, preview and app links and its share links.
 
-Read-only · `scenes:read`
-
-| Input | Type | Description |
-| --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
-
-### create-scene-tool
-
-Creates an empty scene. Without a `collection_id` it goes to the member's private collection. Returns the scene.
-
-`scenes:write`
+Read-only · `boards:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `name` | string | Up to 120 characters. Untitled scenes get a name automatically. |
-| `collection_id` | string | The collection to create the scene in. |
+| `board_id` | string, required | The board id. |
 
-### update-scene-tool
+### create-board-tool
 
-Renames a scene, moves it to another collection or pins it. Send only the fields to change. Returns the updated scene.
+Creates an empty board. Without a `collection_id` it goes to the member's private collection. Returns the board.
 
-`scenes:write`
+`boards:write`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
+| `name` | string | Up to 120 characters. Untitled boards get a name automatically. |
+| `collection_id` | string | The collection to create the board in. |
+
+### update-board-tool
+
+Renames a board, moves it to another collection or pins it. Send only the fields to change. Returns the updated board.
+
+`boards:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
 | `name` | string | The new name, up to 120 characters. |
-| `collection_id` | string | The collection to move the scene to. |
+| `collection_id` | string | The collection to move the board to. |
 | `pinned` | boolean | `true` to pin, `false` to unpin. |
 
-### delete-scene-tool
+### delete-board-tool
 
-Moves a scene to the trash, where it stays restorable from the app for 30 days. Recorded in the audit log.
+Moves a board to the trash, where it stays restorable from the app for 30 days. Recorded in the audit log.
 
-Destructive · `scenes:write`
+Destructive · `boards:write`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `scene_id` | string, required | The scene id. |
+| `board_id` | string, required | The board id. |
 
 ## Collections
 
@@ -293,11 +293,11 @@ Read-only · `collections:read`
 | --- | --- | --- |
 | `collection_id` | string, required | The collection id. |
 
-### list-collection-scenes-tool
+### list-collection-boards-tool
 
-Lists the scenes of one collection, most recently edited first, with the same fields as `list-scenes-tool`.
+Lists the boards of one collection, most recently edited first, with the same fields as `list-boards-tool`.
 
-Read-only · `collections:read` and `scenes:read`
+Read-only · `collections:read` and `boards:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
@@ -332,7 +332,7 @@ Renames a collection, changes its emoji, moves it in the manual order or restric
 
 ### delete-collection-tool
 
-Moves a shared collection and all its scenes to the trash, restorable from the app for 30 days. Private collections cannot be deleted. Recorded in the audit log.
+Moves a shared collection and all its boards to the trash, restorable from the app for 30 days. Private collections cannot be deleted. Recorded in the audit log.
 
 Destructive · `collections:write`
 
@@ -589,7 +589,7 @@ Read-only · `audit-logs:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `action` | string | Only entries of this action, for example `scene.created` or `member.removed`. The values are the `action` filter of the API's `GET /audit-logs`. |
+| `action` | string | Only entries of this action, for example `board.created` or `member.removed`. The values are the `action` filter of the API's `GET /audit-logs`. |
 | `user_id` | string | Only entries made by this user. |
 | `from`, `to` | string | Only entries on or after / on or before this date (`YYYY-MM-DD`). |
 | `page` | integer | The page, from 1. |

@@ -1,18 +1,18 @@
 ---
-title: "Scene content"
-description: "Read, replace and merge the elements of a scene: the element format, versions and limits."
+title: "Board content"
+description: "Read, replace and merge the elements of a board: the element format, versions and limits."
 icon: "shapes"
 ---
 
-A scene's content is its list of **elements**: shapes, text, arrows, frames, images and so on. Three endpoints work on it:
+A board's content is its list of **elements**: shapes, text, arrows, frames, images and so on. Three endpoints work on it:
 
 | Endpoint | Does |
 | --- | --- |
-| [`GET /scenes/{scene}/content`](#read) | Read every live element |
-| [`PUT /scenes/{scene}/content`](#replace) | Make the scene hold exactly the elements you send |
-| [`PATCH /scenes/{scene}/content`](#merge) | Change, add or delete only the elements you name |
+| [`GET /boards/{board}/content`](#read) | Read every live element |
+| [`PUT /boards/{board}/content`](#replace) | Make the board hold exactly the elements you send |
+| [`PATCH /boards/{board}/content`](#merge) | Change, add or delete only the elements you name |
 
-Writes are applied to the live scene: everyone with the scene open sees them at once, and they go into the [version history](/knowledge-base/scenes/version-history) like any edit.
+Writes are applied to the live board: everyone with the board open sees them at once, and they go into the [version history](/knowledge-base/boards/version-history) like any edit.
 
 ## The element format
 
@@ -22,7 +22,7 @@ The full JSON Schema is published at [`https://sketa.app/schemas/scene-content.v
 | --- | --- |
 | `id` | 1 to 64 characters. Kept when you send one; Sketa makes one otherwise. |
 | `type` | `rectangle`, `diamond`, `ellipse`, `arrow`, `line`, `freedraw`, `text`, `image`, `frame`, `embed` or `sticky`. An element keeps its type for life. |
-| `x`, `y`, `width`, `height` | Scene pixels. `angle` is in radians, clockwise. |
+| `x`, `y`, `width`, `height` | Board pixels. `angle` is in radians, clockwise. |
 | `strokeColor`, `backgroundColor` | For example `#1e1e1e`, `#b8dcff` or `transparent`. |
 | `fillStyle` | `hachure`, `cross-hatch`, `solid` or `zigzag`. |
 | `strokeWidth` | `1`, `2` or `4`. |
@@ -39,7 +39,7 @@ Missing fields get the editor's defaults (for example `strokeColor: "#1e1e1e"`, 
 ## Read
 
 ```bash
-curl https://sketa.app/api/v1/scenes/SCENE_ID/content \
+curl https://sketa.app/api/boards/BOARD_ID/content \
   -H "Authorization: Bearer sketa_YOUR_API_KEY"
 ```
 
@@ -49,24 +49,24 @@ curl https://sketa.app/api/v1/scenes/SCENE_ID/content \
   "elements": [
     { "id": "box-1", "type": "rectangle", "x": 0, "y": 0, "width": 160, "height": 80, "...": "..." }
   ],
-  "files": [
+  "assets": [
     { "id": "3f1c...", "url": "https://..." }
   ]
 }
 ```
 
-Elements come in z-order, bottom first, without deleted elements. `files` has a signed link, valid for one hour, for each image the elements use (by `fileId`).
+Elements come in z-order, bottom first, without deleted elements. `assets` has a signed link, valid for one hour, for each image the elements use (`id` is the element's `fileId`).
 
 ## Replace
 
-`PUT` makes the scene hold exactly the `elements` you send. Each element needs a `type`.
+`PUT` makes the board hold exactly the `elements` you send. Each element needs a `type`.
 
 - An element with the `id` of a live element replaces it.
 - A new element is added on top.
 - Live elements you leave out are deleted.
 
 ```bash
-curl -X PUT https://sketa.app/api/v1/scenes/SCENE_ID/content \
+curl -X PUT https://sketa.app/api/boards/BOARD_ID/content \
   -H "Authorization: Bearer sketa_YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -90,7 +90,7 @@ curl -X PUT https://sketa.app/api/v1/scenes/SCENE_ID/content \
 - **Add**: a new `id` with a `type`. An unknown `id` without a `type` is refused with `422`.
 
 ```bash
-curl -X PATCH https://sketa.app/api/v1/scenes/SCENE_ID/content \
+curl -X PATCH https://sketa.app/api/boards/BOARD_ID/content \
   -H "Authorization: Bearer sketa_YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -102,22 +102,22 @@ curl -X PATCH https://sketa.app/api/v1/scenes/SCENE_ID/content \
   }'
 ```
 
-## Create a scene with content
+## Create a board with content
 
-`POST /scenes` accepts an optional `elements` list in the same format, placed in the order sent:
+`POST /boards` accepts an optional `elements` list in the same format, placed in the order sent:
 
 ```bash
-curl -X POST https://sketa.app/api/v1/scenes \
+curl -X POST https://sketa.app/api/boards \
   -H "Authorization: Bearer sketa_YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "name": "Login flow", "elements": [ { "type": "rectangle", "x": 0, "y": 0, "width": 160, "height": 80 } ] }'
 ```
 
-Without a `collection_id`, the scene goes to the private collection of the key's member.
+Without a `collection_id`, the board goes to the private collection of the key's member.
 
 ## Versions
 
-Every write returns the scene's new `contentVersion`, which goes up with every change from anyone. Each written element gets a version above the live one, so your write wins over what was there and reaches every open editor.
+Every write returns the board's new `contentVersion`, which goes up with every change from anyone. Each written element gets a version above the live one, so your write wins over what was there and reaches every open editor.
 
 ## Limits
 

@@ -73,7 +73,7 @@ Using the wrong field name (`url` vs `serverUrl`) makes Devin **silently ignore*
     In that session, ask:
 
     ```
-    List my Sketa scenes
+    List my Sketa boards
     ```
 
     Devin should call Sketa tools. If it answers without tools, tell it to use the **Sketa** MCP server. See the [Tools reference](/ai/tools-reference) for every tool and the recommended drawing workflow.
@@ -94,9 +94,9 @@ Once authorized, Devin can:
 
 | Task | Examples |
 |------|----------|
-| **Drawing** | Draw diagrams with automatic layout; add shapes, arrows, sticky notes and images; search and edit scenes; take screenshots to check the result |
+| **Drawing** | Draw diagrams with automatic layout; add shapes, arrows, sticky notes and images; search and edit boards; take screenshots to check the result |
 | **Slides** | Add slides, write speaker notes, reorder and hide slides |
-| **Scenes and collections** | List, search, create, rename, move, pin and delete |
+| **Boards and collections** | List, search, create, rename, move, pin and delete |
 | **Workspace** | Read the workspace; manage members, invites and teams; read the audit log |
 
 Members, invites, teams and the audit log need an admin. See [Permissions](/ai/introduction#permissions).
@@ -154,7 +154,7 @@ Unlike Cascade, Devin Local and the CLI **prompt before every MCP tool** until y
     Then ask Devin in the CLI or a Devin Local tab:
 
     ```
-    List my Sketa scenes
+    List my Sketa boards
     ```
   </Step>
 </Steps>
@@ -251,7 +251,7 @@ The legacy **Cascade** agent still uses a separate file and `"serverUrl"`. Enter
     The OAuth session expired or was revoked. Cloud: start a new session and approve again. CLI: `devin mcp logout sketa` then `devin mcp login sketa`. Cascade: trigger a tool call and complete the browser flow.
   </Accordion>
   <Accordion title="A tool says “Not found.”">
-    The resource is outside the workspace the connection is bound to, or you cannot see it (another member's private collection; a team-restricted collection you cannot open). Ask the assistant to list scenes or collections first instead of guessing ids.
+    The resource is outside the workspace the connection is bound to, or you cannot see it (another member's private collection; a team-restricted collection you cannot open). Ask the assistant to list boards or collections first instead of guessing ids.
   </Accordion>
   <Accordion title="Browser does not open during CLI sign-in">
     Over SSH or inside a container, `devin mcp login` prints the authorize URL instead of opening a browser. Copy it into a local browser, pick the workspace, click **Allow**, and the CLI picks up the callback. If the loopback port is blocked, finish OAuth on a machine that can receive the callback, or connect with an [API key](/knowledge-base/developers/api-keys) header instead.
@@ -264,11 +264,11 @@ The legacy **Cascade** agent still uses a separate file and `"serverUrl"`. Enter
 ## Example prompts
 
 ```
-Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new board
 ```
 
 ```
-Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
+Find the "Payments" box in my "Checkout flow" board and add a fraud-check step after it
 ```
 
 ```
@@ -276,7 +276,7 @@ Turn these notes into a four-slide deck with speaker notes, then screenshot each
 ```
 
 ```
-Which scenes did I edit this week?
+Which boards did I edit this week?
 ```
 
 ## Related

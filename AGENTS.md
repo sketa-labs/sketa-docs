@@ -12,7 +12,7 @@
 
 ## Project context
 
-Sketa is an online whiteboard for teams, clean (FigJam-like, the default) or hand-drawn (an Excalidraw / Excalidraw+ and FigJam alternative). Anyone can draw at `https://sketa.app` without an account; signing in saves scenes to the cloud; **Sketa Plus** workspaces ($3 per seat/month, or $24 per seat/year shown as $2/month) add collections, members, guests, teams, public links and embeds, slides, comments, version history, PDF/PPTX exports, the server library, the REST API and the MCP server.
+Sketa is an online whiteboard for teams, clean (FigJam-like, the default) or hand-drawn (an Excalidraw / Excalidraw+ and FigJam alternative). Anyone can draw at `https://sketa.app` without an account; signing in saves boards to the cloud; **Sketa Plus** workspaces ($3 per seat/month, or $24 per seat/year shown as $2/month) add collections, members, guests, teams, public links and embeds, slides, comments, version history, PDF/PPTX exports, the server library, the REST API and the MCP server.
 
 Sketa is a hosted product only: it is **not open source and not self-hostable**. Never write self-hosting instructions, environment variables, install steps or "open-source" claims, and never link to the app's source code.
 
@@ -27,10 +27,10 @@ Everything is path-based on one domain.
 | Editor (no account) | `https://sketa.app` |
 | Dashboard | `https://sketa.app/dashboard` |
 | Register / sign in | `https://sketa.app/register`, `https://sketa.app/login` |
-| REST API | `https://sketa.app/api/v1` |
+| REST API | `https://sketa.app/api` |
 | MCP server | `https://sketa.app/mcp` |
 | Public links | `https://sketa.app/l/{token}`, `/embed/{token}`, `/slides/{token}` |
-| Scene content schema | `https://sketa.app/schemas/scene-content.v1.json` |
+| Board content schema | `https://sketa.app/schemas/scene-content.v1.json` |
 | Abuse reports | `https://sketa.app/abuse` |
 
 There is no `api.sketa.app`, `mcp.sketa.app` or `app.sketa.app`.
@@ -42,8 +42,8 @@ There is no `api.sketa.app`, `mcp.sketa.app` or `app.sketa.app`.
 | Tab | Icon | Purpose |
 |-----|------|---------|
 | **Documentation** | `book-open` | Home (`index`), `getting-started/` (quickstart, drawing without an account, workspaces/members/guests), `support` |
-| **Knowledge Base** | `book` | How the app works: `knowledge-base/editor/`, `scenes/`, `ai`, `workspace/`, `account/`, `developers/`. Page titles and labels use the on-screen strings from `lang/en-US/*.php` |
-| **API Reference** | `code` | REST API. Operation pages are generated from **`openapi.json`** at the repo root, written from the app's `routes/api.php`, `app/Http/Requests/Api/**`, `app/Http/Resources/Api/**` and `app/Http/Controllers/Api/**`. Prose lives in `api-reference/introduction.mdx` (auth, abilities, responses, pagination, errors, rate limits) and `api-reference/scene-content.mdx` (element format, PUT vs PATCH) |
+| **Knowledge Base** | `book` | How the app works: `knowledge-base/editor/`, `boards/`, `ai`, `workspace/`, `account/`, `developers/`. Page titles and labels use the on-screen strings from `lang/en-US/*.php` |
+| **API Reference** | `code` | REST API. Operation pages are generated from **`openapi.json`** at the repo root, written from the app's `routes/api.php`, `app/Http/Requests/Api/**`, `app/Http/Resources/Api/**` and `app/Http/Controllers/Api/**`. Prose lives in `api-reference/introduction.mdx` (auth, abilities, responses, pagination, errors, rate limits) and `api-reference/board-content.mdx` (element format, PUT vs PATCH) |
 | **Build with AI** | `microchip-ai` | MCP intro (`ai/introduction`), `ai/tools-reference`, `ai/format-guides`, one setup guide per client |
 
 ## Writing rules
@@ -56,16 +56,16 @@ There is no `api.sketa.app`, `mcp.sketa.app` or `app.sketa.app`.
 
 ### URLs in examples
 
-- API curl examples: `https://sketa.app/api/v1/...` with `Authorization: Bearer sketa_YOUR_API_KEY`.
+- API curl examples: `https://sketa.app/api/...` with `Authorization: Bearer sketa_YOUR_API_KEY`.
 - MCP configs: `https://sketa.app/mcp`, server name `sketa`.
 
 ## API reference
 
-- `openapi.json` is the source of truth for every operation, field and error. Public API = the `/api/v1` routes (`php artisan route:list --path=api/v1`), 37 operations today. The anonymous `api/snapshots` and `api/rooms` routes are internal to the editor; never document them.
+- `openapi.json` is the source of truth for every operation, field and error. Public API = the `/api` routes (`php artisan route:list --path=api`), 37 operations today. The anonymous `api/snapshots` and `api/rooms` routes are internal to the editor; never document them.
 - Auth: `Authorization: Bearer sketa_...`. Keys are Passport personal-access tokens bound to one workspace (`App\Models\AccessToken`), **personal** (act as the member) or **workspace** (act as the workspace, shared collections only, admin-equivalent). Abilities come from `App\Enums\Api\Ability`; each route declares one with `abilities:` middleware.
 - `ResolveApiActor` errors: `401 Unauthenticated.` / `API key expired.` / `API key revoked.`, `402 Sketa Plus required.`, `403 Personal API keys are turned off in this workspace.`, `403 Workspace is read-only.` (writes only).
 - Error shape is always `{statusCode, error, message}` plus `errors` on 422 (`App\Support\Api\ApiErrorResponse`).
-- Single resources are wrapped in `data`; lists use the Laravel envelope `{data, links, meta}` with `config('app.pagination.default')` (25). Always tell readers to read `meta.per_page`. Scene content responses are not wrapped.
+- Single resources are wrapped in `data`; lists use the Laravel envelope `{data, links, meta}` with `config('app.pagination.default')` (25). Always tell readers to read `meta.per_page`. Board content responses are not wrapped.
 - Rate limits: 120/min per key, 600/min per workspace (`config/sketa.php` `api`), 429 with `Retry-After`.
 - Enum values (audit actions, roles, element types) are copied from the app's enums and `public/schemas/scene-content.v1.json`, never from memory.
 - When the API changes, regenerate or edit `openapi.json` and update `docs.json` navigation (`"METHOD /path"` entries).
@@ -78,9 +78,9 @@ There is no `api.sketa.app`, `mcp.sketa.app` or `app.sketa.app`.
 
 ## Plans and limits (from `config/sketa.php`)
 
-- Free: 1 cloud scene (`scenes.free_scene_limit`), no members.
-- AI per UTC day: Free 10, Plus member 100, anonymous 10 per device and 30 per IP; text-to-diagram costs 1, wireframe-to-code 5, scene naming 0 (`App\Enums\AiUsage\Kind::quotaCost()`).
-- Trash keeps items 30 days; payment grace period 7 days, then read-only; up to 20 public links per scene; invites expire after 3 days; images 4 MB (16 MB on Plus).
+- Free: 1 cloud board (`boards.free_board_limit`), no members.
+- AI per UTC day: Free 10, Plus member 100, anonymous 10 per device and 30 per IP; text-to-diagram costs 1, wireframe-to-code 5, board naming 0 (`App\Enums\AiUsage\Kind::quotaCost()`).
+- Trash keeps items 30 days; payment grace period 7 days, then read-only; up to 20 public links per board; invites expire after 3 days; images 4 MB (16 MB on Plus).
 
 ## Running docs locally
 

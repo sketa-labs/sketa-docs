@@ -83,15 +83,15 @@
             ]
           },
           {
-            "group": "Scenes",
+            "group": "Boards",
             "pages": [
-              "knowledge-base/scenes/dashboard-and-collections",
-              "knowledge-base/scenes/sharing-and-public-links",
-              "knowledge-base/scenes/collaboration",
-              "knowledge-base/scenes/comments",
-              "knowledge-base/scenes/version-history",
-              "knowledge-base/scenes/slides",
-              "knowledge-base/scenes/voice-and-spotlight"
+              "knowledge-base/boards/dashboard-and-collections",
+              "knowledge-base/boards/sharing-and-public-links",
+              "knowledge-base/boards/collaboration",
+              "knowledge-base/boards/comments",
+              "knowledge-base/boards/version-history",
+              "knowledge-base/boards/slides",
+              "knowledge-base/boards/voice-and-spotlight"
             ]
           },
           {
@@ -133,7 +133,7 @@
             "group": "Overview",
             "pages": [
               "api-reference/introduction",
-              "api-reference/scene-content"
+              "api-reference/board-content"
             ]
           },
           {
@@ -172,25 +172,25 @@
               "GET /collections/{collection}",
               "PATCH /collections/{collection}",
               "DELETE /collections/{collection}",
-              "GET /collections/{collection}/scenes"
+              "GET /collections/{collection}/boards"
             ]
           },
           {
-            "group": "Scenes",
+            "group": "Boards",
             "pages": [
-              "GET /scenes",
-              "POST /scenes",
-              "GET /scenes/{scene}",
-              "PATCH /scenes/{scene}",
-              "DELETE /scenes/{scene}"
+              "GET /boards",
+              "POST /boards",
+              "GET /boards/{board}",
+              "PATCH /boards/{board}",
+              "DELETE /boards/{board}"
             ]
           },
           {
-            "group": "Scene content",
+            "group": "Board content",
             "pages": [
-              "GET /scenes/{scene}/content",
-              "PUT /scenes/{scene}/content",
-              "PATCH /scenes/{scene}/content"
+              "GET /boards/{board}/content",
+              "PUT /boards/{board}/content",
+              "PATCH /boards/{board}/content"
             ]
           },
           {

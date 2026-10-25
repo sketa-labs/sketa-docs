@@ -25,7 +25,7 @@ Changes pushed to the `main` branch are deployed automatically by the Mintlify G
 
 ```
 ├── index.mdx, getting-started/   # Home, quickstart, no-account drawing, workspaces
-├── knowledge-base/               # How the app works (editor, scenes, AI, workspace, account, API keys)
+├── knowledge-base/               # How the app works (editor, boards, AI, workspace, account, API keys)
 ├── api-reference/ + openapi.json # REST API (operation pages generated from openapi.json)
 ├── ai/                           # MCP server, tools reference, format guides, client setup
 ├── support.mdx

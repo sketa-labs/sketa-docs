@@ -42,7 +42,7 @@ Every key belongs to the workspace it was created in **and** to the member who c
 | `users:read` / `users:write` | Read / manage members and blocked e-mails |
 | `invites:read` / `invites:write` | Read / manage invites |
 | `collections:read` / `collections:write` | Read / manage collections |
-| `scenes:read` / `scenes:write` | Read / manage scenes and their content |
+| `boards:read` / `boards:write` | Read / manage boards and their content |
 | `audit-logs:read` | Read audit logs |
 | `teams:read` / `teams:write` | Read / manage teams |
 | `libraries:read` | Read the public library catalog |
@@ -52,7 +52,7 @@ Abilities limit the key on top of the permissions of whoever it acts as: the key
 ## Use a key
 
 ```bash
-curl https://sketa.app/api/v1/workspace \
+curl https://sketa.app/api/workspace \
   -H "Authorization: Bearer sketa_YOUR_API_KEY"
 ```
 

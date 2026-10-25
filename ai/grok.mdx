@@ -62,7 +62,7 @@ https://sketa.app/mcp
     Open a new chat and ask in plain language. For example:
 
     ```
-    List my Sketa scenes
+    List my Sketa boards
     ```
 
     Grok should call Sketa tools instead of guessing. If it answers without tools, say you want it to use the **Sketa** connector.
@@ -85,9 +85,9 @@ Once the connector is authorized, Grok can:
 
 | Task | Examples |
 |------|----------|
-| **Drawing** | Draw diagrams with automatic layout; add shapes, arrows, sticky notes and images; search and edit scenes; take screenshots to check the result |
+| **Drawing** | Draw diagrams with automatic layout; add shapes, arrows, sticky notes and images; search and edit boards; take screenshots to check the result |
 | **Slides** | Add slides, write speaker notes, reorder and hide slides |
-| **Scenes and collections** | List, search, create, rename, move, pin and delete |
+| **Boards and collections** | List, search, create, rename, move, pin and delete |
 | **Workspace** | Read the workspace; manage members, invites and teams; read the audit log |
 
 Members, invites, teams and the audit log need an admin. See [Permissions](/ai/introduction#permissions).
@@ -126,7 +126,7 @@ On these plans, members cannot add a custom connector until a team admin provisi
     The OAuth session expired or was revoked. Open the connector and complete sign-in again.
   </Accordion>
   <Accordion title="A tool says “Not found.”">
-    The resource is outside the workspace the connection is bound to, or you cannot see it (another member's private collection; a team-restricted collection you cannot open). Ask the assistant to list scenes or collections first instead of guessing ids.
+    The resource is outside the workspace the connection is bound to, or you cannot see it (another member's private collection; a team-restricted collection you cannot open). Ask the assistant to list boards or collections first instead of guessing ids.
   </Accordion>
   <Accordion title="Custom is missing, or I cannot add a connector">
     On Grok Business / Enterprise, only an admin can provision custom MCP. Ask someone with **Team Read-Write** to add Sketa in [console.x.ai](https://console.x.ai) first. On personal Grok, open **[grok.com/connectors](https://grok.com/connectors)** and choose **Custom**, not a catalog app.
@@ -136,11 +136,11 @@ On these plans, members cannot add a custom connector until a team admin provisi
 ## Example prompts
 
 ```
-Draw the architecture of a web app with a load balancer, two API servers and a database in a new scene
+Draw the architecture of a web app with a load balancer, two API servers and a database in a new board
 ```
 
 ```
-Find the "Payments" box in my "Checkout flow" scene and add a fraud-check step after it
+Find the "Payments" box in my "Checkout flow" board and add a fraud-check step after it
 ```
 
 ```
@@ -148,7 +148,7 @@ Turn these notes into a four-slide deck with speaker notes, then screenshot each
 ```
 
 ```
-Which scenes did I edit this week?
+Which boards did I edit this week?
 ```
 
 ## Related

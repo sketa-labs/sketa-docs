@@ -8,7 +8,7 @@ Before drawing, an assistant reads a guide with [`get-format-guide-tool`](/ai/to
 
 ## Diagrams
 
-For flowcharts, architecture and other boxes-and-arrows content, assistants prefer `create-diagram-tool` (automatic layout) and check the result with `take-screenshot-tool`. `edit-scene-content-tool` is for small diagrams or precise placement.
+For flowcharts, architecture and other boxes-and-arrows content, assistants prefer `create-diagram-tool` (automatic layout) and check the result with `take-screenshot-tool`. `edit-board-content-tool` is for small diagrams or precise placement.
 
 - **Layout**: a 20 px grid; shapes 160 × 80 by default, same size for the same role; 80 px between shapes in a row and 100 px between rows; one flow direction per diagram; new content goes beside what is already there.
 - **Shapes**: rectangles for steps, services and screens; ellipses for start and end; diamonds for decisions (short labels); the shape library (`type: "shape"` with a `shape` kind such as `cylinder` for databases, `document`, `parallelogram`, `cloud` or the block arrows); frames to group a part under a name; sticky notes for side comments; tables (`cells` and `header: true`) for comparisons, schedules and entity fields.
@@ -29,7 +29,7 @@ For flowcharts, architecture and other boxes-and-arrows content, assistants pref
 
 ## Presentations
 
-A presentation is a scene whose frames are the slides.
+A presentation is a board whose frames are the slides.
 
 - **Slides** are 1920 × 1080 frames created with `create-slide-tool`, which places each one after the last and returns its safe area and regions.
 - **Safe area**: 5 % in from every edge (96 px left and right, 54 px top and bottom). The title takes the top 15 %; the body is the rest, split into left and right halves for two columns.
@@ -42,7 +42,7 @@ A presentation is a scene whose frames are the slides.
 
 - **Fonts**: `fontFamily` takes a role: `normal` (sans, the default), `hand` (hand-drawn) and `code` (monospace), plus `display` (bold headline), `rounded` (rounded sans), `script` (handwriting), `classic` (Helvetica-like sans) and `mono` (a second monospace). One or two fonts per board; mix only for contrast, such as a `display` heading over `normal` text.
 - **Formatted text**: a text, label or sticky may carry `richText` (`marks` for bold, strikethrough and links as UTF-16 ranges of `originalText`, `bullets` for the lines drawn as a bulleted list); plain text leaves it out, and search and summaries always read `originalText`.
-- **Notes and brainstorms**: one idea per sticky note (200 × 200), up to about 20 words, on a grid with 40 px gaps, themes grouped under named frames, one sticky color per theme or author. A note's text shrinks to fit, so split long ideas instead of enlarging the note. `author` names the person who wrote the idea (left out for notes the assistant writes) and stays private to the scene.
+- **Notes and brainstorms**: one idea per sticky note (200 × 200), up to about 20 words, on a grid with 40 px gaps, themes grouped under named frames, one sticky color per theme or author. A note's text shrinks to fit, so split long ideas instead of enlarging the note. `author` names the person who wrote the idea (left out for notes the assistant writes) and stays private to the board.
 - **Tables**: a `table` skeleton takes `cells` (rows of cell texts, at most 50 × 50) and `header: true` for a bold first row; prefer a table over a grid of rectangles for anything with rows and columns.
 - **Stamps and pens**: `stamp` elements are people's votes and reactions (count them next to each sticky when asked what the team prefers); `freedraw` strokes drawn with the marker, highlighter or washi tape pens are read only. Assistants create neither.
 - **Moodboards**: images from `add-image-tool`, 400 to 600 px wide, in rows with 40 px gaps, small captions underneath, framed so the board exports as one picture.
@@ -52,12 +52,12 @@ A presentation is a scene whose frames are the slides.
 ## Prompts that work well
 
 ```
-Read the diagrams guide, then draw our signup flow in a new scene called "Signup":
+Read the diagrams guide, then draw our signup flow in a new board called "Signup":
 visitor lands, fills the form, confirms the e-mail, picks a plan. Screenshot it when done.
 ```
 
 ```
-Create a 4-slide deck in the scene "Q3 review": a title slide, two slides of results
+Create a 4-slide deck in the board "Q3 review": a title slide, two slides of results
 with a simple bar chart, and a next-steps slide. Put my talking points in the speaker notes.
 ```
 

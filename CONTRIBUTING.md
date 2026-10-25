@@ -28,6 +28,6 @@ For more details, see `README.md`. Found a problem but don't want to fix it your
 - **Keep sentences concise**: one idea per sentence.
 - **Lead with the goal**: start instructions with what the reader wants to do.
 - **Use the app's labels**: write button and menu names in bold, exactly as they appear in Sketa.
-- **Use consistent terminology**: scene, collection, workspace, member, guest, frame, slide.
+- **Use consistent terminology**: board, collection, workspace, member, guest, frame, slide.
 - **Include examples**: show, don't just tell.
 - **Describe what exists today**: no screenshots of other products and no features that are not live.

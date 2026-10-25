@@ -4,7 +4,7 @@ description: "Connect AI assistants to your Sketa workspace with the Model Conte
 icon: "book-open"
 ---
 
-Sketa has a built-in [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that lets AI assistants work in your workspace directly. Your assistant can draw diagrams with automatic layout, add shapes, arrows, sticky notes and images, build slide decks, take screenshots to check its work, and manage scenes, collections, members, invites and teams, all through natural language.
+Sketa has a built-in [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that lets AI assistants work in your workspace directly. Your assistant can draw diagrams with automatic layout, add shapes, arrows, sticky notes and images, build slide decks, take screenshots to check its work, and manage boards, collections, members, invites and teams, all through natural language.
 
 ## What is MCP?
 
@@ -16,9 +16,9 @@ The server exposes 46 tools. See the [Tools reference](/ai/tools-reference) for 
 
 | Category | What your assistant can do |
 |----------|----------------------------|
-| **Drawing** | Search a scene, read its content, add, change and delete elements from simple skeletons, draw diagrams with automatic layout, add images from a URL or base64, take a PNG screenshot of the scene or one frame |
+| **Drawing** | Search a board, read its content, add, change and delete elements from simple skeletons, draw diagrams with automatic layout, add images from a URL or base64, take a PNG screenshot of the board or one frame |
 | **Slides** | Add slides (frames) with a safe area and layout regions, list them, change titles, presenter notes, order and visibility |
-| **Scenes and collections** | List, search, create, rename, move, pin and delete scenes; list, create, edit and delete collections |
+| **Boards and collections** | List, search, create, rename, move, pin and delete boards; list, create, edit and delete collections |
 | **Workspace and people** | Read and rename the workspace; list members, change roles, remove and block, unblock; list, send, change and cancel invites; manage teams and their members |
 | **Audit log** | Read the workspace's audit log with filters |
 
@@ -41,7 +41,7 @@ The server exposes 46 tools. See the [Tools reference](/ai/tools-reference) for 
     The first time the assistant connects, Sketa opens **Connect an app** in your browser. Sign in, choose the **Workspace** this connection may use ("The app only reaches the workspace you pick.") and click **Allow**. The assistant keeps the OAuth token from then on, with automatic refresh.
   </Step>
   <Step title="Start using natural language">
-    Ask your assistant to work in Sketa. For example: "Draw the architecture of our checkout service in a new scene" or "Turn these notes into a five-slide deck."
+    Ask your assistant to work in Sketa. For example: "Draw the architecture of our checkout service in a new board" or "Turn these notes into a five-slide deck."
   </Step>
 </Steps>
 
@@ -84,7 +84,7 @@ The key acts as the member who created it and its abilities apply exactly as on 
 
 The MCP server resolves the same actor as the [REST API](/api-reference/introduction), so permissions are identical:
 
-- **Members** can create, edit, move and delete scenes and collections they can see, and read members and invites.
+- **Members** can create, edit, move and delete boards and collections they can see, and read members and invites.
 - **Admins** can also rename the workspace, change roles, remove and block members, send and cancel invites, manage teams and read the audit log.
 - Anything outside the workspace, or not visible to the connection (another member's private collection; a team-restricted collection you cannot open), answers "Not found."
 - In a **read-only** workspace (Plus ended), every tool that changes something answers "Workspace is read-only."
