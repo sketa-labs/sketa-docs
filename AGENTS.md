@@ -12,7 +12,7 @@
 
 ## Project context
 
-Sketa is an online whiteboard for teams, clean (FigJam-like, the default) or hand-drawn (an Excalidraw / Excalidraw+ and FigJam alternative). Anyone can draw at `https://sketa.app` without an account and join live sessions by link; signing in saves boards to the cloud and is needed to share; **Sketa Plus** workspaces ($3 per seat/month, or $24 per seat/year shown as $2/month) add collections, members, guests, teams, public links and embeds, slides, comments, version history, PDF/PPTX exports, the server library, the REST API and the MCP server.
+Sketa is an online whiteboard for teams, clean (the default) or hand-drawn, an alternative to the whiteboards teams already use. Anyone can draw at `https://sketa.app` without an account and join live sessions by link; signing in saves boards to the cloud and is needed to share; **Sketa Plus** workspaces ($3 per seat/month, or $24 per seat/year shown as $2/month) add collections, members, guests, teams, public links and embeds, slides, comments, version history, PDF/PPTX exports, the server library, the REST API and the MCP server.
 
 Sketa is a hosted product only: it is **not open source and not self-hostable**. Never write self-hosting instructions, environment variables, install steps or "open-source" claims, and never link to the app's source code.
 
@@ -48,6 +48,7 @@ There is no `api.sketa.app`, `mcp.sketa.app` or `app.sketa.app`.
 
 ## Writing rules
 
+- Never name a competing product (any other whiteboard, diagramming or design tool), in pages, the changelog, examples or commit messages. Describe behavior on its own terms ("the standard whiteboard keys"), never as "like X".
 - Describe the current app only. No roadmap promises beyond what the app itself shows (voice and screen sharing are "coming later").
 - Mark Plus-only features with a `<Note>` at the top of the page or section ("… needs Sketa Plus.").
 - Use the UI labels from `lang/en-US/*.php` in bold. Settings live in **Settings → Account** (Profile, Security, Preferences) and **Settings → Workspace** (General, Billing, Teams, Audit log, API keys, Workspaces).
