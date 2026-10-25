@@ -1975,7 +1975,7 @@
                 "workspace.deleted",
                 "workspace.image_updated",
                 "workspace.image_removed",
-                "member.added",
+                "member.left",
                 "member.updated",
                 "member.removed",
                 "member.blocked",
@@ -2011,7 +2011,6 @@
                 "api_key.created",
                 "api_key.regenerated",
                 "api_key.deleted",
-                "api_key.settings_updated",
                 "workspace.ai_settings_updated",
                 "workspace.sharing_settings_updated"
               ]
