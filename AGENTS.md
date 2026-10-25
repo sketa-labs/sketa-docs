@@ -12,7 +12,7 @@
 
 ## Project context
 
-Sketa is an online whiteboard for teams, clean (FigJam-like, the default) or hand-drawn (an Excalidraw / Excalidraw+ and FigJam alternative). Anyone can draw at `https://sketa.app` without an account; signing in saves boards to the cloud; **Sketa Plus** workspaces ($3 per seat/month, or $24 per seat/year shown as $2/month) add collections, members, guests, teams, public links and embeds, slides, comments, version history, PDF/PPTX exports, the server library, the REST API and the MCP server.
+Sketa is an online whiteboard for teams, clean (FigJam-like, the default) or hand-drawn (an Excalidraw / Excalidraw+ and FigJam alternative). Anyone can draw at `https://sketa.app` without an account and join live sessions by link; signing in saves boards to the cloud and is needed to share; **Sketa Plus** workspaces ($3 per seat/month, or $24 per seat/year shown as $2/month) add collections, members, guests, teams, public links and embeds, slides, comments, version history, PDF/PPTX exports, the server library, the REST API and the MCP server.
 
 Sketa is a hosted product only: it is **not open source and not self-hostable**. Never write self-hosting instructions, environment variables, install steps or "open-source" claims, and never link to the app's source code.
 
@@ -61,7 +61,7 @@ There is no `api.sketa.app`, `mcp.sketa.app` or `app.sketa.app`.
 
 ## API reference
 
-- `openapi.json` is the source of truth for every operation, field and error. Public API = the `/api` routes (`php artisan route:list --path=api`), 37 operations today. The anonymous `api/snapshots` and `api/rooms` routes are internal to the editor; never document them.
+- `openapi.json` is the source of truth for every operation, field and error. Public API = the `/api` routes (`php artisan route:list --path=api`), 37 operations today. The `api/rooms` routes (live session storage) are internal to the editor; never document them.
 - Auth: `Authorization: Bearer sketa_...`. Keys are Passport personal-access tokens bound to one workspace (`App\Models\AccessToken`), **personal** (act as the member) or **workspace** (act as the workspace, shared collections only, admin-equivalent). Abilities come from `App\Enums\Api\Ability`; each route declares one with `abilities:` middleware.
 - `ResolveApiActor` errors: `401 Unauthenticated.` / `API key expired.` / `API key revoked.`, `402 Sketa Plus required.`, `403 Personal API keys are turned off in this workspace.`, `403 Workspace is read-only.` (writes only).
 - Error shape is always `{statusCode, error, message}` plus `errors` on 422 (`App\Support\Api\ApiErrorResponse`).
