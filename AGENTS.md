@@ -81,7 +81,7 @@ There is no `api.sketa.app`, `mcp.sketa.app` or `app.sketa.app`.
 
 - Free: 1 cloud board (`boards.free_board_limit`), no members.
 - AI per UTC day: Free 10, Plus member 100, anonymous 10 per device and 30 per IP; text-to-diagram costs 1, wireframe-to-code 5, board naming 0 (`App\Enums\AiUsage\Kind::quotaCost()`).
-- Trash keeps items 30 days; payment grace period 7 days, then read-only; up to 20 public links per board; invites expire after 3 days; images 4 MB (16 MB on Plus).
+- Trash keeps items 30 days; payment grace period 7 days, then read-only; one board link and one slides link per board; invites expire after 3 days; images 4 MB (16 MB on Plus).
 
 ## Running docs locally
 

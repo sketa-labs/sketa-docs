@@ -3093,7 +3093,7 @@
           },
           "access": {
             "type": "string",
-            "description": "What the link gives: view shows the board to anyone; comment and edit make the signed-in person who opens it a guest of the board. A slides link is always view.",
+            "description": "What the link gives: view shows the board to anyone; comment and edit make the signed-in person who opens it a guest of the board, and edit also lets anyone edit without an account. A slides link is always view.",
             "enum": [
               "view",
               "comment",
@@ -3183,7 +3183,7 @@
             "items": {
               "$ref": "#/components/schemas/ShareLinkSummary"
             },
-            "description": "The board's public links."
+            "description": "The board's public links: at most one readonly link and one slides link."
           }
         }
       },

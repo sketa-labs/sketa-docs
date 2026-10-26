@@ -1,10 +1,10 @@
 ---
 title: "Sharing and public links"
-description: "Share a cloud board with guests, by e-mail or with a comment or edit link (edit links work without an account), or publish view, embed and slides links."
+description: "Share a cloud board with guests by e-mail, set who can open its link (view, comment or edit, no account needed to edit), or publish its embed and slides links."
 icon: "link"
 ---
 
-A cloud board's **Share** dialog has two tabs: **People** (guests) and **Links** (public links). Both need Sketa Plus.
+A cloud board's **Share** dialog is one screen: invite people at the top, see the **People with access** below, then set **Link access** for **Anyone with the link**. It needs Sketa Plus.
 
 <Note>
   Without an account, **Share** asks you to create a free one first; your drawing is then saved as a cloud board. On a free account, **Share** starts a [live session](/knowledge-base/boards/collaboration#live-sessions-by-link-free) instead.
@@ -18,20 +18,28 @@ Members of the workspace already see every board in the collections they can ope
 2. Pick the **Access**: **Can view**, **Can comment** or **Can edit**.
 3. Click **Invite**.
 
-Guests need a free Sketa account; until they sign up with that e-mail they show as **Pending sign-up**. They find the board under **Shared with me**. Guests never take a seat, and they cannot be members of the same workspace. Change their access or **Remove** them from the same tab. Guests who joined through a comment or edit link show **via link**.
+Guests need a free Sketa account; until they sign up with that e-mail they show as **Pending sign-up**. They find the board under **Shared with me**. Guests never take a seat, and they cannot be members of the same workspace.
+
+**People with access** lists the board's **Owner** (the person who created it) and every guest. Change a guest's access from their menu or **Remove** them. Guests who joined through a comment or edit link show **via link**.
 
 Members and guests can talk in the board's [voice conversation](/knowledge-base/boards/voice-and-spotlight), which is always available. People who open a view link, or edit without an account, never join a conversation.
 
 ## Public links
 
-A board can have up to 20 links. A link works until you delete it.
+A board has one board link and one slides link at most.
 
 | Link | Opens at | Shows |
 | --- | --- | --- |
-| **Board link** | `https://sketa.app/l/...` and, for view links, embedded at `https://sketa.app/embed/...` | The board, with the link's access |
+| **Board link** | `https://sketa.app/l/...` and, while it is **Can view**, embedded at `https://sketa.app/embed/...` | The board, with the link's access |
 | **Slides link** | `https://sketa.app/slides/...` | The frames as a presentation. See [Slides](/knowledge-base/boards/slides#share-a-slides-link). |
 
-Click **Create link** and pick its access: **Can view**, **Can comment** or **Can edit**. Each link is a row in the **Links** tab: the copy button copies it, the access menu changes what it gives, and **⋯** holds the embed code (view links), a slides link's options and **Delete**. Viewers see new changes within about a minute.
+The **Anyone with the link** menu sets the board link: **No access** (no link, the default), **Can view**, **Can comment** or **Can edit**. Picking an access creates the link, or changes the one there is; the line under it says what the access means. Then:
+
+- **Copy link** copies it.
+- **Slides link** creates, copies, sets up or deletes the slides link.
+- **⋯** → **Copy embed code**, while the link is **Can view**.
+
+Viewers see new changes within about a minute.
 
 ### Link access
 
@@ -43,7 +51,7 @@ A board link's **Access** has the same choices as inviting a person:
 
 Signed-in people who open a comment or edit link join the board as guests with that access, so you work together with presence, cursors and the voice conversation. No e-mail invite needed. Someone who already has more access keeps it, and members of the workspace just open the board. Comment and edit links cannot be embedded.
 
-Comment and edit links need Sketa Plus; without it, links can only view. Setting a link back to **Can view** or deleting it removes the guests who joined through it, and anyone editing without an account is stopped at once; guests invited by e-mail stay. If the workspace becomes read-only, people editing through a link can only look.
+Comment and edit links need Sketa Plus; without it, the link can only view. Setting the link back to **Can view** or to **No access** removes the guests who joined through it, and anyone editing without an account is stopped at once; guests invited by e-mail stay. If the workspace becomes read-only, people editing through a link can only look.
 
 ### What viewers never see
 
@@ -51,6 +59,7 @@ View links (and comment links opened without an account) show only the drawing. 
 
 ### Stopping a link
 
-- **Delete** a link to stop sharing it: it no longer opens, the guests who joined through it lose the board, and anyone editing through it without an account is stopped. To share again, create a new link.
+- Set **Anyone with the link** to **No access** to stop sharing it: the link is deleted and no longer opens, the guests who joined through it lose the board, and anyone editing through it without an account is stopped. Picking an access again makes a new link, with a new address; the old one never opens again.
+- **Slides link** → **Delete slides link** stops the slides link the same way.
 - Admins can turn off public links for the whole workspace with **Allow public links** in [workspace settings](/knowledge-base/workspace/settings). Existing links stop opening until it is turned on again, and the guests who joined through a link lose their boards.
 - A link also stops opening when its board is in the trash, or when the workspace no longer has Plus (unless it is read-only).
