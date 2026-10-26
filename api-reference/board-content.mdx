@@ -33,6 +33,7 @@ The full JSON Schema is published at [`https://sketa.app/schemas/scene-content.v
 | `points`, `startBinding`, `endBinding`, `startArrowhead`, `endArrowhead`, `arrowType` | Arrows and lines. Points are relative to `x`, `y`. `arrowType` is `sharp`, `round` or `elbow`. |
 | `frameId` | The frame the element belongs to. `name` is a frame's name. |
 | `groupIds`, `boundElements`, `link`, `locked`, `customData` | Grouping, bindings, a link, locking and up to 64 KB of your own JSON. |
+| `transition`, `autoplaySeconds` | The board's presentation settings, in its one element with `id` and `type` `presentation` (never drawn, on no page): `transition` is `none`, `fade` (the default) or `slide`; `autoplaySeconds` is `null` (by hand) or 3 to 120. The editor and the board link's presentation play with them. |
 
 Missing fields get the editor's defaults (for example `strokeColor: "#1e1e1e"`, `roughness: 1`, `fontFamily: "hand"`), and unknown fields are dropped. Sketa manages `seed`, `version`, `versionNonce`, `updated` and the z-order `index`.
 

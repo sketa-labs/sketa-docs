@@ -1,6 +1,6 @@
 ---
 title: "Sharing and public links"
-description: "Share a cloud board with guests by e-mail, set who can open its link (view, comment or edit, no account needed to edit), or publish its embed and slides links."
+description: "Share a cloud board with guests by e-mail, set who can open its link (view, comment or edit, no account needed to edit), embed it or present its slides from it."
 icon: "link"
 ---
 
@@ -26,17 +26,12 @@ Members and guests can talk in the board's [voice conversation](/knowledge-base/
 
 ## Public links
 
-A board has one board link and one slides link at most.
-
-| Link | Opens at | Shows |
-| --- | --- | --- |
-| **Board link** | `https://sketa.app/l/...` and, while it is **Can view**, embedded at `https://sketa.app/embed/...` | The board, with the link's access |
-| **Slides link** | `https://sketa.app/slides/...` | The frames as a presentation. See [Slides](/knowledge-base/boards/slides#share-a-slides-link). |
+A board has one link at most. It opens at `https://sketa.app/l/...` and, while it is **Can view**, embeds at `https://sketa.app/embed/...`. When the board has slides, its viewers can **Present** them from it (see [Slides](/knowledge-base/boards/slides#present-from-the-boards-link)); there is no separate slides link.
 
 The **Anyone with the link** menu sets the board link: **No access** (no link, the default), **Can view**, **Can comment** or **Can edit**. Picking an access creates the link, or changes the one there is; the line under it says what the access means. Then:
 
 - **Copy link** copies it.
-- **Slides link** creates, copies, sets up or deletes the slides link.
+- **⋯** → **Copy presentation link**, while the board has slides: the link with `?present`, which opens straight into the presentation.
 - **⋯** → **Copy embed code**, while the link is **Can view**.
 
 Viewers see new changes within about a minute.
@@ -45,7 +40,7 @@ Viewers see new changes within about a minute.
 
 A board link's **Access** has the same choices as inviting a person:
 
-- **Can view** (the default): anyone with the link sees the board, **without an account**: the board name, zoom and download, in their own light or dark theme. **Copy embed code** puts it on any website in an iframe.
+- **Can view** (the default): anyone with the link sees the board, **without an account**: the board name, zoom and download, in their own light or dark theme, and **Present** while the board has slides. **Copy embed code** puts it on any website in an iframe.
 - **Can comment**: someone without an account sees the board read-only, with **Sign in to comment**. Once signed in (or after creating a free account) they join the board as a guest who can comment.
 - **Can edit**: anyone with the link edits the board right away, **no account needed**. They get a random name such as "Indigo Fox", which shows on their cursor and on the sticky notes and stamps they add, and you see them draw live. They cannot comment, see who else has access or join the voice conversation. **Sign in to use your name and join calls** turns them into a guest with their own name.
 
@@ -60,6 +55,5 @@ View links (and comment links opened without an account) show only the drawing. 
 ### Stopping a link
 
 - Set **Anyone with the link** to **No access** to stop sharing it: the link is deleted and no longer opens, the guests who joined through it lose the board, and anyone editing through it without an account is stopped. Picking an access again makes a new link, with a new address; the old one never opens again.
-- **Slides link** → **Delete slides link** stops the slides link the same way.
 - Admins can turn off public links for the whole workspace with **Allow public links** in [workspace settings](/knowledge-base/workspace/settings). Existing links stop opening until it is turned on again, and the guests who joined through a link lose their boards.
 - A link also stops opening when its board is in the trash, or when the workspace no longer has Plus (unless it is read-only).

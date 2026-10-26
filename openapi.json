@@ -3084,16 +3084,9 @@
             "type": "string",
             "format": "uuid"
           },
-          "type": {
-            "type": "string",
-            "enum": [
-              "readonly",
-              "slides"
-            ]
-          },
           "access": {
             "type": "string",
-            "description": "What the link gives: view shows the board to anyone; comment and edit make the signed-in person who opens it a guest of the board, and edit also lets anyone edit without an account. A slides link is always view.",
+            "description": "What the link gives: view shows the board to anyone; comment and edit make the signed-in person who opens it a guest of the board, and edit also lets anyone edit without an account. Viewers present the board's slides from it; the url with ?present opens straight into the presentation.",
             "enum": [
               "view",
               "comment",
@@ -3183,7 +3176,7 @@
             "items": {
               "$ref": "#/components/schemas/ShareLinkSummary"
             },
-            "description": "The board's public links: at most one readonly link and one slides link."
+            "description": "The board's public link: at most one."
           }
         }
       },
@@ -3334,8 +3327,21 @@
               "image",
               "frame",
               "embed",
-              "sticky"
-            ]
+              "sticky",
+              "presentation"
+            ],
+            "description": "presentation: the board's presentation settings (id presentation, never drawn), with transition and autoplaySeconds."
+          },
+          "transition": {
+            "type": "string",
+            "enum": ["none", "fade", "slide"],
+            "description": "The presentation element only: how slides move from one to the next."
+          },
+          "autoplaySeconds": {
+            "type": ["integer", "null"],
+            "minimum": 3,
+            "maximum": 120,
+            "description": "The presentation element only: advance every this many seconds; null moves only by hand."
           },
           "x": {
             "type": "number",

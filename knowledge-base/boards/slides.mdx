@@ -1,6 +1,6 @@
 ---
 title: "Slides"
-description: "Turn sections of a board into a presentation, present it live or share a slides link."
+description: "Turn sections of a board into a presentation, present it live, or let anyone present it from the board's link."
 icon: "presentation-screen"
 ---
 
@@ -18,24 +18,25 @@ Open **Slides** from the editor's main menu: "Sections used as slides. Drag to c
 - **Hide from presentation** keeps the section on the canvas but leaves it out of presenting and exports. **Show in presentation** brings it back.
 - **Presenter notes**: text only the presenter sees. Notes are never shown on public links.
 - Untitled sections show as **Slide 1**, **Slide 2**…
-- With [pages](/knowledge-base/editor/pages), the panel and presenting use the slides of the page you are on; slides links play every page's slides, page by page.
+- With [pages](/knowledge-base/editor/pages), the panel and presenting use the slides of the page you are on; the board's link presents every page's slides, page by page.
+- **Presentation settings**, at the bottom of the panel, apply to the whole board: **Transition** (**None**, **Fade** or **Slide**) and **Autoplay**, with **Seconds per slide** from 3 to 120. Your own presenting and the board's link both play with them.
 
-Slide order, notes and the hidden flag are saved in the board, so they sync with everyone and go into the [version history](/knowledge-base/boards/version-history).
+Slide order, notes, the hidden flag and the presentation settings are saved in the board, so they sync with everyone and go into the [version history](/knowledge-base/boards/version-history).
 
 ## Present
 
 - **Present** (or **Present from this slide**) plays the slides full screen. Use **Previous slide** / **Next slide**, open **Notes** to see your presenter notes and what is **Up next**, and watch the **Time elapsed**.
 - **Present live** presents to everyone in the board: others see "*name* is presenting" and can **Follow** along. Only one person presents at a time.
 
-## Share a slides link
+## Present from the board's link
 
-In **Share**, the **Slides link** menu → **Create slides link** makes the board's slides link at `https://sketa.app/slides/...`, which anyone can open without an account. The same menu copies it, opens **Slides options** and deletes it. Its options:
+There is no separate slides link: a board has [one link](/knowledge-base/boards/sharing-and-public-links), and its slides are presented from it.
 
-- **Transition**: **None**, **Fade** or **Slide**.
-- **Autoplay**, with **Seconds per slide** from 3 to 120.
-- **Turn off downloads**. Otherwise viewers can **Download** the slides as **PDF** or **PowerPoint (PPTX)**.
+- Anyone who opens a **Can view** link (or a **Can comment** link without an account) sees **Present** while the board has slides. It plays them full screen with the board's presentation settings: **Previous slide** / **Next slide**, the arrow keys, Space, or a tap on the slide; **Exit presentation** or <kbd>Esc</kbd> goes back to the board.
+- **Download** in the presentation gets the slides as **PDF** or **PowerPoint (PPTX)**.
+- In **Share**, **⋯** → **Copy presentation link** copies the board's link with `?present` at the end: it opens straight into the presentation. People who join through a comment or edit link land on the board presenting.
 
-Hidden slides and presenter notes never reach a slides link.
+Hidden slides and presenter notes are never presented or downloaded through the link.
 
 ## Export
 
