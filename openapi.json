@@ -3091,6 +3091,15 @@
               "slides"
             ]
           },
+          "access": {
+            "type": "string",
+            "description": "What the link gives: view shows the board to anyone; comment and edit make the signed-in person who opens it a guest of the board. A slides link is always view.",
+            "enum": [
+              "view",
+              "comment",
+              "edit"
+            ]
+          },
           "url": {
             "type": "string",
             "format": "uri",
