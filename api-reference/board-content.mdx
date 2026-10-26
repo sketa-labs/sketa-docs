@@ -122,7 +122,7 @@ Every write returns the board's new `contentVersion`, which goes up with every c
 ## Limits
 
 - Up to **5,000 elements** per request, and a body of up to **10 MB** (`413` above that).
-- Coordinates and sizes between -10,000,000 and 10,000,000; up to 10,000 points per line; text up to 100,000 characters; `customData` up to 64 KB of JSON.
+- Coordinates and sizes between -10,000,000 and 10,000,000; up to 10,000 points per line; text up to 100,000 characters (counted on `originalText`; the wrapped `text` may only add line breaks on top); `customData` up to 64 KB of JSON.
 
 <Tip>
   Building diagrams and slides from an AI assistant? The [MCP server](/ai/introduction) adds higher-level tools on top of this format: element skeletons with labels and bound arrows, diagrams with automatic layout, slides and screenshots.
