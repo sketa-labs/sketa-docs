@@ -292,7 +292,7 @@
         ],
         "summary": "Change a member's role",
         "operationId": "updateUser",
-        "description": "Changes a member's role. The owner always stays an admin. Needs an admin's key. Recorded in the audit log.\n\n**Ability:** `users:write`.",
+        "description": "Changes a member's role. The owner's role cannot change. Needs an admin's key. Recorded in the audit log.\n\n**Ability:** `users:write`.",
         "x-abilities": [
           "users:write"
         ],

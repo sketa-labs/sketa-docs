@@ -4,11 +4,13 @@ description: "Every tool of the Sketa MCP server, what it does and its inputs."
 icon: "wrench"
 ---
 
-The Sketa MCP server (`https://sketa.app/mcp`) exposes 46 tools. Each one needs an [ability](/knowledge-base/developers/api-keys#abilities) (OAuth connections carry them all) and follows the same permissions as the [REST API](/api-reference/introduction).
+The Sketa MCP server (`https://sketa.app/mcp`) exposes 50 tools. Each one needs an [ability](/knowledge-base/developers/api-keys#abilities) (OAuth connections carry them all) and follows the same permissions as the [REST API](/api-reference/introduction).
 
 Conventions for every tool:
 
-- **Ids are UUIDs** (element and frame ids are strings). Take them from the list tools; never invent them.
+- **Ids are UUIDs** (element, page and frame ids are strings). Take them from the list tools and the board content (`get-board-content-tool`, `search-board-tool`, `list-board-pages-tool`, `list-slides-tool`); never invent them.
+- **Coordinates are board pixels**: x to the right, y down.
+- Tools marked **Needs an admin** refuse members.
 - **List tools are paginated**: pass `page` (from 1) and read `data`, `total`, `per_page`, `current_page` and `last_page` from the result.
 - Objects are returned with the same fields as the REST API returns under `data`.
 - Errors come back as tool errors: "Not found." (outside the workspace or not visible to the connection), "Workspace is read-only." (any write on a read-only workspace), "This connection is missing the … ability.", or a validation message.
@@ -20,7 +22,7 @@ Conventions for every tool:
     `list-boards-tool` (with `search`) or `create-board-tool`.
   </Step>
   <Step title="Look at what is there">
-    `search-board-tool` to find elements by their words, or `get-board-content-tool` for everything.
+    `search-board-tool` to find elements by their words, `get-board-content-tool` for everything, or `take-screenshot-tool` to see it.
   </Step>
   <Step title="Read the format guide">
     `get-format-guide-tool` with `diagrams`, `presentations` or `freeform`. See [Format guides](/ai/format-guides).
@@ -29,7 +31,7 @@ Conventions for every tool:
     `create-diagram-tool` for boxes and arrows with automatic layout, `edit-board-content-tool` for anything else, `add-image-tool` for pictures, `add-library-item-tool` for ready-made shapes from the public library catalog, and the slides tools for decks.
   </Step>
   <Step title="Check the result">
-    `take-screenshot-tool` returns a PNG of the board or one frame. A slow render answers `status: pending` with a `render_id`: read it later with `get-render-result-tool`.
+    `take-screenshot-tool` returns a PNG of one page or one frame. A slow render answers `status: pending` with a `render_id`: read it later with `get-render-result-tool`.
   </Step>
 </Steps>
 
@@ -37,19 +39,19 @@ Conventions for every tool:
 
 ### search-board-tool
 
-Finds elements on a board's canvas by their words: every word of `query` must appear in the element's text, frame name or link, ignoring case and accents. A label inside a shape or arrow is reported with that shape's id as `containerId`. Returns each match's `id`, `type`, `text`, `containerId`, `frameId` and bounds (`x`, `y`, `width`, `height`).
+Finds elements on a board's canvas, on every page, by their words: every word of `query` must appear in the element's text, frame name or link, ignoring case and accents. A label inside a shape or arrow is reported with that shape's id as `containerId`. Returns `matches` and `total`: each match's `id`, `type`, `text`, `containerId`, `frameId`, `pageId` and bounds (`x`, `y`, `width`, `height`).
 
 Read-only · `boards:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
-| `board_id` | string, required | The board id. |
-| `query` | string | The words to find. Empty lists every element (of the given types). |
-| `types` | string[] | Only elements of these types: `rectangle`, `diamond`, `ellipse`, `arrow`, `line`, `freedraw`, `text`, `image`, `frame`, `embed`, `sticky`. A label also matches its container's type. |
+| `board_id` | string, required | The board id, from `list-boards-tool`. |
+| `query` | string | The words to find (up to 200 characters). Empty lists every element (of the given types). |
+| `types` | string[] | Only elements of these types: `rectangle`, `diamond`, `ellipse`, `shape`, `arrow`, `line`, `freedraw`, `text`, `image`, `frame`, `table`, `embed`, `sticky`, `stamp`, `page`, `icon`, `code`. A label also matches its container's type. |
 
 ### get-board-content-tool
 
-Reads everything on a board's canvas: its live elements in z-order (bottom first) with every field, the `contentVersion`, and signed links (valid one hour) to the image assets the elements use (`assets`, keyed by the fileId of each image element). Large boards are big: prefer `search-board-tool` to find specific elements. The element format is described in [Board content](/api-reference/board-content#the-element-format).
+Reads everything on a board's canvas, every page included: its live elements in z-order (bottom first) with every field (pages are `page` elements; every other element names its page in `pageId`), the `contentVersion`, and signed links (valid one hour) to the image assets the elements use (`assets`, keyed by the fileId of each image element). Large boards are big: prefer `search-board-tool` to find specific elements. The element format is described in [Board content](/api-reference/board-content#the-element-format).
 
 Read-only · `boards:read`
 
@@ -59,7 +61,7 @@ Read-only · `boards:read`
 
 ### edit-board-content-tool
 
-Changes a board's canvas in one step, live for everyone editing it. Returns the `contentVersion` and the ids added (by `ref`), updated and removed.
+Changes a board's canvas in one step, live for everyone editing it. Ids in `update` and `remove` come from `get-board-content-tool` or `search-board-tool`; an id that is not on the board is refused. One call takes at most 1000 skeletons and 5000 changes in all (10 MB). Returns the `contentVersion`, `added` (a list of `{ref, id}`), `updated` and `removed`. Prefer `create-diagram-tool` for boxes-and-arrows charts, `add-library-item-tool` for catalog items and `add-image-tool` for pictures.
 
 Destructive · `boards:write`
 
@@ -67,47 +69,54 @@ Destructive · `boards:write`
 | --- | --- | --- |
 | `board_id` | string, required | The board id. |
 | `add` | object[] | Skeletons of elements to add (below). |
-| `update` | object[] | Patches `{id, ...fields}` merged into existing elements, with the same fields `get-board-content-tool` returns. The type cannot change. |
-| `remove` | string[] | Ids of elements to delete. |
+| `update` | object[] | Patches `{id, ...fields}` merged into existing elements, with the same fields `get-board-content-tool` returns. The type cannot change. Set `pageId` to move an element to another page: its label and a section's contents go with it. |
+| `remove` | string[] | Ids of elements on the board to delete. |
 
 Each skeleton in `add`:
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `type` | string, required | `rectangle`, `ellipse`, `diamond`, `text`, `arrow`, `line`, `frame` or `sticky`. |
+| `type` | string, required | `rectangle`, `ellipse`, `diamond`, `shape`, `text`, `arrow`, `line`, `frame`, `sticky`, `table`, `icon` or `code`. |
+| `shape` | string | The library shape of a `shape` element (default `triangle`), such as `cylinder`, `document`, `parallelogram`, `cloud` or `arrow_right`. See [Format guides](/ai/format-guides). |
+| `icon` | string | The Tabler icon name of an `icon` element (for example `rocket`), 96 × 96 by default, drawn in `strokeColor`. Unknown names are refused. |
 | `x`, `y` | number, required | Left and top edge (start point for arrows and lines), in board pixels. |
 | `ref` | string | A name for this skeleton, so arrows and frames of the same call can point at it. |
 | `width`, `height` | number | Shapes default to 160 × 80, stickies to 200 × 200, frames to 800 × 450. Text is sized from its content. |
 | `label` | string | Text centered inside a shape, sticky or arrow; the name of a frame. |
-| `text` | string | The content of a text element (new lines with `\n`). |
+| `text` | string | The content of a text element or code block (new lines with `\n`). |
+| `cells` | string[][] | A table's cell texts, row by row (at most 50 rows of 50 cells). |
+| `header` | boolean | A table's first row is a header (shaded, bold). |
+| `language` | string | A code block's language, for its syntax colors (default `plaintext`). |
+| `pageId` | string | The page it goes on (from `list-board-pages-tool`). Default: the page of its frame or of the shapes it binds, else the original page. |
 | `start`, `end` | object | Where an arrow or line starts and ends: `{ref}` (a skeleton of this call), `{id}` (an element on the board) or `{x, y}`. Ends that name a shape bind to it. |
-| `frame` | object | `{ref}` or `{id}` of the frame this element belongs to. |
+| `frame` | object | `{ref}` or `{id}` of the frame (section) this element belongs to. |
 | `strokeColor`, `backgroundColor` | string | For example `#1e1e1e`, `#b8dcff` or `transparent`. |
 | `fillStyle` | string | `hachure`, `cross-hatch`, `solid` or `zigzag`. |
 | `strokeStyle` | string | `solid`, `dashed` or `dotted`. |
 | `strokeWidth` | integer | `1`, `2` or `4`. |
 | `roughness` | integer | `0` clean (default), `1` hand-drawn, `2` loose. |
-| `fontSize` | number | Font size of the text or label, default 20. |
+| `fontSize` | number | Font size of the text, label or table, default 16. |
 | `fontFamily` | string | `normal` (sans, default), `hand` (hand-drawn) or `code` (monospace); more fonts: `display` (bold headline), `rounded` (rounded sans), `script` (handwriting), `classic` (Helvetica-like sans) and `mono` (a second monospace). |
 
 ### create-diagram-tool
 
-Draws a flowchart-style diagram with automatic layout, exactly as the editor's AI diagram insert does. Give nodes, edges between node ids and optional nested groups; Sketa sizes the shapes to their labels, arranges them top to bottom or left to right, and binds the arrows. It goes at `x`, `y` or 200 px to the right of the existing content. Returns the `contentVersion`, the ids of every element created and the diagram bounds. Prefer it over `edit-board-content-tool` for any boxes-and-arrows chart. The layout runs in the background: if it takes longer than about 20 seconds, the tool answers with a [pending render](#get-render-result-tool) instead, and the diagram is still added to the board when it finishes, so do not call the tool again for it.
+Draws a flowchart-style diagram with automatic layout, exactly as the editor's AI diagram insert does. Give nodes, edges between node ids and optional nested groups; Sketa sizes the shapes to their labels, arranges them top to bottom or left to right, and binds the arrows. Edges to unknown nodes and self-loops are dropped. It goes on `page_id` (default: the original page), at `x`, `y` or 200 px to the right of that page's content. Returns the `contentVersion`, the ids of every element created and the diagram bounds. Prefer it over `edit-board-content-tool` for any boxes-and-arrows chart. The layout runs in the background: if it takes longer than about 20 seconds, the tool answers with a [pending render](#get-render-result-tool) instead, and the diagram is still added to the board when it finishes, so do not call the tool again for it.
 
 `boards:write`
 
 | Input | Type | Description |
 | --- | --- | --- |
 | `board_id` | string, required | The board id. |
-| `nodes` | object[], required | The boxes, at least one and up to 150: `id` (required, up to 100 characters), `label` (required, up to 200 characters), `shape` (`rectangle` default, `ellipse`, `diamond` or `text`), `group` (a group id) and `color` (fill, `#rgb` or `#rrggbb`). |
+| `nodes` | object[], required | The boxes, at least one and up to 150: `id` (required, up to 100 characters), `label` (required, up to 200 characters; longer ones are cut), `shape` (`rectangle` default, `ellipse`, `diamond` or `text`), `group` (a group id) and `color` (fill, `#rgb` or `#rrggbb`). |
 | `edges` | object[] | Up to 300 arrows: `from` and `to` (required node ids), `label`, `style` (`solid` default or `dashed`) and `arrow` (`end` default, `both` or `none`). |
 | `groups` | object[] | Up to 30 dashed boxes around related nodes: `id` and `label` (required) and `parent` (up to 3 levels). |
 | `direction` | string | `down` (default) or `right`. |
 | `x`, `y` | number | Top-left corner of the diagram. |
+| `page_id` | string | The page to draw on, from `list-board-pages-tool` (default: the original page). |
 
 ### add-image-tool
 
-Puts an image on a board, from a public http(s) URL (downloaded by Sketa, up to 3 redirects) or from base64 bytes. PNG, JPEG, GIF, WebP and SVG are accepted, up to the workspace's file size (16 MB on Plus). It keeps its proportions. Returns the new image element id and its file id.
+Puts an image on a board, from a public http(s) URL (downloaded by Sketa, up to 3 redirects) or from base64 bytes. PNG, JPEG, GIF, WebP and SVG are accepted, up to 16 MB and 3840 px on the longest side. It goes on the original page (move it with `edit-board-content-tool` by updating its `pageId`) and keeps its proportions. Returns `elementId` and `fileId`.
 
 Open-world · `boards:write`
 
@@ -121,7 +130,7 @@ Open-world · `boards:write`
 
 ### add-library-item-tool
 
-Places a copy of an item of the [public library catalog](#public-library-catalog) on a board, live for everyone editing it, like inserting it from the editor's library: its elements get fresh ids and keep their groups, labels and arrow bindings. Returns `contentVersion`, the new `elementIds` and their `bounds`.
+Places a copy of an item of the [public library catalog](#public-library-catalog) on a board, live for everyone editing it, like inserting it from the editor's library: its elements get fresh ids and keep their groups, labels and arrow bindings. It goes on `page_id` (default: the original page). Returns `contentVersion`, the new `elementIds` and their `bounds`.
 
 `boards:write` and `libraries:read`
 
@@ -130,11 +139,12 @@ Places a copy of an item of the [public library catalog](#public-library-catalog
 | `board_id` | string, required | The board id. |
 | `library_id` | string, required | The catalog library id, from `search-public-libraries-tool`. |
 | `item_id` | string, required | The id of one of the library's items, from `get-public-library-tool`. |
-| `x`, `y` | number | Top-left corner of the item (default: beside the existing content). |
+| `x`, `y` | number | Top-left corner of the item (default: beside the page's content). |
+| `page_id` | string | The page to put it on, from `list-board-pages-tool` (default: the original page). |
 
 ### take-screenshot-tool
 
-Returns a PNG image of the whole canvas, or of one frame (slide) when `frame_id` is given, drawn exactly as the editor draws it, at most 1600 px on the long side. Use it to check a layout after editing. The screenshot renders in the background: if it takes longer than about 20 seconds, the tool answers with a [pending render](#get-render-result-tool) instead of the image.
+Returns a PNG image of one page of the canvas (`page_id`, default the first page), or of one frame (a section or slide) when `frame_id` is given, drawn exactly as the editor draws it, at most 1600 px on the long side. Use it to check a layout after editing. An empty page is refused. The screenshot renders in the background: if it takes longer than about 20 seconds, the tool answers with a [pending render](#get-render-result-tool) instead of the image.
 
 Read-only · `boards:read`
 
@@ -143,6 +153,7 @@ Read-only · `boards:read`
 | `board_id` | string, required | The board id. |
 | `frame_id` | string | A frame on the board, to capture only that frame. |
 | `theme` | string | `light` (default) or `dark`. |
+| `page_id` | string | The page to capture, from `list-board-pages-tool` (default: the first page). Ignored with `frame_id`. |
 
 ### get-render-result-tool
 
@@ -172,11 +183,11 @@ Read-only · no ability needed
 
 ## Slides
 
-Every frame of a board is a slide. See [Slides](/knowledge-base/boards/slides).
+The slides are the sections (frames) used as slides. A frame with `customData.slide.enabled: false` is a plain section: frames from `edit-board-content-tool` skeletons start that way, so make slides with `create-slide-tool`. See [Slides](/knowledge-base/boards/slides).
 
 ### list-slides-tool
 
-Lists the slides of a board in play order: `frameId`, `title` (the frame name), speaker `notes`, `hidden`, `position` (1-based, hidden slides included) and bounds.
+Lists the slides of a board in play order (page by page, then within each page): `frameId`, `title` (the frame name), speaker `notes`, `hidden`, `position` (1-based, hidden slides included), bounds and `pageId`, plus the board's `contentVersion`.
 
 Read-only · `boards:read`
 
@@ -186,7 +197,7 @@ Read-only · `boards:read`
 
 ### create-slide-tool
 
-Adds a slide: a frame (1920 × 1080 by default) placed 200 px to the right of the last slide of its page and played after it. Returns its `frameId`, position, `pageId`, bounds, the safe area (5 % in from every edge) and the regions to lay content in: `title` (top 15 % of the safe area), `body` (the rest), `left` and `right` (the halves of the body). Then draw into it with `edit-board-content-tool`, giving each element `frame: {id: frameId}`.
+Adds a slide: a frame (1920 × 1080 by default) placed 200 px to the right of the last slide of its page (at 0, 0 on a page without slides) and played after it. Returns `contentVersion`, its `frameId`, position, `pageId`, bounds, the safe area (5 % in from every edge) and the regions to lay content in: `title` (top 15 % of the safe area), `body` (the rest), `left` and `right` (the halves of the body). Then draw into it with `edit-board-content-tool`, giving each element `frame: {id: frameId}`.
 
 `boards:write`
 
@@ -199,7 +210,7 @@ Adds a slide: a frame (1920 × 1080 by default) placed 200 px to the right of th
 
 ### update-slide-tool
 
-Changes a slide's title, speaker notes, hidden flag and position. Only the fields you send change. Returns the updated slide and the `contentVersion`.
+Changes a slide's title, speaker notes, hidden flag and position. Only the fields you send change. A plain section is refused. Returns the updated slide and the `contentVersion`.
 
 `boards:write`
 
@@ -210,26 +221,76 @@ Changes a slide's title, speaker notes, hidden flag and position. Only the field
 | `title` | string | The new title (an empty string removes it; up to 200 characters). |
 | `notes` | string | Speaker notes, shown to the presenter only and never on public links (up to 10,000 characters; an empty string removes them). |
 | `hidden` | boolean | `true` leaves the slide out of the presentation and exports. |
+| `position` | integer | The new 1-based position, as `list-slides-tool` numbers the slides. The slide stays on its page, so a position before or after that page's slides puts it first or last there. |
+
+## Pages
+
+A board has one or more pages. Every element names its page in `pageId`; without it the element is on the original page, whose id is `default`. A board that never had pages is the `default` page alone. See [Pages](/knowledge-base/editor/pages).
+
+### list-board-pages-tool
+
+Lists the pages of a board in order: `id`, `name` (`null` shows "Page N" in the editor), `position` (1-based) and `elementCount`, plus the board's `contentVersion`.
+
+Read-only · `boards:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
+
+### create-board-page-tool
+
+Adds a page. Returns the `contentVersion` and the new `page`. Put elements on it with `edit-board-content-tool` (`pageId` on each skeleton).
+
+`boards:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
+| `name` | string | The page name (up to 100 characters); left out, the editor shows "Page N". |
+| `position` | integer | Where the page goes, 1-based; last when left out. |
+
+### update-board-page-tool
+
+Renames a page and/or moves it. Only the fields you send change. Returns the `contentVersion` and the updated `page`.
+
+`boards:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
+| `page_id` | string, required | The page id, from `list-board-pages-tool`. |
+| `name` | string | The new name (up to 100 characters); an empty string goes back to "Page N". |
 | `position` | integer | The new 1-based position (a number past the end moves it last). |
+
+### delete-board-page-tool
+
+Deletes a page and every element on it, its slides included. The last page of a board cannot be deleted. Returns the `contentVersion`.
+
+Destructive · `boards:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
+| `page_id` | string, required | The page id, from `list-board-pages-tool`. |
 
 ## Boards
 
 ### list-boards-tool
 
-Lists the boards the connection can see, most recently edited first: id, name, collection, pinned, content version, element count, preview and app links.
+Lists the boards the connection can see (trashed ones are left out), most recently edited first: `id`, `name`, `collectionId`, `createdBy`, `updatedBy`, `pinned`, `lastEditedAt`, `createdAt`, `contentVersion`, `elementCount`, `previewUrl`, `appUrl` and `shareLinks`.
 
 Read-only · `boards:read`
 
 | Input | Type | Description |
 | --- | --- | --- |
 | `collection_id` | string | Only boards of this collection. |
-| `search` | string | Only boards whose name or canvas text matches these words. |
+| `search` | string | Only boards whose name or canvas text contains every one of these words. |
 | `pinned` | boolean | `true` for pinned boards only, `false` for the others. |
 | `page` | integer | The page, from 1. |
 
 ### get-board-tool
 
-Gets one board's metadata: name, collection, pinned, who created and last edited it, content version, element count, preview and app links and its share links.
+Gets one board's metadata, with the same fields as `list-boards-tool`.
 
 Read-only · `boards:read`
 
@@ -239,7 +300,7 @@ Read-only · `boards:read`
 
 ### create-board-tool
 
-Creates an empty board. Without a `collection_id` it goes to the member's private collection. Returns the board.
+Creates an empty board. Without a `collection_id` it goes to the member's private collection. Recorded in the audit log. Returns the board.
 
 `boards:write`
 
@@ -250,7 +311,7 @@ Creates an empty board. Without a `collection_id` it goes to the member's privat
 
 ### update-board-tool
 
-Renames a board, moves it to another collection or pins it. Send only the fields to change. Returns the updated board.
+Renames a board, moves it to another collection or pins it. Send only the fields to change. Recorded in the audit log. Returns the updated board.
 
 `boards:write`
 
@@ -275,7 +336,7 @@ Destructive · `boards:write`
 
 ### list-collections-tool
 
-Lists the collections the connection can see, private collection first, then in the manual order.
+Lists the collections the connection can see, the member's private collection first, then in the manual order: `id`, `name`, `emoji`, `isPrivate`, `isRestricted`, `teamIds`, `sortOrder` and `createdAt`.
 
 Read-only · `collections:read`
 
@@ -285,7 +346,7 @@ Read-only · `collections:read`
 
 ### get-collection-tool
 
-Gets one collection: name, emoji, whether it is private, its order and when it was created.
+Gets one collection, with the same fields as `list-collections-tool`.
 
 Read-only · `collections:read`
 
@@ -306,7 +367,7 @@ Read-only · `collections:read` and `boards:read`
 
 ### create-collection-tool
 
-Creates a shared collection, last in the manual order. It is visible to every member unless `team_ids` restricts it (admins only). Returns the collection.
+Creates a shared collection, last in the manual order. It is visible to every member unless `team_ids` restricts it (admins only). Recorded in the audit log. Returns the collection.
 
 `collections:write`
 
@@ -318,7 +379,7 @@ Creates a shared collection, last in the manual order. It is visible to every me
 
 ### update-collection-tool
 
-Renames a collection, changes its emoji, moves it in the manual order or restricts it to teams. Send only the fields to change. Returns the updated collection.
+Renames a collection, changes its emoji, moves it in the manual order or restricts it to teams. Send only the fields to change. A private collection keeps its name (only its emoji changes) and cannot be restricted. Recorded in the audit log. Returns the updated collection.
 
 `collections:write`
 
@@ -344,13 +405,13 @@ Destructive · `collections:write`
 
 ### get-workspace-tool
 
-Gets the workspace the connection is bound to: id, name, whether it is personal, plan, member count, whether it is read-only and when it was created. No inputs.
+Gets the workspace the connection is bound to: `id`, `name`, `isPersonal`, `plan` (`plus` or `free`), `memberCount`, `readOnly` and `createdAt`. No inputs.
 
 Read-only · `workspace:read`
 
 ### update-workspace-tool
 
-Renames the workspace. Recorded in the audit log. Returns the updated workspace.
+Renames the workspace. Needs an admin; recorded in the audit log. Returns the updated workspace.
 
 `workspace:write`
 
@@ -362,7 +423,7 @@ Renames the workspace. Recorded in the audit log. Returns the updated workspace.
 
 ### list-users-tool
 
-Lists the members with their role (`admin` or `member`), whether they own the workspace and when they joined, oldest first.
+Lists the members, oldest first: `id`, `name`, `email`, `role` (`admin` or `member`), `isOwner` and `joinedAt`.
 
 Read-only · `users:read`
 
@@ -382,7 +443,7 @@ Read-only · `users:read`
 
 ### update-user-tool
 
-Changes a member's role. The owner always stays an admin. Needs an admin; recorded in the audit log. Returns the updated member.
+Changes a member's role. The owner's role cannot change. Needs an admin; recorded in the audit log. Returns the updated member.
 
 `users:write`
 
@@ -393,7 +454,7 @@ Changes a member's role. The owner always stays an admin. Needs an admin; record
 
 ### remove-user-tool
 
-Removes a member. Their API keys and MCP connections stop working, they leave every team and their private collection stays with the workspace. With `block`, their e-mail also cannot be invited again (nor accept an old invite) until the block is lifted. The owner cannot be removed. Needs an admin; recorded in the audit log.
+Removes a member. Their API keys and MCP connections stop working, they leave every team and their private collection stays with the workspace. With `block`, their e-mail also cannot be invited again (nor accept an old invite) until the block is lifted, and its pending invites are dropped. The owner cannot be removed, and you cannot block yourself. Needs an admin; recorded in the audit log.
 
 Destructive · `users:write`
 
@@ -446,7 +507,7 @@ Read-only · `invites:read`
 
 ### create-invite-tool
 
-Invites someone by e-mail with a role and sends them an invitation e-mail that expires in 3 days. Fails when the person is already a member or already has a pending invite. Each member is a paid seat. Returns the invite.
+Invites someone by e-mail with a role and sends them an invitation e-mail that expires in 3 days. Fails when the person is already a member, already has a pending invite or is blocked. Each member is a paid seat. Needs an admin; recorded in the audit log. Returns the invite.
 
 Open-world · `invites:write`
 
@@ -457,7 +518,7 @@ Open-world · `invites:write`
 
 ### update-invite-tool
 
-Changes the role a pending invite grants. Accepted or expired invites cannot change. Returns the updated invite.
+Changes the role a pending invite grants. Accepted or expired invites cannot change. Needs an admin; recorded in the audit log. Returns the updated invite.
 
 `invites:write`
 
@@ -468,7 +529,7 @@ Changes the role a pending invite grants. Accepted or expired invites cannot cha
 
 ### delete-invite-tool
 
-Cancels an invite: its link stops working. Recorded in the audit log.
+Cancels an invite: its link stops working. Needs an admin; recorded in the audit log.
 
 Destructive · `invites:write`
 
@@ -590,6 +651,6 @@ Read-only · `audit-logs:read`
 | Input | Type | Description |
 | --- | --- | --- |
 | `action` | string | Only entries of this action, for example `board.created` or `member.removed`. The values are the `action` filter of the API's `GET /audit-logs`. |
-| `user_id` | string | Only entries made by this user. |
-| `from`, `to` | string | Only entries on or after / on or before this date (`YYYY-MM-DD`). |
+| `user_id` | string | Only entries made by this user, from `list-users-tool`. |
+| `from`, `to` | string | Only entries on or after / on or before this UTC date (`YYYY-MM-DD`). |
 | `page` | integer | The page, from 1. |

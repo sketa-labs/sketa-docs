@@ -29,7 +29,7 @@ For flowcharts, architecture and other boxes-and-arrows content, assistants pref
 
 ## Presentations
 
-A presentation is a board whose frames are the slides.
+A presentation is a board whose sections (frames) used as slides are played in order.
 
 - **Slides** are 1920 × 1080 frames created with `create-slide-tool`, which places each one after the last and returns its safe area and regions.
 - **Safe area**: 5 % in from every edge (96 px left and right, 54 px top and bottom). The title takes the top 15 %; the body is the rest, split into left and right halves for two columns.
@@ -42,7 +42,7 @@ A presentation is a board whose frames are the slides.
 
 - **Fonts**: `fontFamily` takes a role: `normal` (sans, the default), `hand` (hand-drawn) and `code` (monospace), plus `display` (bold headline), `rounded` (rounded sans), `script` (handwriting), `classic` (Helvetica-like sans) and `mono` (a second monospace). One or two fonts per board; mix only for contrast, such as a `display` heading over `normal` text.
 - **Formatted text**: a text, label or sticky may carry `richText` (`marks` for bold, strikethrough and links as UTF-16 ranges of `originalText`, `bullets` for the lines drawn as a bulleted list); plain text leaves it out, and search and summaries always read `originalText`.
-- **Notes and brainstorms**: one idea per sticky note (200 × 200), up to about 20 words, on a grid with 40 px gaps, themes grouped under named frames, one sticky color per theme or author. A note's text shrinks to fit, so split long ideas instead of enlarging the note. `author` names the person who wrote the idea (left out for notes the assistant writes) and stays private to the board.
+- **Notes and brainstorms**: one idea per sticky note (200 × 200), up to about 20 words, on a grid with 40 px gaps, themes grouped under named frames, one sticky color per theme or author. A note grows taller when its text does not fit, so split long ideas instead. `author` names the person who wrote the idea (left out for notes the assistant writes) and stays private to the board.
 - **Tables**: a `table` skeleton takes `cells` (rows of cell texts, at most 50 × 50) and `header: true` for a bold first row; prefer a table over a grid of rectangles for anything with rows and columns.
 - **Stamps and pens**: `stamp` elements are people's votes and reactions (count them next to each sticky when asked what the team prefers); `freedraw` strokes drawn with the marker, highlighter or washi tape pens are read only. Assistants create neither.
 - **Moodboards**: images from `add-image-tool`, 400 to 600 px wide, in rows with 40 px gaps, small captions underneath, framed so the board exports as one picture.
