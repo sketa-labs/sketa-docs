@@ -29,14 +29,25 @@ The panel lists **Open** and **Resolved** threads. **Search comments** filters t
 
 ## Who can comment
 
-Members who can open the board, and guests with **Can comment** or **Can edit**. Guests with **Can view** see comments but cannot add them. Comments never appear on [public links](/knowledge-base/boards/sharing-and-public-links).
+Members who can open the board, and guests with **Can comment** or **Can edit**. Guests with **Can view** see comments but cannot add them.
+
+The board's [link](/knowledge-base/boards/sharing-and-public-links#link-access) follows the same ladder, for everyone who opens it:
+
+| Link access | Sees the board | Comments | Edits |
+|---|---|---|---|
+| **No access** | No | No | No |
+| **Can view** | Yes | No, comments never show | No |
+| **Can comment** | Yes | Reads and writes | No |
+| **Can edit** | Yes | Reads and writes | Yes |
+
+People who open a comment or edit link **without an account** comment too, under their random name (such as "Indigo Fox") or the name they typed. They can edit and delete only their own comments, from the same browser, and resolve threads. They see the names of the people who commented but not their profile photos, can mention people by name, and never get e-mails; the people they mention or reply to do. Their comments stay on the board when the link stops working, and workspace admins can delete them.
 
 ## Comment settings per board
 
 **Comment settings** on a board:
 
-- **Show comments**: off hides every comment on that board.
-- **Allow new comments**: off keeps the existing threads but stops new ones.
+- **Show comments**: off hides every comment on that board, also from people on its link.
+- **Allow new comments**: off keeps the existing threads but stops new ones, also through its link.
 
 ## E-mail notifications
 
