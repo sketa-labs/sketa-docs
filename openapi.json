@@ -3104,9 +3104,6 @@
             "type": "string",
             "format": "uri",
             "example": "https://sketa.app/l/AbC123"
-          },
-          "isActive": {
-            "type": "boolean"
           }
         }
       },
