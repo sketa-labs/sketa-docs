@@ -3205,7 +3205,7 @@
                   "anchor": {
                     "type": "object",
                     "additionalProperties": false,
-                    "description": "A thread's anchor: `elementId` pins it on an element (its position and page come from the element; the pin sits at its top-right corner unless `dx`/`dy` say otherwise), or `x` and `y` place it at a point on `pageId` (the first page by default).",
+                    "description": "A thread's anchor: `elementId` pins it on an element (its position and page come from the element; the pin sits at its top-right corner unless `dx`/`dy` say otherwise), or `x` and `y` place it at a point on `pageId` (the original page by default).",
                     "properties": {
                       "elementId": {
                         "type": "string",

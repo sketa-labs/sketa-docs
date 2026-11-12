@@ -300,7 +300,7 @@ Destructive · `boards:write`
 
 Read the threads people leave on a board, answer them and resolve them once they are dealt with. Comments are written as the member who connected and show at once in the editor. They follow the same rules as the app: the board must show comments (and allow new ones, to write), only a comment's author edits it, its author or an admin deletes it, and a read-only workspace keeps reading but refuses writes. See [Comments](/knowledge-base/boards/comments).
 
-A thread's `anchor` says where it sits: `x`/`y` in board coordinates; `elementId` with `dx`/`dy` (its offset from the element's top-left corner) when it is pinned on an element, which follows it; `pageId` when it is not on the original page.
+A thread's `anchor` says where it sits: `x`/`y` in board coordinates; `elementId` with `dx`/`dy` (its offset from the element's top-left corner) when it is pinned on an element, which follows it: the pin sits at the element's `x + dx`, `y + dy` wherever it moved, and `x`/`y` only say where it was when placed; `pageId` when it is not on the original page.
 
 ### list-board-comments-tool
 
@@ -328,7 +328,7 @@ Replies to a thread with `parent_id`, or starts one pinned on an element with `e
 | `element_id` | string | To start a thread on an element: its id, from `get-board-content-tool` or `search-board-tool`. Its page is the element's. |
 | `x`, `y` | number | To start a thread at a point, in board coordinates. |
 | `dx`, `dy` | number | With `element_id`: the pin's offset from the element's top-left corner. By default it sits at the element's top-right corner. |
-| `page_id` | string | With `x` and `y`: the page, from `list-board-pages-tool`; the first page when left out. |
+| `page_id` | string | With `x` and `y`: the page, from `list-board-pages-tool`; the original page when left out. |
 
 ### update-board-comment-tool
 
