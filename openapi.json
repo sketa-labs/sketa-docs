@@ -36,6 +36,12 @@
       "name": "Board content"
     },
     {
+      "name": "Pages"
+    },
+    {
+      "name": "Comments"
+    },
+    {
       "name": "Audit logs"
     },
     {
@@ -2697,6 +2703,854 @@
           }
         ]
       }
+    },
+    "/boards/{board}/pages": {
+      "get": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "List pages",
+        "operationId": "listBoardPages",
+        "description": "The board's pages in order, with how many elements each holds. A board that never had pages is the `default` page alone. Elements name their page in `pageId` through the [content endpoints](/api-reference/board-content).\n\n**Ability:** `boards:read`.",
+        "x-abilities": [
+          "boards:read"
+        ],
+        "responses": {
+          "200": {
+            "description": "The pages.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "contentVersion": {
+                      "type": "integer"
+                    },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Page"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "parameters": [
+          {
+            "name": "board",
+            "in": "path",
+            "required": true,
+            "description": "The board id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "Add a page",
+        "operationId": "createBoardPage",
+        "description": "Adds a page, named `name` (optional) at `position` (1-based, last by default). Put elements on it with `pageId` through the content endpoints.\n\n**Ability:** `boards:write`.",
+        "x-abilities": [
+          "boards:write"
+        ],
+        "responses": {
+          "201": {
+            "description": "The new page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "contentVersion": {
+                      "type": "integer"
+                    },
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        },
+        "parameters": [
+          {
+            "name": "board",
+            "in": "path",
+            "required": true,
+            "description": "The board id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 100
+                  },
+                  "position": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 1,
+                    "description": "1-based; last when left out."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/boards/{board}/pages/{page}": {
+      "patch": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "Rename or move a page",
+        "operationId": "updateBoardPage",
+        "description": "Renames a page or moves it to another `position`. An unknown page is a 422 on `page_id`.\n\n**Ability:** `boards:write`.",
+        "x-abilities": [
+          "boards:write"
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "contentVersion": {
+                      "type": "integer"
+                    },
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        },
+        "parameters": [
+          {
+            "name": "board",
+            "in": "path",
+            "required": true,
+            "description": "The board id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "The page id (`default` for the original page).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 100
+                  },
+                  "position": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 1,
+                    "description": "1-based; last when left out."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "Delete a page",
+        "operationId": "deleteBoardPage",
+        "description": "Deletes a page and every element on it, live for everyone editing the board. A board always keeps one page: deleting the last one is a 422.\n\n**Ability:** `boards:write`.",
+        "x-abilities": [
+          "boards:write"
+        ],
+        "responses": {
+          "200": {
+            "description": "The board's new content version.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "contentVersion": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        },
+        "parameters": [
+          {
+            "name": "board",
+            "in": "path",
+            "required": true,
+            "description": "The board id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "The page id (`default` for the original page).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/boards/{board}/comments": {
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "List comment threads",
+        "operationId": "listBoardComments",
+        "description": "A page of the board's open or resolved threads, each with its replies. Comments need Sketa Plus. The key acts as its member, with the same rules as the app: the board must show comments (and allow new ones, to write), and a read-only workspace keeps reading but refuses writes.\n\n**Ability:** `boards:read`.",
+        "x-abilities": [
+          "boards:read"
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of threads.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Comment"
+                      }
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/PaginationLinks"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        },
+        "parameters": [
+          {
+            "name": "board",
+            "in": "path",
+            "required": true,
+            "description": "The board id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "`open` (the default, oldest first) or `resolved` (most recently resolved first).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "open",
+                "resolved"
+              ],
+              "default": "open"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "The page to read, from 1. Each page holds `meta.per_page` items.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Comment on a board",
+        "operationId": "createBoardComment",
+        "description": "Starts a thread (with `anchor`) or replies to one (with `parent_id`), as the key's member; people see it at once in the editor. Mentioned people and the thread's earlier participants get an e-mail when they want comment e-mails. Replying to a resolved thread reopens it; a reply to a reply, an unknown element or page, and more than 500 open threads are 422s. Comments need Sketa Plus. The key acts as its member, with the same rules as the app: the board must show comments (and allow new ones, to write), and a read-only workspace keeps reading but refuses writes.\n\n**Ability:** `boards:write`.",
+        "x-abilities": [
+          "boards:write"
+        ],
+        "responses": {
+          "201": {
+            "description": "The new comment.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Comment"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        },
+        "parameters": [
+          {
+            "name": "board",
+            "in": "path",
+            "required": true,
+            "description": "The board id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "body"
+                ],
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "maxLength": 5000,
+                    "description": "Mention someone with `@[Name](user:id)`, ids from `GET /boards/{board}/mentionables`."
+                  },
+                  "parent_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "To reply: the thread's id. Leave `anchor` out."
+                  },
+                  "anchor": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "description": "A thread's anchor: `elementId` pins it on an element (its position and page come from the element; the pin sits at its top-right corner unless `dx`/`dy` say otherwise), or `x` and `y` place it at a point on `pageId` (the first page by default).",
+                    "properties": {
+                      "elementId": {
+                        "type": "string",
+                        "maxLength": 64
+                      },
+                      "x": {
+                        "type": "number",
+                        "minimum": -10000000,
+                        "maximum": 10000000
+                      },
+                      "y": {
+                        "type": "number",
+                        "minimum": -10000000,
+                        "maximum": 10000000
+                      },
+                      "dx": {
+                        "type": "number",
+                        "description": "Only with `elementId`."
+                      },
+                      "dy": {
+                        "type": "number",
+                        "description": "Only with `elementId`."
+                      },
+                      "pageId": {
+                        "type": "string",
+                        "maxLength": 64,
+                        "description": "Only without `elementId`."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/boards/{board}/comments/{comment}": {
+      "patch": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Edit a comment",
+        "operationId": "updateBoardComment",
+        "description": "Changes the text of one of the key's member's own comments (anyone else's is a 403). Newly mentioned people get an e-mail.\n\n**Ability:** `boards:write`.",
+        "x-abilities": [
+          "boards:write"
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated comment.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Comment"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        },
+        "parameters": [
+          {
+            "name": "board",
+            "in": "path",
+            "required": true,
+            "description": "The board id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "comment",
+            "in": "path",
+            "required": true,
+            "description": "The comment id (a thread or a reply).",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "body"
+                ],
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "maxLength": 5000
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Delete a comment",
+        "operationId": "deleteBoardComment",
+        "description": "Deletes a comment for good; a thread takes its replies with it. Its author or a workspace admin can delete it.\n\n**Ability:** `boards:write`.",
+        "x-abilities": [
+          "boards:write"
+        ],
+        "responses": {
+          "204": {
+            "description": "Done. The response has no body."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "parameters": [
+          {
+            "name": "board",
+            "in": "path",
+            "required": true,
+            "description": "The board id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "comment",
+            "in": "path",
+            "required": true,
+            "description": "The comment id (a thread or a reply).",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/boards/{board}/comments/{comment}/resolve": {
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Resolve or reopen a thread",
+        "operationId": "resolveBoardComment",
+        "description": "Resolves a thread, or reopens it with `resolved: false`. Anyone who can comment on the board can do it; a reply cannot be resolved on its own.\n\n**Ability:** `boards:write`.",
+        "x-abilities": [
+          "boards:write"
+        ],
+        "responses": {
+          "200": {
+            "description": "The thread with its replies.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Comment"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        },
+        "parameters": [
+          {
+            "name": "board",
+            "in": "path",
+            "required": true,
+            "description": "The board id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "comment",
+            "in": "path",
+            "required": true,
+            "description": "The comment id (a thread or a reply).",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "resolved": {
+                    "type": "boolean",
+                    "default": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/boards/{board}/mentionables": {
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "List people to mention",
+        "operationId": "listBoardMentionables",
+        "description": "People who can see the board and can be mentioned in a comment, by name, up to 8, matched by name or e-mail with `search`. Never includes the key's own member.\n\n**Ability:** `boards:read`.",
+        "x-abilities": [
+          "boards:read"
+        ],
+        "responses": {
+          "200": {
+            "description": "The people.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Mentionable"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PlusRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        },
+        "parameters": [
+          {
+            "name": "board",
+            "in": "path",
+            "required": true,
+            "description": "The board id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Words to match; everyone when left out.",
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -3334,11 +4188,18 @@
           },
           "transition": {
             "type": "string",
-            "enum": ["none", "fade", "slide"],
+            "enum": [
+              "none",
+              "fade",
+              "slide"
+            ],
             "description": "The presentation element only: how slides move from one to the next."
           },
           "autoplaySeconds": {
-            "type": ["integer", "null"],
+            "type": [
+              "integer",
+              "null"
+            ],
             "minimum": 3,
             "maximum": 120,
             "description": "The presentation element only: advance every this many seconds; null moves only by hand."
@@ -4140,6 +5001,163 @@
             }
           }
         ]
+      },
+      "Page": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "default",
+            "description": "`default` is the original page."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Null shows \"Page N\" in the app."
+          },
+          "position": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "elementCount": {
+            "type": "integer"
+          }
+        }
+      },
+      "CommentAnchor": {
+        "type": "object",
+        "description": "Where a thread sits, in board coordinates. On an element, `dx`/`dy` are its offset from the element's top-left corner and the pin follows the element; `x`/`y` stay as the fallback once it is gone. `pageId` is left out on the original page.",
+        "properties": {
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "elementId": {
+            "type": "string"
+          },
+          "dx": {
+            "type": "number"
+          },
+          "dy": {
+            "type": "number"
+          },
+          "pageId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      },
+      "CommentAuthor": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "description": "Null once the account is gone. An anonymous visitor of the board's link has `anonymous: true` and an id derived from their browser, never an account id.",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "anonymous": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "parentId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "The thread of a reply; null on a thread."
+          },
+          "body": {
+            "type": "string",
+            "description": "Mentions are written `@[Name](user:id)`.",
+            "example": "@[Mia Silva](user:01a1cd4e-bfcc-73ea-bb0a-10934f1356f8) can you check this label?"
+          },
+          "anchor": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CommentAnchor"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Null on a reply."
+          },
+          "author": {
+            "$ref": "#/components/schemas/CommentAuthor"
+          },
+          "mentionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "resolvedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "replies": {
+            "type": "array",
+            "description": "A thread's replies, oldest first. Left out on a reply.",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            }
+          }
+        }
+      },
+      "Mentionable": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
       }
     },
     "responses": {

@@ -194,6 +194,26 @@
             ]
           },
           {
+            "group": "Pages",
+            "pages": [
+              "GET /boards/{board}/pages",
+              "POST /boards/{board}/pages",
+              "PATCH /boards/{board}/pages/{page}",
+              "DELETE /boards/{board}/pages/{page}"
+            ]
+          },
+          {
+            "group": "Comments",
+            "pages": [
+              "GET /boards/{board}/comments",
+              "POST /boards/{board}/comments",
+              "PATCH /boards/{board}/comments/{comment}",
+              "DELETE /boards/{board}/comments/{comment}",
+              "POST /boards/{board}/comments/{comment}/resolve",
+              "GET /boards/{board}/mentionables"
+            ]
+          },
+          {
             "group": "Teams",
             "pages": [
               "GET /teams",

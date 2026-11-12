@@ -52,3 +52,7 @@ People who open a comment or edit link **without an account** comment too, under
 ## E-mail notifications
 
 Sketa e-mails you when someone mentions you or replies to you, in your language. Turn it off with **Comments** in [Settings → Notifications](/knowledge-base/account/profile-and-preferences#notifications).
+
+## Comments through the API and MCP
+
+Apps and AI agents read and write a board's comments through the [REST API](/api-reference/introduction) (`/api/boards/{board}/comments`) and the [MCP server](/ai/tools-reference#comments): list the open or resolved threads, reply, start a thread on an element or at a point, edit, resolve and mention people. Their comments appear at once, under the name of the member who created the API key or connected the app, and follow the same rules as in the editor: the board's **Comment settings**, who can edit or delete, and the e-mails to the people mentioned.

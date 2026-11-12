@@ -4,11 +4,11 @@ description: "Every tool of the Sketa MCP server, what it does and its inputs."
 icon: "wrench"
 ---
 
-The Sketa MCP server (`https://sketa.app/mcp`) exposes 50 tools. Each one needs an [ability](/knowledge-base/developers/api-keys#abilities) (OAuth connections carry them all) and follows the same permissions as the [REST API](/api-reference/introduction).
+The Sketa MCP server (`https://sketa.app/mcp`) exposes 56 tools. Each one needs an [ability](/knowledge-base/developers/api-keys#abilities) (OAuth connections carry them all) and follows the same permissions as the [REST API](/api-reference/introduction).
 
 Conventions for every tool:
 
-- **Ids are UUIDs** (element, page and frame ids are strings). Take them from the list tools and the board content (`get-board-content-tool`, `search-board-tool`, `list-board-pages-tool`, `list-slides-tool`); never invent them.
+- **Ids are UUIDs** (element, page and frame ids are strings). Take them from the list tools and the board content (`get-board-content-tool`, `search-board-tool`, `list-board-pages-tool`, `list-slides-tool`) and comment ids from `list-board-comments-tool`; never invent them.
 - **Coordinates are board pixels**: x to the right, y down.
 - Tools marked **Needs an admin** refuse members.
 - **List tools are paginated**: pass `page` (from 1) and read `data`, `total`, `per_page`, `current_page` and `last_page` from the result.
@@ -32,6 +32,25 @@ Conventions for every tool:
   </Step>
   <Step title="Check the result">
     `take-screenshot-tool` returns a PNG of one page or one frame. A slow render answers `status: pending` with a `render_id`: read it later with `get-render-result-tool`.
+  </Step>
+</Steps>
+
+## Recommended workflow for review comments
+
+When people mark up a board with comments for you to act on:
+
+<Steps>
+  <Step title="Read the open threads">
+    `list-board-comments-tool`. A thread's `anchor.elementId` names the element it is about.
+  </Step>
+  <Step title="Look at what they point to">
+    `get-board-content-tool` for the element, or `take-screenshot-tool` to see it in place.
+  </Step>
+  <Step title="Make the change">
+    On the board with the drawing tools, or wherever the comment asks.
+  </Step>
+  <Step title="Answer and resolve">
+    `create-board-comment-tool` with `parent_id` to say what you did, then `resolve-board-comment-tool`.
   </Step>
 </Steps>
 
@@ -272,6 +291,90 @@ Destructive · `boards:write`
 | --- | --- | --- |
 | `board_id` | string, required | The board id. |
 | `page_id` | string, required | The page id, from `list-board-pages-tool`. |
+
+## Comments
+
+<Note>
+  Comments need Sketa Plus.
+</Note>
+
+Read the threads people leave on a board, answer them and resolve them once they are dealt with. Comments are written as the member who connected and show at once in the editor. They follow the same rules as the app: the board must show comments (and allow new ones, to write), only a comment's author edits it, its author or an admin deletes it, and a read-only workspace keeps reading but refuses writes. See [Comments](/knowledge-base/boards/comments).
+
+A thread's `anchor` says where it sits: `x`/`y` in board coordinates; `elementId` with `dx`/`dy` (its offset from the element's top-left corner) when it is pinned on an element, which follows it; `pageId` when it is not on the original page.
+
+### list-board-comments-tool
+
+Lists the board's open threads, oldest first, or the resolved ones, most recently resolved first. Each thread has its `id`, `body`, `author` (`id`, `name`, `anonymous`: true for a visitor of the board's link without an account), `anchor`, `mentionIds`, `resolvedAt` and its `replies`. Mentions appear in bodies as `@[Name](user:id)`.
+
+Read-only · `boards:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
+| `status` | string | `open` (the default) or `resolved`. |
+| `page` | integer | The page, from 1. |
+
+### create-board-comment-tool
+
+Replies to a thread with `parent_id`, or starts one pinned on an element with `element_id` or at a point with `x` and `y`. Mentioned people and the thread's earlier participants get an e-mail when they want comment e-mails. Replying to a resolved thread reopens it. A board holds up to 500 open threads. Returns the new comment.
+
+`boards:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
+| `body` | string, required | Up to 5,000 characters. Mention someone with `@[Name](user:id)`, ids from `list-board-mentionables-tool`. |
+| `parent_id` | string | To reply: the thread id, from `list-board-comments-tool`. Leave the anchor inputs out. |
+| `element_id` | string | To start a thread on an element: its id, from `get-board-content-tool` or `search-board-tool`. Its page is the element's. |
+| `x`, `y` | number | To start a thread at a point, in board coordinates. |
+| `dx`, `dy` | number | With `element_id`: the pin's offset from the element's top-left corner. By default it sits at the element's top-right corner. |
+| `page_id` | string | With `x` and `y`: the page, from `list-board-pages-tool`; the first page when left out. |
+
+### update-board-comment-tool
+
+Changes the text of one of the member's own comments. Newly mentioned people get an e-mail. Returns the comment.
+
+`boards:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
+| `comment_id` | string, required | The comment id (a thread or a reply), from `list-board-comments-tool`. |
+| `body` | string, required | The new text, up to 5,000 characters. |
+
+### resolve-board-comment-tool
+
+Resolves a thread, or reopens it with `resolved` false. Anyone who can comment on the board can do it; a reply cannot be resolved on its own. Returns the thread with its replies.
+
+`boards:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
+| `comment_id` | string, required | The thread id, from `list-board-comments-tool`. |
+| `resolved` | boolean | `true` (the default) resolves, `false` reopens. |
+
+### delete-board-comment-tool
+
+Deletes a comment for good; a thread takes its replies with it. To close a thread that was dealt with, resolve it instead. Returns `deleted` and the `id`.
+
+Destructive · `boards:write`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
+| `comment_id` | string, required | The comment id, from `list-board-comments-tool`. |
+
+### list-board-mentionables-tool
+
+Lists the people who can see the board and can be mentioned, by name, up to 8: `id`, `name` and `email`. Never includes the member who connected.
+
+Read-only · `boards:read`
+
+| Input | Type | Description |
+| --- | --- | --- |
+| `board_id` | string, required | The board id. |
+| `search` | string | Words to match in the name or e-mail (up to 100 characters); everyone when left out. |
 
 ## Boards
 
