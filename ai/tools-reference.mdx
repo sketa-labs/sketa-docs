@@ -4,11 +4,11 @@ description: "Every tool of the Sketa MCP server, what it does and its inputs."
 icon: "wrench"
 ---
 
-The Sketa MCP server (`https://sketa.app/mcp`) exposes 50 tools. Each one needs an [ability](/knowledge-base/developers/api-keys#abilities) (OAuth connections carry them all) and follows the same permissions as the [REST API](/api-reference/introduction).
+The Sketa MCP server (`https://sketa.app/mcp`) exposes 56 tools. Each one needs an [ability](/knowledge-base/developers/api-keys#abilities) (OAuth connections carry them all) and follows the same permissions as the [REST API](/api-reference/introduction).
 
 Conventions for every tool:
 
-- **Ids are UUIDs** (element, page and frame ids are strings). Take them from the list tools and the board content (`get-board-content-tool`, `search-board-tool`, `list-board-pages-tool`, `list-slides-tool`); never invent them.
+- **Ids are UUIDs** (element, page and frame ids are strings). Take them from the list tools and the board content (`get-board-content-tool`, `search-board-tool`, `list-board-pages-tool`, `list-slides-tool`) and comment ids from `list-board-comments-tool`; never invent them.
 - **Coordinates are board pixels**: x to the right, y down.
 - Tools marked **Needs an admin** refuse members.
 - **List tools are paginated**: pass `page` (from 1) and read `data`, `total`, `per_page`, `current_page` and `last_page` from the result.
@@ -32,6 +32,25 @@ Conventions for every tool:
   </Step>
   <Step title="Check the result">
     `take-screenshot-tool` returns a PNG of one page or one frame. A slow render answers `status: pending` with a `render_id`: read it later with `get-render-result-tool`.
+  </Step>
+</Steps>
+
+## Recommended workflow for review comments
+
+When people mark up a board with comments for you to act on:
+
+<Steps>
+  <Step title="Read the open threads">
+    `list-board-comments-tool`. A thread's `anchor.elementId` names the element it is about.
+  </Step>
+  <Step title="Look at what they point to">
+    `get-board-content-tool` for the element, or `take-screenshot-tool` to see it in place.
+  </Step>
+  <Step title="Make the change">
+    On the board with the drawing tools, or wherever the comment asks.
+  </Step>
+  <Step title="Answer and resolve">
+    `create-board-comment-tool` with `parent_id` to say what you did, then `resolve-board-comment-tool`.
   </Step>
 </Steps>
 
